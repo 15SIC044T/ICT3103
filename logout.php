@@ -2,8 +2,8 @@
 
 session_start();
 
-//unset($_SESSION["shoppername"]);
-//unset($_SESSION["shopperid"]);
+unset($_SESSION["name"]);
+unset($_SESSION["accountID"]);
 
 session_destroy();
 
