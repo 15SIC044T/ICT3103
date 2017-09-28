@@ -38,6 +38,7 @@ if ($result) {
         // login successful
         session_regenerate_id();
         $member = mysqli_fetch_assoc($result);
+        $_SESSION['SESS_ACC_ID'] = $member['accountID'];
         $_SESSION['SESS_USERNAME'] = $member['name'];
         $_SESSION['SESS_PASSWORD'] = $member['password'];
         session_write_close();
