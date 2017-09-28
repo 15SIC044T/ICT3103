@@ -7,11 +7,11 @@
             <div class="row">
 
                 <!-- start of coding the website -->
-                <div class="col-sm-7 logoblock">
+                <div class="col-sm-12 logoblock">
                     <h1>DropIT Sharing</h1>
                 </div>
 
-                <div class="col-sm-5 loginblock">
+                <div class="col-sm-12 registerblock">
                     <div>
                         <form action="checklogin.php" method="post">
                             <?php
@@ -25,20 +25,18 @@
                             <input name="user" type="text" class="form-control" placeholder="Username" required autofocus>
 
                             <input name="password" type="password" class="form-control" placeholder="Password" required>
+                            
+                            <input name="email" type="text" class="form-control" placeholder="Email" required>
+                            
+                            <input name="mobileNumber" type="text" class="form-control" placeholder="Mobile Number" required>
 
-                            <button class="btn btn-lg btn-block" name="login" type="submit">Sign In</button>
+                            <button class="btn btn-lg btn-block" name="register" type="submit">Sign Up</button>
                         </form>
                     </div>
                     
                     <div class="col-sm-12 centerblock">
                         <div class="row">
-                            <div class="col-sm-6">
-                                <a href="">Forgot your password?</a>
-                            </div>
-                            
-                            <div class="col-sm-6">
-                                Not a member? <a href="registerAcc.php">Sign Up!</a>
-                            </div>
+                                Have an account? <a href="index.php">Sign In!</a>
                         </div>
                     </div>
                 </div>
