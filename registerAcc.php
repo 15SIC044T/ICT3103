@@ -14,11 +14,26 @@
                 <div class="col-sm-12 registerblock">
                     <div>
                         <form action="checklogin.php" method="post">
+<<<<<<< HEAD
+=======
+                            <?php
+                            //Display error message if the login failed
+                            if (!empty($_SESSION['login_error_msg'])) {
+                                echo '<font color="red"><b>"' . $_SESSION["login_error_msg"] . '</b></font>';
+                                unset($_SESSION['login_error_msg']);
+                            }
+                            ?>
+
+>>>>>>> 7579fd02010020a2f374cf88b9ed9fb104fd59c3
                             <input name="user" type="text" class="form-control" placeholder="Username" required autofocus>
 
                             <input name="password" type="password" class="form-control" placeholder="Password" required>
                             
+<<<<<<< HEAD
                             <input name="email" type="text" class="form-control" placeholder="Email Address" required>
+=======
+                            <input name="email" type="text" class="form-control" placeholder="Email" required>
+>>>>>>> 7579fd02010020a2f374cf88b9ed9fb104fd59c3
                             
                             <input name="mobileNumber" type="text" class="form-control" placeholder="Mobile Number" required>
 

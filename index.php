@@ -29,7 +29,11 @@
                             <button class="btn btn-lg btn-block" name="login" type="submit">Sign In</button>
                         </form>
                     </div>
+<<<<<<< HEAD
 
+=======
+                    
+>>>>>>> 7579fd02010020a2f374cf88b9ed9fb104fd59c3
                     <div class="col-sm-12 centerblock">
                         <div class="row">
                             <div class="col-sm-6">
@@ -37,7 +41,11 @@
                             </div>
 
                             <div class="col-sm-6">
+<<<<<<< HEAD
                                 Don't have an account? <a href="registerAcc.php">Sign Up!</a>
+=======
+                                Not a member? <a href="registerAcc.php">Sign Up!</a>
+>>>>>>> 7579fd02010020a2f374cf88b9ed9fb104fd59c3
                             </div>
                         </div>
                     </div>
