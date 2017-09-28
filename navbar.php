@@ -1,13 +1,12 @@
 <?php
-    function echoActiveClassIfRequestMatches($requestUri){
-        $requestedURL = $_SERVER['PHP_SELF'];
-        $current_file_name = basename($requestedURL, ".php");
-        if ($current_file_name == $requestUri){
-            echo 'class="active"';
-        }
+
+function echoActiveClassIfRequestMatches($requestUri) {
+    $requestedURL = $_SERVER['PHP_SELF'];
+    $current_file_name = basename($requestedURL, ".php");
+    if ($current_file_name == $requestUri) {
+        echo 'class="active"';
     }
-
-
+}
 
 $content1 = "";
 if (!isset($_SESSION["accountID"])) {
@@ -64,18 +63,19 @@ if (!isset($_SESSION["accountID"])) {
                     <li <?php echoActiveClassIfRequestMatches("fileManager"); ?>><a href="fileManager.php">File Manager</li>
                     <li <?php echoActiveClassIfRequestMatches("profile"); ?>><a href="profile.php">Account</li>
                     <li <?php echoActiveClassIfRequestMatches("index"); ?>><a href="index.php">Sign Out</li>
-                </ul>          
-            </div><!--/.nav-collapse -->    
+                </ul>
 
-            <!-- Display Search group on bigger screen, e.g. Desktop -->
-            <form class="navbar-form navbar-left hidden-xs hidden-sm" role="search" action="search.php" method="post">
-                <div class="input-group">
-                    <input type="text" class="form-control" name="txtSearch" placeholder="Search">
-                    <div class="input-group-btn">
-                        <button type="submit" class="btn btn-default"><span class="glyphicon glyphicon-search"></span></button>
+                <!-- Display Search group on bigger screen, e.g. Desktop -->
+                <form class="navbar-form navbar-right hidden-xs hidden-sm" role="search" action="search.php" method="post">
+                    <div class="input-group">
+                        <input type="text" class="form-control" name="txtSearch" placeholder="Search">
+                        <div class="input-group-btn">
+                            <button type="submit" class="btn btn-default"><span class="glyphicon glyphicon-search"></span></button>
+                        </div>
                     </div>
-                </div>
-            </form>
+                </form>   
+            </div>
+            <!-- nav-collapse -->
 
             <!-- Display only search button when screen size is reduced -->
             <form class="navbar-form navbar-left hidden-lg hidden-xs hidden-md" role="search" action="search.php" method="post">

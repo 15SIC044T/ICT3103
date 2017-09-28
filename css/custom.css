@@ -160,6 +160,10 @@ body{
     text-decoration:underline;
 }
 
+.navmenu-default, .navbar-default .navbar-offcanvas{
+    background-color:#005b7a;
+}
+
 /* index page */
 .col-sm-7.logoblock{
     margin-top:20%;
