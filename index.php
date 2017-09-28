@@ -1,67 +1,50 @@
 <!DOCTYPE html>
 <html lang="en">
-<?php include "header.php" ?>
-<body>
- 
-<div class="container-fluid">
-    
-<?php include "navbar.php" ?>
+    <?php include "header.php" ?>
 
-    <!-- start of coding the website -->
+    <body>
+        <div class="container-fluid">
+            <div class="row">
 
-    <div class="col-sm-8 col-md-4 col-sm-offset-2 col-md-offset-7">
-        <div class="opcBlock" style="background-color: #F7F7F7; padding: 50px; opacity: 0.9;">
-            <form action="checklogin.php" method="post">
-                <br><br>
-                <h2 class='form-signin-heading'>Login</h2>
-                
-                         <?php 
-                //Display error message if the login failed
-                if(! empty($_SESSION['login_error_msg']))
-                {
-                        echo '<font color="red"><b>"' . $_SESSION["login_error_msg"] . '</b></font>';
-                         
-                    unset($_SESSION['login_error_msg']);
-                }?>  
+                <!-- start of coding the website -->
+                <div class="col-sm-7 logoblock">
+                    <h1>DropIT Sharing</h1>
+                </div>
 
-        
-		
-        <br><br>
-            <label for="lblEmail" class="sr-only">Email address</label>
-            <input name="user" type="text" class="form-control" placeholder="Username" required autofocus>
-            <label for="lblPassword" class="sr-only">Password</label>
-            <input name="password" type="password" class="form-control" placeholder="Password" required><br>
-            <button class="btn btn-lg btn-success btn-block" name="login" type="submit">Login</button><br>
-          </form>
-            
-            <hr>
-            
-            <form action="checklogin.php" method="post"> 
-                <h2 class='form-signin-heading'>Register</h2>
-                
-                         <?php 
-                //Display error message if the login failed
-                if(! empty($_SESSION['login_error_msg']))
-                {
-                        echo '<font color="red"><b>"' . $_SESSION["login_error_msg"] . '</b></font>';
-                         
-                    unset($_SESSION['login_error_msg']);
-                }?>  
+                <div class="col-sm-5 loginblock">
+                    <div>
+                        <form action="checklogin.php" method="post">
+                            <?php
+                            //Display error message if the login failed
+                            if (!empty($_SESSION['login_error_msg'])) {
+                                echo '<font color="red"><b>"' . $_SESSION["login_error_msg"] . '</b></font>';
+                                unset($_SESSION['login_error_msg']);
+                            }
+                            ?>
 
-        
-		
-        <br><br>
-            <label for="lblEmail" class="sr-only">Email address</label>
-            <input name="user" type="text" class="form-control" placeholder="Username" required autofocus>
-            <label for="lblPassword" class="sr-only">Password</label>
-            <input name="password" type="password" class="form-control" placeholder="Password" required><br>
-            <button class="btn btn-lg btn-success btn-block" name="login" type="submit">Login</button><br>
-          </form>
+                            <input name="user" type="text" class="form-control" placeholder="Username" required autofocus>
 
-    </div><br></div>
-    
-     <!-- end of coding the website -->
+                            <input name="password" type="password" class="form-control" placeholder="Password" required>
 
-</div>  
-</body>
+                            <button class="btn btn-lg btn-block" name="login" type="submit">Sign In</button>
+                        </form>
+                    </div>
+                    
+                    <div class="col-sm-12 forgotpassword-signup">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <a href="">Forgot your password?</a>
+                            </div>
+                            
+                            <div class="col-sm-6">
+                                Not a member? <a href="">Sign Up!</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- end of coding the website -->
+
+            </div>
+        </div>  
+    </body>
 </html>

@@ -1,14 +1,47 @@
 /* Bootstrap custom CSS
 -------------------------------------------------------------------- */ 
-.badge {
-	background-color: #ED7638;
+.badge{
+    background-color:#ED7638;
 }
 
 
 
 /* background setup 
 -------------------------------------------------------------------- */
-.background {
+.container-fluid{
+    font-family:"Roboto" !important;
+    max-width:1024px;
+}
+.col-sm-7.logoblock{
+    margin-top:20%;
+    text-align:center;
+}
+.col-sm-7.logoblock h1{
+    font-size:50px;
+}
+.col-sm-5.loginblock{
+    border-left:1px solid #c0c0c0;
+    margin-top:13%;
+    padding:15px 0 15px 50px;
+}
+.loginblock h2{
+    margin-top:0;
+}
+.loginblock .form-control{
+    font-size:16px;
+    height:46px;
+    margin-bottom:15px;
+}
+.loginblock .btn-block{
+    background-color:#005b7a;
+    color:#fff;
+}
+.forgotpassword-signup{
+    margin-top:20px;
+}
+
+
+.background{
     background-repeat:no-repeat;
     /* custom background-position */
     background-position:50% 50%;
@@ -17,38 +50,36 @@
 }
 
 /* fullscreen setup */
-html, body {
+html, 
+body{
     /* give this to all tags from html to .fullscreen */	
-	width: 100%;
-    height: 100%;
-    margin: 0px;
-    padding: 0px;
-    overflow-x: hidden;
+    width:100%;
+    height:100%;
+    margin:0px;
+    padding:0px;
+    overflow-x:hidden;
 }
-
-#fdiv {
-	position: absolute;
-	height: 100%;
-	}
-
-.fullscreen,
-.content-a {
+#fdiv{
+    position:absolute;
+    height:100%;
+}
+.fullscreen, 
+.content-a{
     width:100%;
     min-height:100%;
 }
-.not-fullscreen,
-.not-fullscreen .content-a,
-.fullscreen.not-overflow,
-.fullscreen.not-overflow .content-a {
+.not-fullscreen, 
+.not-fullscreen .content-a, 
+.fullscreen.not-overflow, 
+.fullscreen.not-overflow .content-a{
     height:100%;
     overflow:hidden;
 }
-
 /* content centering styles */
-.content-a {
+.content-a{
     display:table;
 }
-.content-b {
+.content-b{
     display:table-cell;
     position:relative;
     vertical-align:middle;
@@ -59,31 +90,31 @@ html, body {
 /* Sticky footer styles
 -------------------------------------------------------------------- */
 /* Wrapper for page content to push down footer */
-#wrap {
-  min-height: 100%;
-  height: auto !important;
-  height: 100%;
-  /* Negative indent footer by it's height */
-  margin: 0 auto -30px;
+#wrap{
+    min-height:100%;
+    height:auto !important;
+    height:100%;
+    /* Negative indent footer by it's height */
+    margin:0 auto -30px;
 }
 
 /* Set the fixed height of the footer here */
 #push,
-#footer {
-  height: 30px;
+#footer{
+    height:30px;
 }
-#footer {
-  background-color: #eee;
+#footer{
+    background-color:#eee;
 }
 
 /* Lastly, apply responsive CSS fixes as necessary */
-@media (max-width: 767px) {
-#footer {
-  margin-left: -20px;
-  margin-right: -20px;
-  padding-left: 20px;
-  padding-right: 20px;
-}
+@media (max-width:767px){
+    #footer{
+        margin-left:-20px;
+        margin-right:-20px;
+        padding-left:20px;
+        padding-right:20px;
+    }
 }
 
 
@@ -92,40 +123,40 @@ html, body {
 -------------------------------------------------------------------- */
 .tsBlock
 {
-	border-radius:1em;
-	margin: auto;
-	background-color: #FFF;
-	color: #000;
-	text-align:center;
-	width: 80%;
-	opacity: 0.8;
+    border-radius:1em;
+    margin:auto;
+    background-color:#FFF;
+    color:#000;
+    text-align:center;
+    width:80%;
+    opacity:0.8;
 }
 
 .loginBlock
 {
-	opacity: 0.95;
-	padding: 50px 40px 50px 40px;
-	background-color: #F1F1F1;
+    opacity:0.95;
+    padding:50px 40px 50px 40px;
+    background-color:#F1F1F1;
 }
 
 .opcBlock
 {
-	opacity: 0.95;
-	padding: 50px 40px 50px 40px;
-	background-color: #F7F7F7;
+    opacity:0.95;
+    padding:50px 40px 50px 40px;
+    background-color:#F7F7F7;
 }
 
 .whiteBlock
 {
-	opacity: 0.95;
-	padding: 40px 20px 10px 20px;
-	background-color: #FFF;
+    opacity:0.95;
+    padding:40px 20px 10px 20px;
+    background-color:#FFF;
 }
 
 
 .btn-warning
 {
-	color: #FFF;
-	background-color: #EDA134;
-	border-color: #EDA134;
+    color:#FFF;
+    background-color:#EDA134;
+    border-color:#EDA134;
 }
