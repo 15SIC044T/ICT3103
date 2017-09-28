@@ -13,7 +13,7 @@
 
                 <div class="col-sm-5 loginblock">
                     <div>
-                        <form action="checklogin.php" method="post">
+                        <form action="checkLogin.php" method="post">
                             <?php
                             //Display error message if the login failed
                             if (!empty($_SESSION['login_error_msg'])) {
@@ -29,15 +29,15 @@
                             <button class="btn btn-lg btn-block" name="login" type="submit">Sign In</button>
                         </form>
                     </div>
-                    
-                    <div class="col-sm-12 forgotpassword-signup">
+
+                    <div class="col-sm-12 centerblock">
                         <div class="row">
                             <div class="col-sm-6">
-                                <a href="">Forgot your password?</a>
+                                <a href="forgetPassword.php">Forgot your password?</a>
                             </div>
-                            
+
                             <div class="col-sm-6">
-                                Not a member? <a href="">Sign Up!</a>
+                                Don't have an account? <a href="registerAcc.php">Sign Up!</a>
                             </div>
                         </div>
                     </div>
