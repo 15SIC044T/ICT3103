@@ -184,13 +184,30 @@ body{
     margin-bottom:15px;
 }
 .loginblock .btn-block, 
-.registerblock .btn-block{
+.registerblock .btn-block, 
+.resetblock .btn-block{
     background-color:#005b7a;
     color:#fff;
 }
 .centerblock{
     margin-top:20px;
     text-align:center;
+}
+.resetmodal .modal-header{
+    height:50px;
+}
+.resetblock{
+    padding-left:15px;
+    padding-right:15px;
+    text-align:center;
+}
+.resetblock .form-group{
+    margin-top:25px;
+}
+.resetblock:last-child{
+    padding-bottom:35px;
+    padding-left:80px;
+    padding-right:80px;
 }
 
 /* register page */

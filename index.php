@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
     <?php include "header.php" ?>
+    <?php include "resetPassword.php" ?>
 
     <body>
         <div class="container-fluid">
@@ -33,7 +34,9 @@
                     <div class="col-sm-12 centerblock">
                         <div class="row">
                             <div class="col-sm-6">
-                                <a href="forgetPassword.php">Forgot your password?</a>
+                                <!--a href="forgetPassword.php">Forgot your password?</a-->
+                                
+                                <a href="#" data-target="#resetmodal" data-toggle="modal">Forgot Password?</a>
                             </div>
 
                             <div class="col-sm-6">
