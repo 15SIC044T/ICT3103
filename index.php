@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
     <?php include "header.php" ?>
-    <?php include "resetPassword.php" ?>
+    <?php include "resetPasswordModal.php" ?>
 
     <body>
         <div class="container-fluid">
