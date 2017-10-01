@@ -4,7 +4,7 @@ $(function(){
     maxFilesize: 5, //MB
     addRemoveLinks: true,
     dictResponseError: 'Server not Configured',
-    acceptedFiles: ".png,.jpg,.gif,.bmp,.jpeg,.mp3",
+    acceptedFiles: ".png,.jpg,.gif,.bmp,.jpeg,.mp3,.txt,.sql",
     init:function(){
       var self = this;
       // config
@@ -38,7 +38,41 @@ $(function(){
   };
 })
 
-// For datatable - FileManager.php
+/* Datatable */
 $(document).ready(function() {
-    $('#datatable-filemanager').DataTable();
+    $('#fileManagerDataTable').DataTable( {
+        'columnDefs' : [ 
+        { 'visible': false, 'targets': [0] }
+        ],
+        "scrollX": true,
+        "destroy": true,
+        "paging":   true,
+        "ordering": false,
+        "info":     false,
+        
+    } );
+    
+     // Event listener to the two range filtering inputs to redraw on input
+    $('#min, #max').click( function() {
+        table.draw();
+    } );
 } );
+
+/* DataTable */
+/* Custom filtering function which will search data in column four between two values */
+$.fn.dataTable.ext.search.push(
+    function( settings, data, dataIndex ) {
+        var min = parseInt( $('#myDocumentBtn').val(), 10 );
+        var max = parseInt( $('#shared').val(), 10 );
+        var age = parseFloat( data[3] ) || 0; // use data for the age column
+ 
+        if ( ( isNaN( min ) && isNaN( max ) ) ||
+             ( isNaN( min ) && age <= max ) ||
+             ( min <= age   && isNaN( max ) ) ||
+             ( min <= age   && age <= max ) )
+        {
+            return true;
+        }
+        return false;
+    }
+);
