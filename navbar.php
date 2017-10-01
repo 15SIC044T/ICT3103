@@ -67,10 +67,10 @@ if (!isset($_SESSION['SESS_ACC_ID'])) {
                         </div>
                     </form>
                     <ul class="nav navbar-nav">
-                        <li <?php echoActiveClassIfRequestMatches("fileManager"); ?>><a href="fileManager.php">File Manager</li>
-                        <li <?php echoActiveClassIfRequestMatches("profile"); ?>><a href="profile.php">Account</li>
+                        <li <?php echoActiveClassIfRequestMatches("fileManager"); ?>><a href="fileManager.php">File Manager</a></li>
+                        <li <?php echoActiveClassIfRequestMatches("profile"); ?>><a href="profile.php">Account</a></li>
 
-                        <li <?php echoActiveClassIfRequestMatches("index"); ?>><a href="index.php">Sign Out</li>
+                        <li <?php echoActiveClassIfRequestMatches("index"); ?>><a href="index.php">Sign Out</a></li>
                     </ul>
 
                     <!-- Display Search group on bigger screen, e.g. Desktop -->
