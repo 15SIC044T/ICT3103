@@ -14,6 +14,14 @@ function echoActiveClassIfRequestMatches($requestUri) {
     }
 }
 
+// Check if user logged in 
+if (! isset($_SESSION["SESS_ACC_ID"])) 
+{
+	// redirect to login page if the session variable shopperid is not set
+	header ("Location: index.php");
+	exit;
+}
+
 $content1 = "";
 if (!isset($_SESSION['SESS_ACC_ID'])) {
     //Display Login and Register button when shopper has yet to login

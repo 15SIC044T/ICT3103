@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: Oct 01, 2017 at 02:59 AM
+-- Generation Time: Oct 01, 2017 at 03:22 PM
 -- Server version: 5.6.26
 -- PHP Version: 5.6.12
 
@@ -87,7 +87,7 @@ CREATE TABLE IF NOT EXISTS `file` (
 --
 
 INSERT INTO `file` (`fileID`, `accountID`, `fileName`, `fileURL`, `fileType`, `fileSize`, `fileStatus`, `filePermission`, `uploadDate`, `expiryDate`, `downloadTimes`) VALUES
-(1, 1, '1_20171001-010552am_zyra_LoL', 'uploads/1_20171001-010552am_zyra_LoL.png', 'png', 424618, NULL, 'private', '2017-10-01 07:05:52', NULL, 0),
+(1, 1, '1_20171001-010552am_zyra_LoL', 'uploads/1_20171001-010552am_zyra_LoL.png', 'png', 424618, NULL, 'Public', '2017-10-01 07:05:52', NULL, 0),
 (2, 1, 'Red_Rose_Black_BG', 'uploads/1_20171001-010719am_Red_Rose_Black_BG.png', 'png', 194232, NULL, 'private', '2017-10-01 07:07:19', NULL, 0),
 (3, 1, 'Red_Rose_Book', 'uploads/1_20171001-011752am_Red_Rose_Book.png', 'png', 526864, NULL, 'private', '2017-10-01 07:17:52', NULL, 0),
 (4, 1, 'Red-Rose-Pictures-1', 'uploads/1_20171001-011800am_Red-Rose-Pictures-1.png', 'png', 1048576, NULL, 'private', '2017-10-01 07:18:00', NULL, 0);
@@ -108,8 +108,7 @@ CREATE TABLE IF NOT EXISTS `filepermission` (
 
 INSERT INTO `filepermission` (`filePermission`) VALUES
 ('Private'),
-('Public'),
-('Unlist');
+('Public');
 
 -- --------------------------------------------------------
 
@@ -204,8 +203,8 @@ ALTER TABLE `file`
 -- Constraints for table `filesharing`
 --
 ALTER TABLE `filesharing`
-  ADD CONSTRAINT `fk_FileSharing_Account` FOREIGN KEY (`accountID`) REFERENCES `account` (`accountID`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  ADD CONSTRAINT `fk_FileSharing_File1` FOREIGN KEY (`fileID`) REFERENCES `file` (`fileID`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+  ADD CONSTRAINT `fk_FileSharing_Account` FOREIGN KEY (`accountID`) REFERENCES `account` (`accountID`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  ADD CONSTRAINT `fk_FileSharing_File1` FOREIGN KEY (`fileID`) REFERENCES `file` (`fileID`) ON DELETE CASCADE ON UPDATE NO ACTION;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

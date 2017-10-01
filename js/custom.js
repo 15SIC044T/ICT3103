@@ -40,7 +40,7 @@ $(function(){
 
 /* Datatable */
 $(document).ready(function() {
-    $('#fileManagerDataTable').DataTable( {
+    var dataTables = $('#fileManagerDataTable').DataTable( {
         'columnDefs' : [ 
         { 'visible': false, 'targets': [0] }
         ],
@@ -50,29 +50,16 @@ $(document).ready(function() {
         "ordering": false,
         "info":     false,
         
-    } );
+    } ); 
     
-     // Event listener to the two range filtering inputs to redraw on input
-    $('#min, #max').click( function() {
-        table.draw();
-    } );
-} );
-
-/* DataTable */
-/* Custom filtering function which will search data in column four between two values */
-$.fn.dataTable.ext.search.push(
-    function( settings, data, dataIndex ) {
-        var min = parseInt( $('#myDocumentBtn').val(), 10 );
-        var max = parseInt( $('#shared').val(), 10 );
-        var age = parseFloat( data[3] ) || 0; // use data for the age column
- 
-        if ( ( isNaN( min ) && isNaN( max ) ) ||
-             ( isNaN( min ) && age <= max ) ||
-             ( min <= age   && isNaN( max ) ) ||
-             ( min <= age   && age <= max ) )
-        {
-            return true;
-        }
-        return false;
-    }
-);
+    //Default: Show My Documents only
+    dataTables.columns(0).search("1").draw();
+    
+    $('#myDocumentBtn').on('click', function () {
+        dataTables.columns(0).search("1").draw();
+    }); 
+    
+    $('#sharedWithMeBtn').on('click', function () {
+        dataTables.columns(0).search("0").draw();
+    }); 
+} ); 
