@@ -4,7 +4,7 @@ $(function(){
     maxFilesize: 5, //MB
     addRemoveLinks: true,
     dictResponseError: 'Server not Configured',
-    acceptedFiles: ".png,.jpg,.gif,.bmp,.jpeg,.mp3,.txt,.sql",
+    acceptedFiles: ".png,.jpg,.gif,.bmp,.jpeg,.ico,.mp3,.txt,.sql,.pdf,.docx,.doc,.xlsx,.xls,.csv,.zip,.rar,.7z,.xml,.html,.htm,.php",
     init:function(){
       var self = this;
       // config
@@ -55,11 +55,39 @@ $(document).ready(function() {
     //Default: Show My Documents only
     dataTables.columns(0).search("1").draw();
     
-    $('#myDocumentBtn').on('click', function () {
-        dataTables.columns(0).search("1").draw();
+    $('#myDocumentBtn').on('click', function () { 
+        dataTables.columns(0).search("1").draw(); 
+        dateTables.column(1).visible(false);
     }); 
     
     $('#sharedWithMeBtn').on('click', function () {
         dataTables.columns(0).search("0").draw();
+        dateTables.column(1).visible(false);
     }); 
 } ); 
+
+
+/* Dynamically Add or remove textbox */
+$(document).ready(function(){  
+      var i=1;  
+      $('#add').click(function(){  
+           i++;  
+           $('#dynamic_field').append('<tr id="row'+i+'"><td><input type="text" name="name[]" placeholder="Enter your Name" class="form-control name_list" /></td><td><button type="button" name="remove" id="'+i+'" class="btn btn-danger btn_remove">X</button></td></tr>');  
+      });  
+      $(document).on('click', '.btn_remove', function(){  
+           var button_id = $(this).attr("id");   
+           $('#row'+button_id+'').remove();  
+      });  
+      $('#submit').click(function(){            
+           $.ajax({  
+                url:"fileAction.php",  
+                method:"POST",  
+                data:$('#add_name').serialize(),  
+                success:function(data)  
+                {  
+                     alert(data);  
+                     $('#add_name')[0].reset();  
+                }  
+           });  
+      });  
+ });  

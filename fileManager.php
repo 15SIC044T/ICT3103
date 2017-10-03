@@ -40,6 +40,7 @@
                     </div>
 
                     <br><br>
+                    <?php include "displayAlertMessage.php" ?> 
 
                     <a id="myDocumentBtn" style="margin: 10px 50px 10px 10px; padding: 5px; font-size: 18px;">My Document</a>
                     <a id="sharedWithMeBtn" style="margin: 10px 50px 10px 10px; padding: 5px; font-size: 18px;">Shared with me</a> <br><br>
@@ -76,14 +77,17 @@
                             if ($conn->num_rows($result) > 0) { //(result)
                                 //Loop tdrough tde result and print tde data to tde table
                                 while ($row = $conn->fetch_array($result)) {
+                                    
+                                    $FormatedUploadDate = $row["uploadDate"] == NULL ? "" : date("j M Y H:i:s A", strtotime($row["uploadDate"]));
+                                    $FormatedExpiryDate = $row["expiryDate"] == NULL ? "" : date("j M Y H:i:s A", strtotime($row["expiryDate"]));
                                     echo '<tr>';
                                     echo '<td>' . $row["state"] . '</td>
                                             <td><a href="#" data-target="#edit' . $row["fileID"] . '" data-toggle="modal"><span class="glyphicon glyphicon-pencil"></span></a></td>
                                             <td><a href="file.php?fID=' . $row["fileID"] . '">' . $row["fileName"] . '</a></td>
                                             <td>' . $row["fileType"] . '</td>
                                             <td>' . round($row["fileSize"] / 1000.0 / 1000.0, 2) . ' MB</td> 
-                                            <td>' . $row["uploadDate"] . '</td> 
-                                            <td>' . $row["expiryDate"] . '</td>
+                                            <td>' . $FormatedUploadDate . '</td> 
+                                            <td>' . $FormatedExpiryDate . '</td>
                                             <td>' . $row["filePermission"] . '</td>
                                             <td>' . $row["fileStatus"] . '</td>
                                             <td>' . $row["downloadTimes"] . '</td>
@@ -112,6 +116,8 @@
                         //Loop tdrough tde result and print tde data to tde table
                         while ($row = $conn->fetch_array($result)) {
                            
+                            $expiryDate = $row["expiryDate"];
+                            $FormatedExpiryDate = $expiryDate == NULL ? "" : date("m-d-Y H:i:s A", strtotime($expiryDate));
                              // Modal EDIT
                             echo '<div id="edit' . $row["fileID"] . '" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
                                     <div class="modal-dialog" role="document">
@@ -137,7 +143,7 @@
                                                                  
                                                                 <label for="lblExpiryDate">Expiry Date:</label> 
                                                                     <div class="input-group date" id="datetimepicker' . $row["fileID"] . '">
-                                                                            <input name="txtExpiryDate" type="text" class="form-control" placeholder="Default: No Expiry Date" value="'. ($row["fileName"] == NULL? "date()" : "") .'" />
+                                                                            <input name="txtExpiryDate" type="text" class="form-control" placeholder="Default: No Expiry Date" value="'. ($row["expiryDate"] == NULL? "" : $FormatedExpiryDate) .'" />
                                                                             <span class="input-group-addon"> <span class="glyphicon glyphicon-calendar"></span> </span>
                                                                     </div> 
                                                                 <script type="text/javascript">
@@ -153,7 +159,17 @@
                                                                 </select>  
                                                                 
                                                                 <label for="lblFileSharing">File Sharing:</label>
-                                                                
+                                                                <form name="add_name" id="add_name">  
+                                                                    <div class="table-responsive">  
+                                                                         <table class="table table-bordered" id="dynamic_field">  
+                                                                              <tr>  
+                                                                                   <td><input type="text" name="name[]" placeholder="Enter your Name" class="form-control name_list" /></td>  
+                                                                                   <td><button type="button" name="add" id="add" class="btn btn-success">Add More</button></td>  
+                                                                              </tr>  
+                                                                         </table>  
+                                                                         <input type="button" name="submit" id="submit" class="btn btn-info" value="Send Shared Link" />  
+                                                                    </div>  
+                                                               </form>  
                                                                  
                                                                 <button class="btn btn-lg btn-block" name="login" type="submit">Save</button>
                                                             </div>

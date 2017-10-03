@@ -22,6 +22,8 @@ if (isset($_POST['actionEdit'])) {
     $qry = "UPDATE file SET fileName='$fName', expiryDate=NULLIF('$datetime',''), filePermission='$fPermission' WHERE fileID = $fileID";
     $conn->query($qry);
     $conn->close();
+    
+    $_SESSION['success_msg'] = "<strong>" . $fName . "</strong> has been updated successfully!";
       
     header("Location: fileManager.php");
 }
@@ -38,6 +40,7 @@ if (isset($_POST['actionDelete'])) {
     $result = $conn->query($qry);
     $row = $conn->fetch_array($result);
     
+    $fileName = $row["fileName"];
     $fileURL = $row["fileURL"];
     
     //Delete file from database 
@@ -50,6 +53,33 @@ if (isset($_POST['actionDelete'])) {
         unlink($fileURL); 
     } 
     
+    $_SESSION['success_msg'] = "<strong>" . $fileName . "</strong> has delete successfully deleted from the system!";
+    
     header("Location: fileManager.php");
 }
+
+
+//Dynamically Add/Remove Textbox
+$number = count($_POST["name"]);  
+ if($number > 0)  
+ {  
+      for($i=0; $i<$number; $i++)  
+      {  
+           if(trim($_POST["name"][$i] != ''))  
+           {  
+                $sql = "INSERT INTO tbl_name(name) VALUES('".mysqli_real_escape_string($connect, $_POST["name"][$i])."')";  
+                mysqli_query($connect, $sql);  
+           }  
+      }  
+      echo "Data Inserted";  
+ }  
+ else  
+ {  
+      echo "Please Enter Name";  
+ }  
+
+
+
+
+
 ?>
