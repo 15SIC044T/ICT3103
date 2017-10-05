@@ -1,3 +1,5 @@
+<?php session_start(); ?>
+
 <!DOCTYPE html>
 <html lang="en">
     <?php include "header.php" ?>
@@ -14,18 +16,15 @@
 
                 <div class="col-sm-5 loginblock">
                     <div>
-                        <form action="checkLogin.php" method="post">
+                        <form action="functions/doLogin.php" method="post">
                             <?php
-                            //Display error message if the login failed
-                            if (!empty($_SESSION['login_error_msg'])) {
-                                echo '<font color="red"><b>"' . $_SESSION["login_error_msg"] . '</b></font>';
-                                unset($_SESSION['login_error_msg']);
-                            }
+                            // prompt message
+                            include "displayAlertMessage.php";
                             ?>
 
-                            <input name="user" type="text" class="form-control" placeholder="Username" required autofocus>
+                            <input name="inputName" type="text" class="form-control" placeholder="Username" required autofocus>
 
-                            <input name="password" type="password" class="form-control" placeholder="Password" required>
+                            <input name="inputPass" type="password" class="form-control" placeholder="Password" required>
 
                             <button class="btn btn-lg btn-block" name="login" type="submit">Sign In</button>
                         </form>

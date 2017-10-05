@@ -13,7 +13,7 @@
 
                 <div class="col-sm-12 registerblock">
                     <div>
-                        <form action="checklogin.php" method="post">
+                        <form action="" method="post">
 
                             <input name="user" type="text" class="form-control" placeholder="Username" required autofocus>
 
