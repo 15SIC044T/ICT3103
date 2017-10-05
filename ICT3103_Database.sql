@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: Oct 01, 2017 at 03:22 PM
+-- Generation Time: Oct 05, 2017 at 08:03 AM
 -- Server version: 5.6.26
 -- PHP Version: 5.6.12
 
@@ -19,6 +19,8 @@ SET time_zone = "+00:00";
 --
 -- Database: `ict3103`
 --
+CREATE DATABASE IF NOT EXISTS `ict3103` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
+USE `ict3103`;
 
 -- --------------------------------------------------------
 
@@ -26,6 +28,7 @@ SET time_zone = "+00:00";
 -- Table structure for table `account`
 --
 
+DROP TABLE IF EXISTS `account`;
 CREATE TABLE IF NOT EXISTS `account` (
   `accountID` int(11) NOT NULL,
   `name` varchar(50) NOT NULL,
@@ -50,6 +53,7 @@ INSERT INTO `account` (`accountID`, `name`, `email`, `password`, `phone`, `accou
 -- Table structure for table `accountstatus`
 --
 
+DROP TABLE IF EXISTS `accountstatus`;
 CREATE TABLE IF NOT EXISTS `accountstatus` (
   `accountStatus` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -68,6 +72,7 @@ INSERT INTO `accountstatus` (`accountStatus`) VALUES
 -- Table structure for table `file`
 --
 
+DROP TABLE IF EXISTS `file`;
 CREATE TABLE IF NOT EXISTS `file` (
   `fileID` int(11) NOT NULL,
   `accountID` int(11) NOT NULL,
@@ -80,17 +85,15 @@ CREATE TABLE IF NOT EXISTS `file` (
   `uploadDate` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `expiryDate` datetime DEFAULT NULL,
   `downloadTimes` int(11) NOT NULL DEFAULT '0'
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `file`
 --
 
 INSERT INTO `file` (`fileID`, `accountID`, `fileName`, `fileURL`, `fileType`, `fileSize`, `fileStatus`, `filePermission`, `uploadDate`, `expiryDate`, `downloadTimes`) VALUES
-(1, 1, '1_20171001-010552am_zyra_LoL', 'uploads/1_20171001-010552am_zyra_LoL.png', 'png', 424618, NULL, 'Public', '2017-10-01 07:05:52', NULL, 0),
-(2, 1, 'Red_Rose_Black_BG', 'uploads/1_20171001-010719am_Red_Rose_Black_BG.png', 'png', 194232, NULL, 'private', '2017-10-01 07:07:19', NULL, 0),
-(3, 1, 'Red_Rose_Book', 'uploads/1_20171001-011752am_Red_Rose_Book.png', 'png', 526864, NULL, 'private', '2017-10-01 07:17:52', NULL, 0),
-(4, 1, 'Red-Rose-Pictures-1', 'uploads/1_20171001-011800am_Red-Rose-Pictures-1.png', 'png', 1048576, NULL, 'private', '2017-10-01 07:18:00', NULL, 0);
+(1, 1, 'zyra_LoL', 'uploads/1_20171001-010552am_zyra_LoL.png', 'png', 424618, NULL, 'Private', '2017-10-01 07:05:52', '2017-10-21 01:49:00', 0),
+(2, 1, 'Red_Rose_Black_BG', 'uploads/1_20171001-010719am_Red_Rose_Black_BG.png', 'png', 194232, NULL, 'Private', '2017-10-01 07:07:19', NULL, 0);
 
 -- --------------------------------------------------------
 
@@ -98,6 +101,7 @@ INSERT INTO `file` (`fileID`, `accountID`, `fileName`, `fileURL`, `fileType`, `f
 -- Table structure for table `filepermission`
 --
 
+DROP TABLE IF EXISTS `filepermission`;
 CREATE TABLE IF NOT EXISTS `filepermission` (
   `filePermission` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -116,6 +120,7 @@ INSERT INTO `filepermission` (`filePermission`) VALUES
 -- Table structure for table `filesharing`
 --
 
+DROP TABLE IF EXISTS `filesharing`;
 CREATE TABLE IF NOT EXISTS `filesharing` (
   `fileSharingID` int(11) NOT NULL,
   `fileID` int(11) NOT NULL,
@@ -176,7 +181,7 @@ ALTER TABLE `account`
 -- AUTO_INCREMENT for table `file`
 --
 ALTER TABLE `file`
-  MODIFY `fileID` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=5;
+  MODIFY `fileID` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=3;
 --
 -- AUTO_INCREMENT for table `filesharing`
 --
