@@ -1,3 +1,5 @@
+<?php session_start(); ?>
+
 <!DOCTYPE html>
 <html lang="en">
     <?php include "header.php" ?>
@@ -13,22 +15,21 @@
 
                 <div class="col-sm-12 registerblock">
                     <div>
-                        <form action="checklogin.php" method="post">
+                        <form action="functions/doRegister.php" method="post">
                             <?php
-                            //Display error message if the login failed
-                            if (!empty($_SESSION['login_error_msg'])) {
-                                echo '<font color="red"><b>"' . $_SESSION["login_error_msg"] . '</b></font>';
-                                unset($_SESSION['login_error_msg']);
-                            }
+                            // prompt message
+                            include "promptMessage.php";
                             ?>
 
-                            <input name="user" type="text" class="form-control" placeholder="Username" required autofocus>
+                            <input name="inputName" type="text" class="form-control" placeholder="Name" required autofocus>
 
-                            <input name="password" type="password" class="form-control" placeholder="Password" required>
+                            <input name="inputPass" type="password" class="form-control" placeholder="Password" required>
 
-                            <input name="email" type="text" class="form-control" placeholder="Email Address" required>
+                            <input name="inputConfirmPass" type="password" class="form-control" placeholder="Confirm Password" required>
 
-                            <input name="mobileNumber" type="text" class="form-control" placeholder="Mobile Number" required>
+                            <input name="inputEmail" type="text" class="form-control" placeholder="Email Address" required>
+
+                            <input name="inputMobile" type="text" class="form-control" placeholder="Mobile Number" required>
 
                             <button class="btn btn-lg btn-block" name="register" type="submit">Sign Up</button>
                         </form>

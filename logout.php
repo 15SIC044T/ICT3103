@@ -2,11 +2,10 @@
 
 session_start();
 
-unset($_SESSION["name"]);
-unset($_SESSION["accountID"]);
+$_SESSION['OKMSG'] = "You have successfully logged out!";
 
 session_destroy();
 
-header("Location: index.php");
+header("Location: ../index.php");
 exit;
 ?>
