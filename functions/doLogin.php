@@ -25,6 +25,6 @@ if ($connection->num_rows($resultUser) == 1) {
     header("location: ../fileManager.php");
 } else {
     header("location: ../index.php");
-    $_SESSION['ERRMSG'] = "Account not found";
+    $_SESSION['ERRMSG'] = "Wrong username/password!";
 }
 ?>
