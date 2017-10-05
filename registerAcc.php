@@ -18,7 +18,7 @@
                         <form action="functions/doRegister.php" method="post">
                             <?php
                             // prompt message
-                            include "promptMessage.php";
+                            include "displayAlertMessage.php";
                             ?>
 
                             <input name="inputName" type="text" class="form-control" placeholder="Name" required autofocus>

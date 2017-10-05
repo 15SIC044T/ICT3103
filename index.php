@@ -19,7 +19,7 @@
                         <form action="functions/doLogin.php" method="post">
                             <?php
                             // prompt message
-                            include "promptMessage.php";
+                            include "displayAlertMessage.php";
                             ?>
 
                             <input name="inputName" type="text" class="form-control" placeholder="Username" required autofocus>

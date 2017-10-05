@@ -2,7 +2,7 @@
 
 session_start();
 
-$_SESSION['OKMSG'] = "You have successfully logged out!";
+$_SESSION['success_msg'] = "You have successfully logged out!";
 
 session_destroy();
 

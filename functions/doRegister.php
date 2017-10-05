@@ -32,23 +32,23 @@ $resultEmail = $connection->query($queryEmail);
 // check for name duplication
 if ($connection->num_rows($resultName) == 1) {
     header("Location: ../registerAcc.php");
-    $_SESSION['ERRMSG'] = "Name taken!";
+    $_SESSION['error_msg'] = "Name taken!";
     exit();
 } elseif ($connection->num_rows($resultEmail) == 1) { // check for email duplication
     header("Location: ../registerAcc.php");
-    $_SESSION['ERRMSG'] = "Email address used!";
+    $_SESSION['error_msg'] = "Email address used!";
     exit();
 } elseif ($password != $confirmPassword) { // check if password same
     header("Location: ../registerAcc.php");
-    $_SESSION['ERRMSG'] = "Password not the same!";
+    $_SESSION['error_msg'] = "Password not the same!";
     exit();
 } else {
     $queryAdd = "INSERT INTO account(name, email, password, phone, accountStatus) 
-            VALUES('$name','$email','$confirmPassword','$mobile','Unverified')";
+                VALUES('$name','$email','$confirmPassword','$mobile','Unverified')";
     $addUser = $connection->query($queryAdd);
 
     header("Location: ../index.php");
-    $_SESSION['OKMSG'] = "Register Done!";
+    $_SESSION['success_msg'] = "Register Done!";
     exit();
 }
 ?>
