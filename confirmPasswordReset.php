@@ -4,7 +4,6 @@
 session_start();
 
 $_SESSION['SESS_ACC_ID'] = $_GET['id'];
-echo $_SESSION['SESS_ACC_ID'];
 ?>
 
 <!DOCTYPE html>

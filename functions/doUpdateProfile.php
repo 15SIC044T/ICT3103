@@ -49,8 +49,8 @@ if ($connection->num_rows($resultUser) == 1) {
             // check name duplication
             if ($connection->num_rows($resultName) == 0 || $connection->num_rows($resultEmail) == 0) {
                 $queryUpdate = "UPDATE account 
-                            SET name = '$name', email = '$email', phone = '$mobile' 
-                            WHERE accountID = $userId";
+                                SET name = '$name', email = '$email', phone = '$mobile' 
+                                WHERE accountID = $userId";
                 $updateDB = $connection->query($queryUpdate);
 
                 header("Location: ../profile.php");

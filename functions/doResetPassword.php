@@ -4,33 +4,30 @@
 session_start();
 
 // include database connection details
-include 'db-connection.php';
+include '../db-connection.php';
 
-echo $_SESSION['SESS_ACC_ID']
+// sanitize the POST values
+$userId = $_SESSION['SESS_ACC_ID'];
+$password = sha1($_POST['inputPass']);
+$confirmPassword = sha1($_POST['inputConfirmPass']);
 
-/*if (isset($_POST['resetPassword'])) {
-    $getUserId = $_POST['user_id'];
-    $newPassword = sha1($_POST['inputNew']);
-    $confirmPassword = sha1($_POST['inputConfirm']);
+// connect database
+$connection = new Mysql_Driver();
+$connection->connect();
 
-    $queryData = "SELECT * 
-                FROM user 
-                WHERE user_id = $getUserId";
-    $getResult = mysqli_query($link, $queryData);
+// check password not same
+if ($password != $confirmPassword) {
+    header("Location: ../confirmPasswordReset.php?id=$getUserId");
+    $_SESSION['error_msg'] = "Password not the same!";
+    exit();
+} else {
+    $queryUpdate = "UPDATE account 
+                    SET password = '$confirmPassword' 
+                    WHERE accountID = $userId";
+    $updateDB = $connection->query($queryUpdate);
 
-    if (mysqli_num_rows($getResult) == 1) {
-        if ($newPassword == $confirmPassword) {
-            $queryUpdate = "UPDATE user 
-                            SET password = '$confirmPassword' 
-                            WHERE user_id = $getUserId";
-            $updateDB = mysqli_query($link, $queryUpdate);
-
-            header("Location: ../index.php");
-            $_SESSION['ok'] = "Password reset!";
-        } else { // mismatched
-            header("Location: ../confirmPasswordResetPage.php?id=$getUserId");
-            $_SESSION['err'] = "Password not the same!";
-        }
-    }
-}*/
+    header("Location: ../index.php");
+    $_SESSION['success_msg'] = "Password Changed!";
+    exit();
+}
 ?>
