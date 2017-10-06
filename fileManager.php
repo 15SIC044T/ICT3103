@@ -12,7 +12,7 @@
         <link rel="stylesheet" type="text/css" href="css/jquery.dataTables.min.css" /> 
         <script type="text/javascript" src="js/jquery.dataTables.min.js"></script> 
         <script type="text/javascript" src="js/jqueryui.dataTables.min.js"></script>
-        
+
         <!-- DatePicker -->
         <link rel="stylesheet" type="text/css" href="css/datetimepicker.css" /> 
         <script type="text/javascript" src="js/moment-with-locales.js"></script> 
@@ -26,7 +26,18 @@
         <div class="container-fluid">
             <div class="row">
                 <div class="col-sm-12">
-                    <?php echo "<h1>" . $_SESSION['SESS_USERNAME'] . "'s File Manager</h1>" ?>
+                    <?php
+                    $connection = new Mysql_Driver();
+                    $connection->connect();
+
+                    $queryUser = "SELECT * 
+                                FROM account 
+                                WHERE accountID =" . $_SESSION['SESS_ACC_ID'];
+                    $resultUser = $connection->query($queryUser);
+                    $user = $connection->fetch_array($resultUser);
+
+                    echo "<h1>" . $user['name'] . "'s File Manager</h1>"
+                    ?>
 
                     <!-- Tutorial: http://www.phpzag.com/drag-and-drop-file-upload-using-jquery-and-php/ 
                         Validate FileUpload: https://codepen.io/probil/pen/yyzdOM -->
@@ -77,7 +88,7 @@
                             if ($conn->num_rows($result) > 0) { //(result)
                                 //Loop tdrough tde result and print tde data to tde table
                                 while ($row = $conn->fetch_array($result)) {
-                                    
+
                                     $FormatedUploadDate = $row["uploadDate"] == NULL ? "" : date("j M Y H:i:s A", strtotime($row["uploadDate"]));
                                     $FormatedExpiryDate = $row["expiryDate"] == NULL ? "" : date("j M Y H:i:s A", strtotime($row["expiryDate"]));
                                     echo '<tr>';
@@ -115,10 +126,10 @@
                     if ($conn->num_rows($result) > 0) { //(result)
                         //Loop tdrough tde result and print tde data to tde table
                         while ($row = $conn->fetch_array($result)) {
-                           
+
                             $expiryDate = $row["expiryDate"];
                             $FormatedExpiryDate = $expiryDate == NULL ? "" : date("m-d-Y H:i:s A", strtotime($expiryDate));
-                             // Modal EDIT
+                            // Modal EDIT
                             echo '<div id="edit' . $row["fileID"] . '" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
                                     <div class="modal-dialog" role="document">
                                         <div class="modal-content resetmodal">
@@ -143,7 +154,7 @@
                                                                  
                                                                 <label for="lblExpiryDate">Expiry Date:</label> 
                                                                     <div class="input-group date" id="datetimepicker' . $row["fileID"] . '">
-                                                                            <input name="txtExpiryDate" type="text" class="form-control" placeholder="Default: No Expiry Date" value="'. ($row["expiryDate"] == NULL? "" : $FormatedExpiryDate) .'" />
+                                                                            <input name="txtExpiryDate" type="text" class="form-control" placeholder="Default: No Expiry Date" value="' . ($row["expiryDate"] == NULL ? "" : $FormatedExpiryDate) . '" />
                                                                             <span class="input-group-addon"> <span class="glyphicon glyphicon-calendar"></span> </span>
                                                                     </div> 
                                                                 <script type="text/javascript">
@@ -181,7 +192,7 @@
                                         </div>
                                     </div>
                                 </div>';
-                            
+
                             // Modal DELETE
                             echo '<div id="del' . $row["fileID"] . '" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
                                     <div class="modal-dialog" role="document">
@@ -211,12 +222,12 @@
                                             </div>
                                         </div>
                                     </div>
-                                </div>'; 
+                                </div>';
                         }
                     }
                     $conn->close();
                     ?>
-                       
+
                     <!-- End of Coding -->
                     <br><br><br> 
                 </div>

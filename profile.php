@@ -8,12 +8,7 @@
         <div class="container-fluid">
             <div class="row">
                 <div class="col-sm-12">
-                    <?php echo "<h1>" . $_SESSION['SESS_USERNAME'] . "'s Profile</h1>" ?>
-
                     <?php
-                    // prompt message
-                    include "displayAlertMessage.php";
-
                     $connection = new Mysql_Driver();
                     $connection->connect();
 
@@ -22,6 +17,13 @@
                                 WHERE accountID =" . $_SESSION['SESS_ACC_ID'];
                     $resultUser = $connection->query($queryUser);
                     $user = $connection->fetch_array($resultUser);
+
+                    echo "<h1>" . $user['name'] . "'s Profile</h1>"
+                    ?>
+
+                    <?php
+                    // prompt message
+                    include "displayAlertMessage.php";
                     ?>
 
                     <div class="row">

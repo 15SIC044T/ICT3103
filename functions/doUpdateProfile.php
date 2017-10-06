@@ -7,15 +7,10 @@ session_start();
 include '../db-connection.php';
 
 // sanitize the POST values
-$getUserId = $_SESSION['SESS_ACC_ID'];
-$getName = $_POST['inputName'];
-$getEmail = $_POST['inputEmail'];
-$getMobile = $_POST['inputMobile'];
-
-echo $getUserId;
-echo $getName;
-echo $getEmail;
-echo $getMobile;
+$userId = $_SESSION['SESS_ACC_ID'];
+$name = $_POST['inputName'];
+$email = $_POST['inputEmail'];
+$mobile = $_POST['inputMobile'];
 
 // connect database
 $connection = new Mysql_Driver();
@@ -24,19 +19,19 @@ $connection->connect();
 // look through database based on accountid
 $queryUser = "SELECT * 
             FROM account 
-            WHERE accountID = '$getUserId'";
+            WHERE accountID = '$userId'";
 $resultUser = $connection->query($queryUser);
 
 // look through database based on name
 $queryName = "SELECT * 
             FROM account 
-            WHERE name = '$getName'";
+            WHERE name = '$name'";
 $resultName = $connection->query($queryName);
 
 // look through database based on email
 $queryEmail = "SELECT * 
             FROM account 
-            WHERE email = '$getEmail'";
+            WHERE email = '$email'";
 $resultEmail = $connection->query($queryEmail);
 
 if ($connection->num_rows($resultUser) == 1) {
@@ -45,17 +40,17 @@ if ($connection->num_rows($resultUser) == 1) {
     echo $user['name'];
 
     // check mobile not changed
-    if ($user['phone'] == $getMobile) {
+    if ($user['phone'] == $mobile) {
         // check other info not changed
-        if ($user['name'] == $getName && $user['email'] == $getEmail) {
+        if ($user['name'] == $name && $user['email'] == $email) {
             header("Location: ../profile.php");
             $_SESSION['neutral_msg'] = "No changes made!";
         } else { // other info changed
             // check name duplication
             if ($connection->num_rows($resultName) == 0 || $connection->num_rows($resultEmail) == 0) {
                 $queryUpdate = "UPDATE account 
-                            SET name = '$getName', email = '$getEmail', phone = '$getMobile' 
-                            WHERE accountID = $getUserId";
+                            SET name = '$name', email = '$email', phone = '$mobile' 
+                            WHERE accountID = $userId";
                 $updateDB = $connection->query($queryUpdate);
 
                 header("Location: ../profile.php");
@@ -70,8 +65,8 @@ if ($connection->num_rows($resultUser) == 1) {
         }
     } else { // check mobile changed
         $queryUpdate = "UPDATE account 
-                        SET name = '$getName', email = '$getEmail', phone = '$getMobile' 
-                        WHERE accountID = $getUserId";
+                        SET name = '$name', email = '$email', phone = '$mobile' 
+                        WHERE accountID = $userId";
         $updateDB = $connection->query($queryUpdate);
 
         header("Location: ../profile.php");
