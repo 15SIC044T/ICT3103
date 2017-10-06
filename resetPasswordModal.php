@@ -12,7 +12,7 @@
 
                 <!--forget Password-->
                 <div class="resetblock">
-                    <form data-toggle="validator" method="post" action="sendResetPasswordEmail.php" class="form-horizontal" role="form" >
+                    <form data-toggle="validator" method="post" action="../ICT3103/functions/doResetPasswordEmail.php" class="form-horizontal" role="form" >
                         <div class="form-group">
                             <div class="col-sm-12">
                                 <input name="email" type="text" class="form-control" placeholder="Email Address" required>
