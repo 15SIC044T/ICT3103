@@ -12,7 +12,7 @@
         <link rel="stylesheet" type="text/css" href="css/jquery.dataTables.min.css" /> 
         <script type="text/javascript" src="js/jquery.dataTables.min.js"></script> 
         <script type="text/javascript" src="js/jqueryui.dataTables.min.js"></script>
-        
+
         <!-- DatePicker -->
         <link rel="stylesheet" type="text/css" href="css/datetimepicker.css" /> 
         <script type="text/javascript" src="js/moment-with-locales.js"></script> 
@@ -80,7 +80,7 @@
                             if ($conn->num_rows($result) > 0) { //(result)
                                 //Loop tdrough tde result and print tde data to tde table
                                 while ($row = $conn->fetch_array($result)) {
-                                    
+
                                     $FormatedUploadDate = $row["uploadDate"] == NULL ? "" : date("j M Y H:i:s A", strtotime($row["uploadDate"]));
                                     $FormatedExpiryDate = $row["expiryDate"] == NULL ? "" : date("j M Y H:i:s A", strtotime($row["expiryDate"]));
                                     echo '<tr>';
