@@ -9,7 +9,7 @@
                 <div class="col-sm-12">
                     <?php echo "<h1>" . $_SESSION['SESS_USERNAME'] . "'s File Manager</h1>" ?>
 
-
+                    
                 </div>
             </div>
         </div>

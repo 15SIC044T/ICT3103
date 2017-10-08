@@ -18,7 +18,7 @@ if (!empty($_FILES)) {
         $conn->connect();
         $mysql_insert = "INSERT INTO file (accountID, fileName, fileURL, fileType, fileSize)VALUES('" . $_SESSION['SESS_ACC_ID'] . "','" . $ext['filename'] . "','" . $uploaded_file . "','" . $ext['extension'] . "','" . filesize($uploaded_file) . "')";
         $conn->query($mysql_insert); 
-        $conn->close(); 
+        $conn->close();  
     }
 }
 ?>

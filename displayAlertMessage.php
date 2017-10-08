@@ -8,7 +8,9 @@ if (isset($_SESSION['error_msg'])) { ?>
 
     <?php
     unset($_SESSION['error_msg']);
-} elseif (isset($_SESSION['success_msg'])) { // display successful message
+} 
+
+if (isset($_SESSION['success_msg'])) { // display successful message
     ?>
     <div class="alert alert-success alert-dismissable">
         <a class="panel-close close" data-dismiss="alert"><i class="glyphicon glyphicon-remove"></i></a> 
@@ -17,7 +19,9 @@ if (isset($_SESSION['error_msg'])) { ?>
 
     <?php
     unset($_SESSION['success_msg']);
-} elseif (isset($_SESSION['neutral_msg'])) {
+} 
+
+if (isset($_SESSION['neutral_msg'])) {
     ?>
     <div class="alert alert-info alert-dismissable">
         <a class="panel-close close" data-dismiss="alert"><i class="glyphicon glyphicon-remove"></i></a> 

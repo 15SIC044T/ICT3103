@@ -8,6 +8,7 @@ $conn = new Mysql_Driver();  // Create an object for database access
 if (isset($_POST['actionEdit'])) { 
     
     $fileID = $_POST["actionEdit"];
+    $prevURL = $_POST["prevURL"];
     
     $fName = $_POST["txtFileName"];
     $fExpiryDate = $_POST["txtExpiryDate"];
@@ -23,9 +24,15 @@ if (isset($_POST['actionEdit'])) {
     $conn->query($qry);
     $conn->close();
     
-    $_SESSION['success_msg'] = "<strong>" . $fName . "</strong> has been updated successfully!";
-      
-    header("Location: fileManager.php");
+    $_SESSION['success_msg'] = "<strong>" . $fName . "</strong> has been updated successfully!"; 
+
+    if (strpos($prevURL, "file.php")) {
+        header("Location: ". $prevURL);
+    } elseif (strpos($prevURL, "fileManager.php")) {
+        header("Location: fileManager.php");
+    } else {
+        echo "$prevURL";
+    }
 }
 
 
@@ -33,6 +40,7 @@ if (isset($_POST['actionEdit'])) {
 if (isset($_POST['actionDelete'])) {
 
     $fileID = $_POST["actionDelete"];
+    $prevURL = $_POST["prevURL"];
     
     //Query for file URL
     $conn->connect();
@@ -53,33 +61,54 @@ if (isset($_POST['actionDelete'])) {
         unlink($fileURL); 
     } 
     
-    $_SESSION['success_msg'] = "<strong>" . $fileName . "</strong> has delete successfully deleted from the system!";
+    $_SESSION['success_msg'] = "<strong>" . $fileName . "</strong> has been deleted from the system successfully!";
     
-    header("Location: fileManager.php");
+    if (strpos($prevURL, "file.php")) {
+        header("Location: ". $prevURL);
+    } elseif (strpos($prevURL, "fileManager.php")) {
+        header("Location: fileManager.php");
+    } else {
+        header("Location: 404.php");
+    }
 }
 
 
-//Dynamically Add/Remove Textbox
-$number = count($_POST["name"]);  
- if($number > 0)  
- {  
-      for($i=0; $i<$number; $i++)  
-      {  
-           if(trim($_POST["name"][$i] != ''))  
-           {  
-                $sql = "INSERT INTO tbl_name(name) VALUES('".mysqli_real_escape_string($connect, $_POST["name"][$i])."')";  
-                mysqli_query($connect, $sql);  
-           }  
-      }  
-      echo "Data Inserted";  
- }  
- else  
- {  
-      echo "Please Enter Name";  
- }  
+//Share File
+if (isset($_POST['actionShare'])) {
 
+    $fileID = $_POST["actionShare"];
+    $prevURL = $_POST["prevURL"];
+    
+    //Query for file URL
+    $conn->connect();
+    //Delete the existing sharing emails from database 
+    $qryDelete = "DELETE FROM fileSharing WHERE fileID = $fileID";
+    $conn->query($qryDelete);
+    $conn->close();
+    
+    $myarray = $_POST['text_arr'];
+    foreach($myarray as $val){
 
-
+    }
+    
+    $qrySelect = "SELECT fs.* FROM fileSharing fs INNER JOIN account a ON fs.accountID = a.accountID WHERE a.email = $email";
+    $conn->query(qrySelect);
+ 
+    //Re-insert the sharing emails
+    $qryInsert = "INSERT INTO fileSharing (fileID, accountID) VALUES ($fileID, )";
+    $conn->query($qryInsert);
+    $conn->close();
+    
+    $_SESSION['success_msg'] = "<strong>" . $fileName . "</strong> has been added successfully!";
+    
+    if (strpos($prevURL, "file.php")) {
+        header("Location: ". $prevURL);
+    } elseif (strpos($prevURL, "fileManager.php")) {
+        header("Location: fileManager.php");
+    } else {
+        header("Location: 404.php");
+    }
+}
 
 
 ?>
