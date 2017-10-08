@@ -185,7 +185,8 @@ body{
 }
 .loginblock .btn-block, 
 .registerblock .btn-block, 
-.resetblock .btn-block{
+.resetblock .btn-block, 
+.resetblockconfirm .btn-block{
     background-color:#005b7a;
     color:#fff;
 }
@@ -216,7 +217,8 @@ body{
     margin-bottom:20px;
     text-align:center;
 }
-.col-sm-12.registerblock{
+.col-sm-12.registerblock, 
+.col-sm-12.resetblockconfirm{
     padding-left:300px;
     padding-right:300px;
 }
