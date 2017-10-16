@@ -23,7 +23,7 @@
 
                             <input name="inputName" type="text" class="form-control" placeholder="Name" required autofocus>
 
-                            <input name="inputPass" type="password" class="form-control" placeholder="Password" required>
+                            <input name="inputPass" type="password" class="form-control" placeholder="Password" minlength="8" required>
 
                             <input name="inputConfirmPass" type="password" class="form-control" placeholder="Confirm Password" required>
 

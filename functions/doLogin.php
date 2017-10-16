@@ -17,26 +17,36 @@ function clean($str) {
 
 // sanitize the POST values
 $name = $_POST['inputName'];
-$password = sha1($_POST['inputPass']);
+$password = $_POST['inputPass'];
 
 // connect database
 $connection = new Mysql_Driver();
 $connection->connect();
 
-// create query
+// look through database based on name
 $queryUser = "SELECT * 
             FROM account 
-            WHERE name = '$name' AND password = '$password'";
+            WHERE name = '$name'";
 $resultUser = $connection->query($queryUser);
 
 // check whether the query was successful or not
 if ($connection->num_rows($resultUser) == 1) {
     $user = $connection->fetch_array($resultUser);
+    $dbPassHash = $user['password'];
 
-    $_SESSION['SESS_ACC_ID'] = $user['accountID'];
-    $_SESSION['SESS_USERNAME'] = $user['name'];
+    // check old password with database
+    $verifyPassword = password_verify($password, $dbPassHash);
 
-    header("Location: ../fileManager.php");
+    // if old password valid in database
+    if ($verifyPassword == 1) {
+        $_SESSION['SESS_ACC_ID'] = $user['accountID'];
+        $_SESSION['SESS_USERNAME'] = $user['name'];
+
+        header("Location: ../fileManager.php");
+    } else {
+        header("Location: ../index.php");
+        $_SESSION['error_msg'] = "Wrong username/password!";
+    }
 } else {
     header("Location: ../index.php");
     $_SESSION['error_msg'] = "Wrong username/password!";

@@ -78,7 +78,7 @@ if (!isset($_SESSION['SESS_ACC_ID'])) {
                         <li <?php echoActiveClassIfRequestMatches("fileManager"); ?>><a href="fileManager.php">File Manager</a></li>
                         <li <?php echoActiveClassIfRequestMatches("profile"); ?>><a href="profile.php">Account</a></li>
 
-                        <li <?php echoActiveClassIfRequestMatches("index"); ?>><a href="index.php">Sign Out</a></li>
+                        <li><a href="../ICT3103/Functions/doLogout.php">Sign Out</a></li>
                     </ul>
 
                     <!-- Display Search group on bigger screen, e.g. Desktop -->
