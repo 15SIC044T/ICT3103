@@ -1,30 +1,22 @@
 <?php
 
-/* this file handles the email function */
-
-function send_mail($subject, $email, $message) {
+function send_mail($email, $subject, $message) {
     require '../PhpMailer/PHPMailerAutoload.php';
 
     $mail = new PHPMailer();
     $mail->IsSMTP();
-    $mail->SMTPDebug = 2;
+    $mail->SMTPDebug = 0;
     $mail->SMTPAuth = true;
-    $mail->SMTPSecure = "SSL";
+    $mail->SMTPSecure = "ssl";
     $mail->Host = "smtp.gmail.com";
     $mail->Port = 465;
     $mail->AddAddress($email);
     $mail->Username = "";
     $mail->Password = "";
-    $mail->SetFrom("donotreply@gmail.com");
+    $mail->SetFrom('you@yourdomain.com', 'ICT3103');
+    $mail->AddReplyTo("you@yourdomain.com", "ICT3103");
     $mail->Subject = $subject;
     $mail->MsgHTML($message);
     $mail->Send();
-
-    if (!$mail->Send()) {
-        echo "Mailer Error: " . $mail->ErrorInfo;
-    } else {
-        $_SESSION['success_msg'] = "Reset password message has been sent!";
-    }
 }
-
 ?>

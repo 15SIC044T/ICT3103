@@ -1,28 +1,8 @@
 <?php
 
-// do email connection
-function send_mail($email, $subject, $message) {
-    require '../PhpMailer/PHPMailerAutoload.php';
-
-    $mail = new PHPMailer();
-    $mail->IsSMTP();
-    $mail->SMTPDebug = 0;
-    $mail->SMTPAuth = true;
-    $mail->SMTPSecure = "ssl";
-    $mail->Host = "smtp.gmail.com";
-    $mail->Port = 465;
-    $mail->AddAddress($email);
-    $mail->Username = "";
-    $mail->Password = "";
-    $mail->SetFrom('you@yourdomain.com', 'ICT3104');
-    $mail->AddReplyTo("you@yourdomain.com", "ICT3104");
-    $mail->Subject = $subject;
-    $mail->MsgHTML($message);
-    $mail->Send();
-}
-
 // include database connection details
 include '../db-connection.php';
+include 'doEmailConnection.php';
 
 // sanitize the POST values
 $email = $_POST['email'];
