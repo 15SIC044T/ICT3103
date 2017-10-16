@@ -27,9 +27,9 @@
 
                             <input name="inputConfirmPass" type="password" class="form-control" placeholder="Confirm Password" required>
 
-                            <input name="inputEmail" type="text" class="form-control" placeholder="Email Address" required>
+                            <input name="inputEmail" type="email" class="form-control" placeholder="Email Address" required>
 
-                            <input name="inputMobile" type="text" class="form-control" placeholder="Mobile Number" required>
+                            <input name="inputMobile" type="number" class="form-control" placeholder="Mobile Number" required>
 
                             <button class="btn btn-lg btn-block" name="register" type="submit">Sign Up</button>
                         </form>

@@ -35,7 +35,7 @@
                                     <input name="inputName" type="text" class="form-control" placeholder="Full Name" value="<?php echo $user['name'] ?>">
 
                                     <label for="">Email address</label>
-                                    <input name="inputEmail" type="text" class="form-control" placeholder="Email Address" value="<?php echo $user['email'] ?>">
+                                    <input name="inputEmail" type="email" class="form-control" placeholder="Email Address" value="<?php echo $user['email'] ?>">
 
                                     <label for="">Mobile number</label>
                                     <input name="inputMobile" type="number" class="form-control" placeholder="Mobile Number" minlength="8" value="<?php echo $user['phone'] ?>">
