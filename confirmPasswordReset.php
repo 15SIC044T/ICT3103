@@ -1,5 +1,4 @@
 <?php
-
 // start session
 session_start();
 
@@ -29,11 +28,9 @@ $_SESSION['SESS_ACC_ID'] = $_GET['id'];
                             include "displayAlertMessage.php";
                             ?>
 
-                            <input name="inputPass" type="password" class="form-control" placeholder="Password" required>
+                            <input name="inputPass" type="password" class="form-control" placeholder="Password" minlength="8" required>
 
                             <input name="inputConfirmPass" type="password" class="form-control" placeholder="Confirm Password" required>
-
-
 
                             <button class="btn btn-lg btn-block" name="reset" type="submit">Reset Password</button>
                         </form>
