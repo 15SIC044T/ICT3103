@@ -2,7 +2,7 @@
 // start session
 session_start();
 
-$_SESSION['SESS_ACC_ID'] = $_GET['id'];
+$_SESSION['SESS_ACC_ID'] = $_GET['t'];
 ?>
 
 <!DOCTYPE html>
