@@ -16,9 +16,9 @@ $connection = new Mysql_Driver();
 $connection->connect();
 
 // password validation
-$uppercase = preg_match('@[A-Z]@', $newPassword);
-$lowercase = preg_match('@[a-z]@', $newPassword);
-$number = preg_match('@[0-9]@', $newPassword);
+$uppercase = preg_match('@[A-Z]@', $password);
+$lowercase = preg_match('@[a-z]@', $password);
+$number = preg_match('@[0-9]@', $password);
 
 // do not pass the password validation
 if (!$uppercase || !$lowercase || !$number) {

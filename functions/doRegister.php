@@ -30,6 +30,11 @@ $queryEmail = "SELECT *
                 WHERE email='$email'";
 $resultEmail = $connection->query($queryEmail);
 
+// password validation
+$uppercase = preg_match('@[A-Z]@', $password);
+$lowercase = preg_match('@[a-z]@', $password);
+$number = preg_match('@[0-9]@', $password);
+
 // check for name duplication
 if ($connection->num_rows($resultName) == 1) {
     header("Location: ../registerAcc.php");
