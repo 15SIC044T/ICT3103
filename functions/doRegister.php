@@ -68,13 +68,6 @@ if ($connection->num_rows($resultName) == 1) {
                 <p>Please verify your account with this verification code: <strong>" . $_SESSION['SESS_TOKEN'] . " </strong></p>";
 
         send_mail($email, $subject, $message);
-
-        /* echo $_SESSION['SESS_ACC_ID'] . "<br>";
-          echo $_SESSION['SESS_USERNAME'] . "<br>";
-          echo $_SESSION['SESS_TOKEN'] . "<br>";
-          echo $subject . "<br>";
-          echo $message . "<br>";
-          echo "<br><br><br>"; */
     }
 
     header("Location: ../index.php");

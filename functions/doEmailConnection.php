@@ -11,8 +11,8 @@ function send_mail($email, $subject, $message) {
     $mail->Host = "smtp.gmail.com";
     $mail->Port = 465;
     $mail->AddAddress($email);
-    $mail->Username = ""; // gmail email
-    $mail->Password = ""; // gmail password
+    $mail->Username = "3103ict@gmail.com"; // gmail email
+    $mail->Password = "haha1234"; // gmail password
     $mail->SetFrom('you@yourdomain.com', 'ICT3103');
     $mail->AddReplyTo("you@yourdomain.com", "ICT3103");
     $mail->Subject = $subject;

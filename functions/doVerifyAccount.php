@@ -16,8 +16,8 @@ $connection->connect();
 
 // look through database based on name
 $queryUser = "SELECT * 
-            FROM account 
-            WHERE accountID = $userId";
+                FROM account 
+                WHERE accountID = $userId";
 $resultUser = $connection->query($queryUser);
 
 // check whether the query is successful or not
@@ -30,7 +30,7 @@ if ($connection->num_rows($resultUser) == 1) {
     if ($dbToken == $verifyToken) {
         $queryUpdate = "UPDATE account 
                         SET accountStatus = 'Verified', 
-                        verificationToken = $nullValue 
+                            verificationToken = $nullValue 
                         WHERE accountID = $userId";
         $updateDB = $connection->query($queryUpdate);
         
