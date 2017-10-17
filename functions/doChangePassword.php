@@ -4,7 +4,7 @@
 session_start();
 
 // include database connection details
-include '../db-connection.php';
+include "../db-connection.php";
 
 // sanitize the POST values
 $userId = $_SESSION['SESS_ACC_ID'];

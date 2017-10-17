@@ -2,8 +2,10 @@
 
 <!DOCTYPE html>
 <html lang="en">
-    <?php include "header.php" ?>
-    <?php include "resetPasswordModal.php" ?>
+    <?php
+    include "header.php";
+    include "resetPasswordModal.php";
+    ?>
 
     <body>
         <div class="container-fluid">
@@ -16,7 +18,7 @@
 
                 <div class="col-sm-5 loginblock">
                     <div>
-                        <form action="functions/doLogin.php" method="post">
+                        <form action="functions/doLogin.php" method="POST">
                             <?php
                             // prompt message
                             include "displayAlertMessage.php";
@@ -34,7 +36,7 @@
                         <div class="row">
                             <div class="col-sm-6">
                                 <!--a href="forgetPassword.php">Forgot your password?</a-->
-                                
+
                                 <a href="#" data-target="#resetmodal" data-toggle="modal">Forgot Password?</a>
                             </div>
 

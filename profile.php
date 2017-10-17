@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
-    <?php include "header.php" ?>
+    <?php include "header.php"; ?>
 
     <body>
-        <?php include "navbar.php" ?>
+        <?php include "navbar.php"; ?>
 
         <div class="container-fluid">
             <div class="row">
@@ -16,9 +16,13 @@
                                 FROM account 
                                 WHERE accountID =" . $_SESSION['SESS_ACC_ID'];
                     $resultUser = $connection->query($queryUser);
-                    $user = $connection->fetch_array($resultUser);
 
-                    echo "<h1>" . $user['name'] . "'s Profile</h1>"
+                    $user = $connection->fetch_array($resultUser);
+                    $dbName = $user['name'];
+                    $dbEmail = $user['email'];
+                    $dbPhone = $user['phone'];
+
+                    echo "<h1>" . $dbName . "'s Profile</h1>"
                     ?>
 
                     <?php
@@ -32,13 +36,13 @@
                                 <h4>My Profile</h4>
                                 <div class="form-group">
                                     <label for="">Name</label>
-                                    <input name="inputName" type="text" class="form-control" placeholder="Full Name" value="<?php echo $user['name'] ?>">
+                                    <input name="inputName" type="text" class="form-control" placeholder="Full Name" value="<?php echo $dbName; ?>">
 
                                     <label for="">Email address</label>
-                                    <input name="inputEmail" type="email" class="form-control" placeholder="Email Address" value="<?php echo $user['email'] ?>">
+                                    <input name="inputEmail" type="email" class="form-control" placeholder="Email Address" value="<?php echo $dbEmail; ?>">
 
                                     <label for="">Mobile number</label>
-                                    <input name="inputMobile" type="number" class="form-control" placeholder="Mobile Number" minlength="8" value="<?php echo $user['phone'] ?>">
+                                    <input name="inputMobile" type="number" class="form-control" placeholder="Mobile Number" minlength="8" value="<?php echo $dbPhone; ?>">
                                 </div>
                                 <button type="submit" name="update" class="btn btn-primary">Update</button>
                             </form>

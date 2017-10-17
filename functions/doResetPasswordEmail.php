@@ -1,8 +1,8 @@
 <?php
 
 // include database connection details
-include '../db-connection.php';
-include 'doEmailConnection.php';
+include "../db-connection.php";
+include "doEmailConnection.php";
 
 // sanitize the POST values
 $email = $_POST['email'];

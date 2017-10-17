@@ -4,7 +4,7 @@
 session_start();
 
 // include database connection details
-include '../db-connection.php';
+include "../db-connection.php";
 
 // sanitize the POST values
 $name = $_POST['inputName'];
@@ -40,14 +40,43 @@ if ($connection->num_rows($resultName) == 1) {
     header("Location: ../registerAcc.php");
     $_SESSION['error_msg'] = "Password not the same!";
 } else {
-    // password hashing
-    $confirmPassHash = password_hash($confirmPassword, PASSWORD_BCRYPT);
+    $confirmPassHash = password_hash($confirmPassword, PASSWORD_BCRYPT); // password hashing
+    $accountToken = md5(uniqid(rand(), true)); // token to verify account
 
-    $queryAdd = "INSERT INTO account(name, email, password, phone, accountStatus) 
-                VALUES('$name','$email','$confirmPassHash','$mobile','Unverified')";
+    $queryAdd = "INSERT INTO account(name, email, password, phone, accountStatus, verificationToken) 
+                VALUES('$name', '$email', '$confirmPassHash', '$mobile', 'Unverified', '$accountToken')";
     $addUser = $connection->query($queryAdd);
 
+    // send verification email
+    $queryEmailAgain = "SELECT * 
+                        FROM account 
+                        WHERE email = '$email'";
+    $resultEmailAgain = $connection->query($queryEmailAgain);
+
+    if ($connection->num_rows($resultEmailAgain) == 1) {
+        $user = mysqli_fetch_assoc($resultEmailAgain);
+        $_SESSION['SESS_ACC_ID'] = $user['accountID'];
+        $_SESSION['SESS_USERNAME'] = $user['name'];
+        $_SESSION['SESS_TOKEN'] = $user['verificationToken'];
+
+        // email content
+        $subject = "Verify DropIT Sharing Account";
+        $message = "
+                Hello " . $_SESSION['SESS_USERNAME'] . ",
+                <p>You have successfully created a DropIT Sharing account.</p>
+                <p>Please verify your account with this verification code: <strong>" . $_SESSION['SESS_TOKEN'] . " </strong></p>";
+
+        send_mail($email, $subject, $message);
+
+        /* echo $_SESSION['SESS_ACC_ID'] . "<br>";
+          echo $_SESSION['SESS_USERNAME'] . "<br>";
+          echo $_SESSION['SESS_TOKEN'] . "<br>";
+          echo $subject . "<br>";
+          echo $message . "<br>";
+          echo "<br><br><br>"; */
+    }
+
     header("Location: ../index.php");
-    $_SESSION['success_msg'] = "Register Done! Please check email to verify your account!";
+    $_SESSION['success_msg'] = "Register Done! Check email to verify account!";
 }
 ?>

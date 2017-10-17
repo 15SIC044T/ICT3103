@@ -4,7 +4,7 @@
 session_start();
 
 // include database connection details
-include '../db-connection.php';
+include "../db-connection.php";
 
 // sanitize the POST values
 $userId = $_SESSION['SESS_ACC_ID'];
@@ -36,13 +36,14 @@ $resultEmail = $connection->query($queryEmail);
 
 if ($connection->num_rows($resultUser) == 1) {
     $user = $connection->fetch_array($resultUser);
-
-    echo $user['name'];
+    $dbName = $user['name'];
+    $dbEmail = $user['email'];
+    $dbPhone = $user['phone'];
 
     // check mobile not changed
-    if ($user['phone'] == $mobile) {
+    if ($dbPhone == $mobile) {
         // check other info not changed
-        if ($user['name'] == $name && $user['email'] == $email) {
+        if ($dbName == $name && $dbEmail == $email) {
             header("Location: ../profile.php");
             $_SESSION['neutral_msg'] = "No changes made!";
         } else { // other info changed

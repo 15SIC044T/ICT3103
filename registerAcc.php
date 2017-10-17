@@ -2,7 +2,7 @@
 
 <!DOCTYPE html>
 <html lang="en">
-    <?php include "header.php" ?>
+    <?php include "header.php"; ?>
 
     <body>
         <div class="container-fluid">
@@ -15,7 +15,7 @@
 
                 <div class="col-sm-12 registerblock">
                     <div>
-                        <form action="functions/doRegister.php" method="post">
+                        <form action="functions/doRegister.php" method="POST">
                             <?php
                             // prompt message
                             include "displayAlertMessage.php";

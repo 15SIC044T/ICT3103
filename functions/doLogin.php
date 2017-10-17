@@ -4,7 +4,7 @@
 session_start();
 
 // include database connection details
-include '../db-connection.php';
+include "../db-connection.php";
 
 // function to sanitize values received from the form. Prevents SQL injection
 function clean($str) {
@@ -29,20 +29,28 @@ $queryUser = "SELECT *
             WHERE name = '$name'";
 $resultUser = $connection->query($queryUser);
 
-// check whether the query was successful or not
+// check whether the query is successful or not
 if ($connection->num_rows($resultUser) == 1) {
     $user = $connection->fetch_array($resultUser);
     $dbPassHash = $user['password'];
+    $dbAccountStatus = $user['accountStatus'];
+    $dbToken = $user['verificationToken'];
 
     // check old password with database
     $verifyPassword = password_verify($password, $dbPassHash);
 
-    // if old password valid in database
+    // if password valid in database
     if ($verifyPassword == 1) {
-        $_SESSION['SESS_ACC_ID'] = $user['accountID'];
-        $_SESSION['SESS_USERNAME'] = $user['name'];
+        if ($dbAccountStatus == "Unverified") {
+            $_SESSION['SESS_ACC_ID'] = $user['accountID'];
 
-        header("Location: ../fileManager.php");
+            header("Location: ../verifyAccount.php");
+        } else {
+            $_SESSION['SESS_ACC_ID'] = $user['accountID'];
+            $_SESSION['SESS_USERNAME'] = $user['name'];
+
+            header("Location: ../fileManager.php");
+        }
     } else {
         header("Location: ../index.php");
         $_SESSION['error_msg'] = "Wrong username/password!";
