@@ -5,6 +5,7 @@ session_start();
 
 // include database connection details
 include "../db-connection.php";
+include "doEmailConnection.php";
 
 // sanitize the POST values
 $name = $_POST['inputName'];
