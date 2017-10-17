@@ -37,6 +37,9 @@ if ($connection->num_rows($resultName) == 1) {
 } elseif ($connection->num_rows($resultEmail) == 1) { // check for email duplication
     header("Location: ../registerAcc.php");
     $_SESSION['error_msg'] = "Email address used!";
+} elseif (!$uppercase || !$lowercase || !$number) { // do not pass the password validation
+    header("Location: ../registerAcc.php");
+    $_SESSION['error_msg'] = "Password should consists of at least one uppercase, lowercase and number!";
 } elseif ($password != $confirmPassword) { // check if password same
     header("Location: ../registerAcc.php");
     $_SESSION['error_msg'] = "Password not the same!";

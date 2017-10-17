@@ -15,14 +15,22 @@ $confirmPassword = $_POST['inputConfirmPass'];
 $connection = new Mysql_Driver();
 $connection->connect();
 
-// check password not same
-if ($password != $confirmPassword) {
+// password validation
+$uppercase = preg_match('@[A-Z]@', $newPassword);
+$lowercase = preg_match('@[a-z]@', $newPassword);
+$number = preg_match('@[0-9]@', $newPassword);
+
+// do not pass the password validation
+if (!$uppercase || !$lowercase || !$number) {
+    header("Location: ../confirmPasswordReset.php?t=$resetPassToken");
+    $_SESSION['error_msg'] = "Password should consists of at least one uppercase, lowercase and number!";
+} elseif ($password != $confirmPassword) { // check password not same
     header("Location: ../confirmPasswordReset.php?t=$resetPassToken");
     $_SESSION['error_msg'] = "Password not the same!";
 } else {
     // password hashing
     $confirmPassHash = password_hash($confirmPassword, PASSWORD_BCRYPT);
-    
+
     $nullValue = 'NULL';
 
     $queryUpdate = "UPDATE account 
