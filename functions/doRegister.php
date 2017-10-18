@@ -1,5 +1,4 @@
 <?php
-
 // start session
 session_start();
 
@@ -13,6 +12,30 @@ $password = $_POST['inputPass'];
 $confirmPassword = $_POST['inputConfirmPass'];
 $email = $_POST['inputEmail'];
 $mobile = $_POST['inputMobile'];
+
+$timestamp = date("Y-m-d_H-i-s",time());
+$privPath = '../keys/'.$name.'_'.$timestamp.'_private.key';
+$pubPath = '../keys/'.$name.'_'.$timestamp.'_public.key';
+
+$config = array(
+    'private_key_bits' => 4096,      
+    'private_key_type' => OPENSSL_KEYTYPE_RSA,
+);
+
+// Create the private key
+$privateKey = openssl_pkey_new($config);
+
+// Save the private key
+openssl_pkey_export($privateKey, $pkey);
+file_put_contents($privPath, $pkey);
+ 
+// Generate the public key for the private key
+$a_key = openssl_pkey_get_details($privateKey);
+// Save the public key
+file_put_contents($pubPath, $a_key['key']);
+ 
+// Free the private Key.
+openssl_free_key($privateKey);
 
 // connect database
 $connection = new Mysql_Driver();
@@ -30,11 +53,6 @@ $queryEmail = "SELECT *
                 WHERE email='$email'";
 $resultEmail = $connection->query($queryEmail);
 
-// password validation
-$uppercase = preg_match('@[A-Z]@', $password);
-$lowercase = preg_match('@[a-z]@', $password);
-$number = preg_match('@[0-9]@', $password);
-
 // check for name duplication
 if ($connection->num_rows($resultName) == 1) {
     header("Location: ../registerAcc.php");
@@ -42,9 +60,6 @@ if ($connection->num_rows($resultName) == 1) {
 } elseif ($connection->num_rows($resultEmail) == 1) { // check for email duplication
     header("Location: ../registerAcc.php");
     $_SESSION['error_msg'] = "Email address used!";
-} elseif (!$uppercase || !$lowercase || !$number) { // do not pass the password validation
-    header("Location: ../registerAcc.php");
-    $_SESSION['error_msg'] = "Password should consists of at least one uppercase, lowercase and number!";
 } elseif ($password != $confirmPassword) { // check if password same
     header("Location: ../registerAcc.php");
     $_SESSION['error_msg'] = "Password not the same!";
@@ -52,8 +67,8 @@ if ($connection->num_rows($resultName) == 1) {
     $confirmPassHash = password_hash($confirmPassword, PASSWORD_BCRYPT); // password hashing
     $accountToken = md5(uniqid(rand(), true)); // token to verify account
 
-    $queryAdd = "INSERT INTO account(name, email, password, phone, accountStatus, verificationToken) 
-                VALUES('$name', '$email', '$confirmPassHash', '$mobile', 'Unverified', '$accountToken')";
+    $queryAdd = "INSERT INTO account(name, email, password, phone, accountStatus, verificationToken, privateKey, publicKey) 
+                VALUES('$name', '$email', '$confirmPassHash', '$mobile', 'Unverified', '$accountToken', '$privPath', '$pubPath')";
     $addUser = $connection->query($queryAdd);
 
     // send verification email
@@ -76,6 +91,13 @@ if ($connection->num_rows($resultName) == 1) {
                 <p>Please verify your account with this verification code: <strong>" . $_SESSION['SESS_TOKEN'] . " </strong></p>";
 
         send_mail($email, $subject, $message);
+
+        /* echo $_SESSION['SESS_ACC_ID'] . "<br>";
+          echo $_SESSION['SESS_USERNAME'] . "<br>";
+          echo $_SESSION['SESS_TOKEN'] . "<br>";
+          echo $subject . "<br>";
+          echo $message . "<br>";
+          echo "<br><br><br>"; */
     }
 
     header("Location: ../index.php");
