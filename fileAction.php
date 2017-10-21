@@ -88,7 +88,7 @@ if (isset($_POST['actionDelShare'])) {
      //Query for file URL
     $conn->connect();
     //Delete the existing sharing emails from database 
-    $qryDelete = "DELETE FROM fileSharing WHERE fileSharingID = $sharedID";
+    $qryDelete = "DELETE FROM filesharing WHERE filesharingID = $sharedID";
     $conn->query($qryDelete);
     $conn->close();  
     
@@ -124,7 +124,7 @@ if (isset($_POST['actionShare'])) {
     } 
  
     //Insert the sharing emails
-    $qryInsert = "INSERT INTO fileSharing (fileID, accountID, invitationAccepted) VALUES ($fileID, $accountID, 1)";
+    $qryInsert = "INSERT INTO filesharing (fileID, accountID, invitationAccepted) VALUES ($fileID, $accountID, 1)";
     $conn->query($qryInsert);
     $conn->close();
     
