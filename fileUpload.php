@@ -13,7 +13,7 @@ if (!empty($_FILES)) {
     $ext = pathinfo($upload_dir . $fileName);
     $uploaded_file = $upload_dir .  $_SESSION['SESS_ACC_ID'] . "_" . date("Ymd-hisa") . "_" . $fileName ;
     
-    $aesKey = "keys/aes/" . "aes_" . date("Ymd-hisa").".key";
+    $aesKey = "keys/aes/" . substr($fileName, 0, strrpos($fileName, ".")) . "_" . date("Y-m-d_H-i-s",time()) . "_aes.key";
     $encryption_key = openssl_random_pseudo_bytes(32);
     file_put_contents($aesKey, $encryption_key);
     $iv = openssl_random_pseudo_bytes(openssl_cipher_iv_length(AES_256_CBC));

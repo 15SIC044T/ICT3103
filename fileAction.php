@@ -122,9 +122,25 @@ if (isset($_POST['actionShare'])) {
             $accountID = $row["accountID"];
         }
     } 
- 
+    
+    $qry2 = "SELECT f.aesKey, a.publicKey FROM file f, account a WHERE f.fileID = ".$fileID." AND a.accountID = ". $accountID;
+    $result2 = $conn->query($qry2);
+  
+    if ($conn->num_rows($result2) > 0) {
+        while ($row = $conn->fetch_array($result2)) {
+            $aKey = $row["aesKey"];
+            $pKey = $row["publicKey"];
+        }
+    } 
+    $pKey = substr($pKey, 3);
+    $eAes = "keys/eAes/" . $fileID . "_" . $accountID . "_" . date("Y-m-d_H-i-s",time()) . "_eAes.key";
+    $data = file_get_contents($aKey);
+    $publicKey = file_get_contents($pKey);
+    openssl_public_encrypt($data, $encrypted, $publicKey);
+    file_put_contents($eAes, $encrypted);
+    
     //Insert the sharing emails
-    $qryInsert = "INSERT INTO filesharing (fileID, accountID, invitationAccepted) VALUES ($fileID, $accountID, 1)";
+    $qryInsert = "INSERT INTO filesharing (fileID, accountID, invitationAccepted, eAesKey) VALUES ($fileID, $accountID, 1, '$eAes')";
     $conn->query($qryInsert);
     $conn->close();
     
