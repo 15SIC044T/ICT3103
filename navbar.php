@@ -55,7 +55,7 @@ $content1 = "";
                         <li <?php echoActiveClassIfRequestMatches("fileManager"); ?>><a href="fileManager.php">File Manager</a></li>
                         <li <?php echoActiveClassIfRequestMatches("profile"); ?>><a href="profile.php">Account</a></li>
 
-                        <li><a href="../ICT3103/Functions/doLogout.php">Sign Out</a></li>
+                        <li><a href="functions/doLogout.php">Sign Out</a></li>
                     </ul>
 
                     <!-- Display Search group on bigger screen, e.g. Desktop -->
