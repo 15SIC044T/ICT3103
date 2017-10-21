@@ -54,6 +54,7 @@
                     <br>
                     <div class="col-sm-7">
                         <h2><?php echo $fileName; ?></h2> 
+                        
                         <input type="text" id="link" class="form-control" onfocus="this.select();" onmouseover="this.select();" onmouseup="return false;" value="<?php echo $fileURL; ?>" readonly="readyonly">
                               
 

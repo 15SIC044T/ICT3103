@@ -79,16 +79,28 @@ if (isset($_POST['actionDelete'])) {
 
 
 //Share File
-if (isset($_POST['actionDelShare'])) {
-    $fileID = $_POST["sfileID"];
-    $sharedID = $_POST["sSharedID"];
+if (isset($_POST['actionDelShare'])) { 
+    
+    $sharedEmail = $_POST["sharedEmaail"];
+    $sharedID = $_POST["actionDelShare"]; 
+    $prevURL = $_POST["prevURL"];
     
      //Query for file URL
     $conn->connect();
     //Delete the existing sharing emails from database 
-    $qryDelete = "DELETE FROM fileSharing WHERE fileID = $fileID AND userID = accountID";
+    $qryDelete = "DELETE FROM fileSharing WHERE fileSharingID = $sharedID";
     $conn->query($qryDelete);
     $conn->close();  
+    
+     $_SESSION['success_msg'] = "<strong>" . $fileName . "</strong> has been unlinked successfully!";
+    
+    if (strpos($prevURL, "file.php")) {
+        header("Location: ". $prevURL);
+    } elseif (strpos($prevURL, "fileManager.php")) {
+        header("Location: fileManager.php");
+    } else {
+        header("Location: 404.php");
+    }
 }
 
 

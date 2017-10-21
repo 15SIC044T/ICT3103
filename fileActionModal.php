@@ -39,8 +39,9 @@
                                                     </div> 
                                                 <script type="text/javascript">
                                                     $(function () {
-                                                            $("#datetimepicker' . $row["fileID"] . '").datetimepicker();
+                                                            $("#datetimepicker' . $row["fileID"] . '").datetimepicker({  minDate:new Date() });
                                                     });
+
                                                 </script>  
                                                 <label for="lblFilePermission">File Permission:</label>
                                                 <select class="form-control" id="ddlFilePermission" name="DDLFilePermission">
@@ -65,8 +66,7 @@
                                                 </tr>
                                             </thead> 
                                             <tbody>';    
-                                                //Run SQL statement: to query for the shared
-                                                $shareFileID = 0;
+                                                //Run SQL statement: to query for the shared 
                                                 $qryShared = "SELECT a.email, fs.* FROM fileSharing fs INNER JOIN account a ON fs.accountID = a.accountID WHERE fs.fileID = " . $row['fileID'];
                                                 $resultShared = $conn->query($qryShared);
   
@@ -78,15 +78,14 @@
                                                         echo '<tr>';
                                                         echo '<td>' . $rowShared["email"] . '</td>
                                                                     <td>' . $rowShared["invitationAccepted"] . '</td>
-                                                                    <td><a href="#" data-target="#delShared' . $rowShared["fileSharingID"] . ' data-toggle="modal"><span class="glyphicon glyphicon-trash"></span></a></td>';
+                                                                    <td><a style="cursor: pointer;" onClick="myFunction' . $rowShared["fileSharingID"] . '()"><span class="glyphicon glyphicon-trash"></span></a></td>';
                                                         echo '</tr>';
                                                     }
                                                 }  
                                             echo '
                                             </tbody>
                                         </table
-
-
+ 
                                     <br><br>
                                     <p>Enter the person email to share with</p>
                                     <form data-toggle="validator" method="post" action="fileAction.php" class="form-horizontal" role="form">
@@ -98,11 +97,7 @@
                                                 <button class="btn btn-lg btn-block btn-success" name="add" type="submit">Add</button> 
                                             </div>
                                         </div>
-                                    </form>
-                                    
-
-
-
+                                    </form> 
 
                                 </div>
                                 <!--edit modal content end-->
@@ -110,6 +105,7 @@
                         </div>
                     </div>
                 </div>';
+                                            
             // Modal DELETE
             echo '<div id="del' . $row["fileID"] . '" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
                     <div class="modal-dialog" role="document">
@@ -140,6 +136,36 @@
                         </div>
                     </div>
                 </div>'; 
+            
+        //Run SQL statement: to query for the shared 
+        $qrySharedDel = "SELECT a.email, fs.* FROM fileSharing fs INNER JOIN account a ON fs.accountID = a.accountID WHERE fs.fileID = " . $row['fileID'];
+        $resultSharedDel = $conn->query($qrySharedDel);
+
+        echo '<form id="delShareForm" name="delShareForm" method="post" action="fileAction.php">
+                <input type="hidden" id="sharedEmail" name="sharedEmail" />
+                <input type="hidden" id="actionDelShare" name="actionDelShare" />
+                <input type="hidden" id="prevURL" name="prevURL" /> 
+                    </form>';
+        
+        if ($conn->num_rows($resultSharedDel) > 0) { //(result)
+            //Loop tdrough tde result and print tde data to tde table
+            while ($rowSharedDel = $conn->fetch_array($resultSharedDel)) {
+                $shareFileID = $rowSharedDel["fileSharingID"];
+                $sharedEmail = $rowSharedDel["email"];
+                
+                echo ' 
+                    <script>
+                    function myFunction' . $shareFileID . '() { 
+                        if (confirm("Are you sure you want to unlink file with ' . $sharedEmail . '") == true) { 
+                                document.getElementById("actionDelShare").value = "'. $shareFileID . '";
+                                document.getElementById("sharedEmail").value = "'. $sharedEmail . '";
+                                document.getElementById("prevURL").value = "' . $_SERVER["REQUEST_URI"] . '";
+                                document.forms["delShareForm"].submit(); 
+                        }  
+                    }
+                    </script>';
+                }
+            }
         }
     }
     $conn->close();

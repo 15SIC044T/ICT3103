@@ -79,7 +79,5 @@ $(document).ready(function() {
         "info":     false,
         
     } ); 
-    
-    //Default: Show My Documents only
-    dataTables.columns(0).search("1").draw(); 
+     
 } ); 

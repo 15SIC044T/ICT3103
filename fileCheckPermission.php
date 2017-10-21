@@ -14,7 +14,8 @@ $fileID = $_GET["fID"];
 
 //Query for file URL
 $conn->connect();
-$qry = "SELECT f.fileID FROM file f WHERE f.accountID = $accountID AND f.fileID = $fileID UNION 
+$qry = "SELECT f.fileID FROM file f WHERE f.fileID = $fileID AND f.filePermission = 'Public' UNION "
+        . "SELECT f.fileID FROM file f WHERE f.accountID = $accountID AND f.fileID = $fileID UNION 
         SELECT fs.fileID FROM filesharing fs WHERE fs.accountID = $accountID AND fs.fileID = $fileID";
 $result = $conn->query($qry);
  
