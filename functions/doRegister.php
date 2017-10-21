@@ -14,8 +14,8 @@ $email = $_POST['inputEmail'];
 $mobile = $_POST['inputMobile'];
 
 $timestamp = date("Y-m-d_H-i-s",time());
-$privPath = '../keys/'.$name.'_'.$timestamp.'_private.key';
-$pubPath = '../keys/'.$name.'_'.$timestamp.'_public.key';
+$privPath = '../keys/rsa/'.$name.'_'.$timestamp.'_private.key';
+$pubPath = '../keys/rsa/'.$name.'_'.$timestamp.'_public.key';
 
 $config = array(
     'private_key_bits' => 4096,      
