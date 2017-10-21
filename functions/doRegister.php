@@ -1,5 +1,4 @@
 <?php
-
 // start session
 session_start();
 
@@ -13,6 +12,30 @@ $password = $_POST['inputPass'];
 $confirmPassword = $_POST['inputConfirmPass'];
 $email = $_POST['inputEmail'];
 $mobile = $_POST['inputMobile'];
+
+$timestamp = date("Y-m-d_H-i-s",time());
+$privPath = '../keys/rsa/'.$name.'_'.$timestamp.'_private.key';
+$pubPath = '../keys/rsa/'.$name.'_'.$timestamp.'_public.key';
+
+$config = array(
+    'private_key_bits' => 4096,      
+    'private_key_type' => OPENSSL_KEYTYPE_RSA,
+);
+
+// Create the private key
+$privateKey = openssl_pkey_new($config);
+
+// Save the private key
+openssl_pkey_export($privateKey, $pkey);
+file_put_contents($privPath, $pkey);
+ 
+// Generate the public key for the private key
+$a_key = openssl_pkey_get_details($privateKey);
+// Save the public key
+file_put_contents($pubPath, $a_key['key']);
+ 
+// Free the private Key.
+openssl_free_key($privateKey);
 
 // connect database
 $connection = new Mysql_Driver();
@@ -44,8 +67,8 @@ if ($connection->num_rows($resultName) == 1) {
     $confirmPassHash = password_hash($confirmPassword, PASSWORD_BCRYPT); // password hashing
     $accountToken = md5(uniqid(rand(), true)); // token to verify account
 
-    $queryAdd = "INSERT INTO account(name, email, password, phone, accountStatus, verificationToken) 
-                VALUES('$name', '$email', '$confirmPassHash', '$mobile', 'Unverified', '$accountToken')";
+    $queryAdd = "INSERT INTO account(name, email, password, phone, accountStatus, verificationToken, privateKey, publicKey) 
+                VALUES('$name', '$email', '$confirmPassHash', '$mobile', 'Unverified', '$accountToken', '$privPath', '$pubPath')";
     $addUser = $connection->query($queryAdd);
 
     // send verification email

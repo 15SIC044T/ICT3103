@@ -29,6 +29,11 @@ if ($connection->num_rows($resultUser) == 1) {
     // check old password with database
     $verifyPassword = password_verify($oldPassword, $dbPassHash);
 
+    // password validation
+    $uppercase = preg_match('@[A-Z]@', $newPassword);
+    $lowercase = preg_match('@[a-z]@', $newPassword);
+    $number = preg_match('@[0-9]@', $newPassword);
+
     // if old password valid in database
     if ($verifyPassword == 1) {
         if (empty($newPassword)) {
@@ -37,6 +42,9 @@ if ($connection->num_rows($resultUser) == 1) {
         } elseif (empty($confirmPassword)) {
             header("Location: ../profile.php");
             $_SESSION['error_msg'] = "Please confirm your new password!";
+        } elseif (!$uppercase || !$lowercase || !$number) { // do not pass the password validation
+            header("Location: ../profile.php");
+            $_SESSION['error_msg'] = "Password should consists of at least one uppercase, lowercase and number!";
         } else {
             if ($newPassword == $confirmPassword) {
                 // password hashing
@@ -63,7 +71,7 @@ if ($connection->num_rows($resultUser) == 1) {
             $_SESSION['neutral_msg'] = "No change made to your password!";
         } else { // password not found in database
             header("Location: ../profile.php");
-            $_SESSION['neutral_msg'] = "Password not found in database!";
+            $_SESSION['error_msg'] = "Password not found in database!";
         }
     }
 } else {

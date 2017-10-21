@@ -2,7 +2,7 @@
 // start session
 session_start();
 
-$_SESSION['SESS_ACC_ID'] = $_GET['id'];
+$_SESSION['SESS_TOKEN'] = $_GET['t'];
 ?>
 
 <!DOCTYPE html>
@@ -20,7 +20,7 @@ $_SESSION['SESS_ACC_ID'] = $_GET['id'];
 
                 <div class="col-sm-12 resetblockconfirm">
                     <div>
-                        <form action="functions/doResetPassword.php" method="post">
+                        <form action="functions/doResetPassword.php" method="POST">
                             <h3>Reset Password Confirmation</h3>
 
                             <?php

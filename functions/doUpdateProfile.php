@@ -30,8 +30,8 @@ $resultName = $connection->query($queryName);
 
 // look through database based on email
 $queryEmail = "SELECT * 
-            FROM account 
-            WHERE email = '$email'";
+                FROM account 
+                WHERE email = '$email'";
 $resultEmail = $connection->query($queryEmail);
 
 if ($connection->num_rows($resultUser) == 1) {
@@ -50,7 +50,9 @@ if ($connection->num_rows($resultUser) == 1) {
             // check name duplication
             if ($connection->num_rows($resultName) == 0 || $connection->num_rows($resultEmail) == 0) {
                 $queryUpdate = "UPDATE account 
-                                SET name = '$name', email = '$email', phone = '$mobile' 
+                                SET name = '$name', 
+                                    email = '$email', 
+                                    phone = '$mobile' 
                                 WHERE accountID = $userId";
                 $updateDB = $connection->query($queryUpdate);
 
@@ -66,7 +68,9 @@ if ($connection->num_rows($resultUser) == 1) {
         }
     } else { // check mobile changed
         $queryUpdate = "UPDATE account 
-                        SET name = '$name', email = '$email', phone = '$mobile' 
+                        SET name = '$name', 
+                            email = '$email', 
+                            phone = '$mobile' 
                         WHERE accountID = $userId";
         $updateDB = $connection->query($queryUpdate);
 
