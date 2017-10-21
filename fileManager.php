@@ -59,8 +59,7 @@
                                 <th>File Size</th> 
                                 <th>Upload Date</th> 
                                 <th>Expiry Date</th>
-                                <th>Permission</th>
-                                <th>Status</th>
+                                <th>Permission</th> 
                                 <th>Downloads</th>
                                 <th></th>
                             </tr>
@@ -91,8 +90,7 @@
                                             <td>' . round($row["fileSize"] / 1000.0 / 1000.0, 2) . ' MB</td> 
                                             <td>' . $FormatedUploadDate . '</td> 
                                             <td>' . $FormatedExpiryDate . '</td>
-                                            <td>' . $row["filePermission"] . '</td>
-                                            <td>' . $row["fileStatus"] . '</td>
+                                            <td>' . $row["filePermission"] . '</td> 
                                             <td>' . $row["downloadTimes"] . '</td>
                                             <td><a href="#" data-target="#del' . $row["fileID"] . '" data-toggle="modal"><span class="glyphicon glyphicon-trash"></span></a></td>';
                                     echo '</a>';

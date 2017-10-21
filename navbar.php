@@ -1,9 +1,11 @@
 <?php
 // start session
-session_start();
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
 
-// include database connection details
-include 'db-connection.php';
+    // include database connection details
+    include 'db-connection.php';
+} 
 
 // set active to navbar link
 function echoActiveClassIfRequestMatches($requestUri) {
@@ -23,31 +25,6 @@ if (! isset($_SESSION["SESS_ACC_ID"]))
 }
 
 $content1 = "";
-if (!isset($_SESSION['SESS_ACC_ID'])) {
-    //Display Login and Register button when shopper has yet to login
-    /* $content1 = "<a class='btn btn-default' href='index.php#login' role='button'>Login</a> &nbsp;
-      <a class='btn btn-default' href='index.php#register' role='button'>Register</a>"; */
-} else {
-    //Display a user button with dropdown list containing My Profile, My Feedback, Logout
-    //Display shopping cart button
-    /* $content1 = "<div class='btn-group'>
-      <button type='button' class='btn btn-default dropdown-toggle' data-toggle='dropdown' aria-expanded='false'>
-      $_SESSION[accountName] <span class='caret'></span>
-      </button>
-      <ul class='dropdown-menu' role='menu'>
-      <li><a href='profile.php'>My Account</a></li>
-      <li class='divider'></li>
-      <li><a href='logout.php'>Logout</a></li>
-      </ul>
-      </div>";
-
-      //Display number of item in the cart in the button
-      if (isset($_SESSION["notification"])) {
-      $content1 .= "&nbsp;&nbsp;&nbsp;<a class='btn btn-default' href='shoppingcart.php' role='button'>Notification <span class='badge'>$_SESSION[notification]</span></a>";
-      } else {
-      $content1 .= "&nbsp;&nbsp;&nbsp;<a class='btn btn-default' href='shoppingcart.php' role='button'>Notification</a>";
-      } */
-}
 ?>
 
 <div class="navbar navbar-default">

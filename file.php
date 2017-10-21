@@ -9,10 +9,12 @@
 
         <script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
         <script type="text/javascript" src="js/addTextboxDynamically.js"></script>
+        
+        <?php include "fileCheckPermission.php"; ?>
     </head>
     <body>
         <?php include "navbar.php" ?>
-
+        
         <div class="container-fluid">
             <div class="row">
                 <div class="col-sm-12">
@@ -27,7 +29,7 @@
 
                             $accountID = $_SESSION['SESS_ACC_ID'];
                             $fileID = $_GET["fID"];
-                            $qry = "SELECT a.name, f.* FROM file f INNER JOIN account a ON a.accountID = f.accountID WHERE f.accountID = $accountID AND f.fileID = $fileID";
+                            $qry = "SELECT a.name, f.* FROM file f INNER JOIN account a ON a.accountID = f.accountID WHERE f.fileID = $fileID";
                             $result = $conn->query($qry);
 
                             if ($conn->num_rows($result) > 0) { //(result)
@@ -123,23 +125,6 @@
                             //upload person able to upload the details 
                             include "fileActionModal.php";
 
-                            //display shared files
-                            ?>
-                            <h2>File Sharing</h2>
-                            <p>Enter the person email to share with</p>
-                            <form class="commentForm" method="post">
-                                <div> 
-                                    <p id="inputs">    
-                                        <input class="comment form-control" name="name0" />
-                                    </p>
-                                    <input type="hidden" name="actionShare" value="<?php $fileID; ?>" />
-                                    <input type="hidden" name="prevURL" value="<?php $_SERVER["REQUEST_URI"] ?>;" />
-                                    <input class="submit" type="submit" value="Submit" />
-                                    <input type="button" value="add" id="addInput" />
-
-                                </div>
-                            </form>
-                            <?php
                         }
                         ?> 
                         <br><br><br><br><br>

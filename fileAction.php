@@ -14,24 +14,29 @@ if (isset($_POST['actionEdit'])) {
     $fExpiryDate = $_POST["txtExpiryDate"];
     $fPermission = $_POST["DDLFilePermission"];
      
-    if ($fExpiryDate == "")
-        $datetime = "";
-    else
-        $datetime = date("Y-m-d H:i:s", strtotime($fExpiryDate));  
+    //If expiryDate set 
+    if ($fExpiryDate < now())
+    {
     
-    $conn->connect();
-    $qry = "UPDATE file SET fileName='$fName', expiryDate=NULLIF('$datetime',''), filePermission='$fPermission' WHERE fileID = $fileID";
-    $conn->query($qry);
-    $conn->close();
-    
-    $_SESSION['success_msg'] = "<strong>" . $fName . "</strong> has been updated successfully!"; 
+        if ($fExpiryDate == "")
+            $datetime = "";
+        else
+            $datetime = date("Y-m-d H:i:s", strtotime($fExpiryDate));  
 
-    if (strpos($prevURL, "file.php")) {
-        header("Location: ". $prevURL);
-    } elseif (strpos($prevURL, "fileManager.php")) {
-        header("Location: fileManager.php");
-    } else {
-        echo "$prevURL";
+        $conn->connect();
+        $qry = "UPDATE file SET fileName='$fName', expiryDate=NULLIF('$datetime',''), filePermission='$fPermission' WHERE fileID = $fileID";
+        $conn->query($qry);
+        $conn->close();
+
+        $_SESSION['success_msg'] = "<strong>" . $fName . "</strong> has been updated successfully!"; 
+
+        if (strpos($prevURL, "file.php")) {
+            header("Location: ". $prevURL);
+        } elseif (strpos($prevURL, "fileManager.php")) {
+            header("Location: fileManager.php");
+        } else {
+            echo "$prevURL";
+        }
     }
 }
 
@@ -74,32 +79,44 @@ if (isset($_POST['actionDelete'])) {
 
 
 //Share File
-if (isset($_POST['actionShare'])) {
-
-    $fileID = $_POST["actionShare"];
-    $prevURL = $_POST["prevURL"];
+if (isset($_POST['actionDelShare'])) {
+    $fileID = $_POST["sfileID"];
+    $sharedID = $_POST["sSharedID"];
     
-    //Query for file URL
+     //Query for file URL
     $conn->connect();
     //Delete the existing sharing emails from database 
-    $qryDelete = "DELETE FROM fileSharing WHERE fileID = $fileID";
+    $qryDelete = "DELETE FROM fileSharing WHERE fileID = $fileID AND userID = accountID";
     $conn->query($qryDelete);
-    $conn->close();
-    
-    $myarray = $_POST['text_arr'];
-    foreach($myarray as $val){
+    $conn->close();  
+}
 
-    }
+
+//Share File - Insert record to data table ONE-BY-ONE
+if (isset($_POST['actionShare'])) {
+
+    $fileID = $_POST["actionShare"]; 
+    $prevURL = $_POST["prevURL"];
+    $email = $_POST["txtEmail"];
     
-    $qrySelect = "SELECT fs.* FROM fileSharing fs INNER JOIN account a ON fs.accountID = a.accountID WHERE a.email = $email";
-    $conn->query(qrySelect);
+    $conn->connect();
+    
+    //check if email exists, if exist add, else error
+    $qry = "SELECT accountID FROM account WHERE email = '" . $email . "'";
+    $result = $conn->query($qry);
+  
+    if ($conn->num_rows($result) > 0) {
+        while ($row = $conn->fetch_array($result)) {
+            $accountID = $row["accountID"];
+        }
+    } 
  
-    //Re-insert the sharing emails
-    $qryInsert = "INSERT INTO fileSharing (fileID, accountID) VALUES ($fileID, )";
+    //Insert the sharing emails
+    $qryInsert = "INSERT INTO fileSharing (fileID, accountID, invitationAccepted) VALUES ($fileID, $accountID, 1)";
     $conn->query($qryInsert);
     $conn->close();
     
-    $_SESSION['success_msg'] = "<strong>" . $fileName . "</strong> has been added successfully!";
+    $_SESSION['success_msg'] = "<strong>" . $fileName . "</strong> has been shared successfully!";
     
     if (strpos($prevURL, "file.php")) {
         header("Location: ". $prevURL);

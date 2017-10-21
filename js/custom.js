@@ -56,16 +56,30 @@ $(document).ready(function() {
     dataTables.columns(0).search("1").draw();
     
     $('#myDocumentBtn').on('click', function () { 
-        $('#fileManagerDataTable').DataTable().ajax.reload();
+        //$('#fileManagerDataTable').DataTable().ajax.reload();
         dataTables.columns(0).search("1").draw(); 
-        dateTables.column(1).visible(false);
+        //dateTables.column(1).visible(false);
     }); 
     
     $('#sharedWithMeBtn').on('click', function () {
-        $('#fileManagerDataTable').DataTable().ajax.reload();
+        //$('#fileManagerDataTable').DataTable().ajax.reload();
         dataTables.columns(0).search("0").draw();
-        dateTables.column(1).visible(false);
+        //dateTables.column(1).visible(false);
     }); 
 } ); 
- 
 
+
+/* Datatable for sharing */
+$(document).ready(function() {
+    var dataTables = $('#fileSharingTable').DataTable( { 
+        "scrollX": true,
+        "destroy": true,
+        "paging":   true,
+        "ordering": false,
+        "info":     false,
+        
+    } ); 
+    
+    //Default: Show My Documents only
+    dataTables.columns(0).search("1").draw(); 
+} ); 
