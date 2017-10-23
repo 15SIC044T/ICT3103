@@ -4,7 +4,7 @@
     $accountID = $_SESSION['SESS_ACC_ID'];
     $qry = "SELECT (CASE WHEN (f.accountID = $accountID) THEN 1 ELSE 0 END) AS state, f.* FROM file f WHERE f.accountID = $accountID"
             . " UNION "
-            . "SELECT (CASE WHEN (f.accountID = $accountID) THEN 1 ELSE 0 END) AS state, f.* FROM file f WHERE f.fileID IN (SELECT fileID FROM fileSharing WHERE accountID = $accountID)";
+            . "SELECT (CASE WHEN (f.accountID = $accountID) THEN 1 ELSE 0 END) AS state, f.* FROM file f WHERE f.fileID IN (SELECT fileID FROM filesharing WHERE accountID = $accountID)";
     $result = $conn->query($qry);
     if ($conn->num_rows($result) > 0) { //(result)
         //Loop tdrough tde result and print tde data to tde table
