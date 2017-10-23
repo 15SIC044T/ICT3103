@@ -6,9 +6,6 @@
         <link rel="stylesheet" type="text/css" href="css/datetimepicker.css" /> 
         <script type="text/javascript" src="js/moment-with-locales.js"></script> 
         <script type="text/javascript" src="js/datetimepicker.js"></script> 
-
-        <script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
-        <script type="text/javascript" src="js/addTextboxDynamically.js"></script>
         
         <?php include "fileCheckPermission.php"; ?>
     </head>
@@ -54,10 +51,15 @@
                     <br>
                     <div class="col-sm-7">
                         <h2><?php echo $fileName; ?></h2> 
+                        <?php 
                         
-                        <input type="text" id="link" class="form-control" onfocus="this.select();" onmouseover="this.select();" onmouseup="return false;" value="<?php echo $fileURL; ?>" readonly="readyonly">
-                              
+                        //$fileNameURL = str_replace("uploads/","",$fileURL);
+                        //header('Content-Disposition: attachment; filename="$fileNameURL"');  // The name which will be suggested to the user
+                        //readfile('$fileURL');
 
+                        ?>
+                        <input type=button class="btn btn-lg btn-block btn-danger" onClick="location.href='<?php echo $fileURL; ?>'" value='Download Now'><br>
+                             
                         <?php
                         //Check file type for imaage
                         $imgExtensions = ".png,.jpg,.gif,.bmp,.jpeg,.ico";
