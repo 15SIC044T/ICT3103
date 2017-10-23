@@ -39,6 +39,7 @@
                                     $fileURL = $row["fileURL"];
                                     $fileType = $row["fileType"];
                                     $fileSize = round($row["fileSize"] / 1000.0 / 1000.0, 2) .  "MB"; 
+                                    $fileHash = $row["hash"];
                                     $FormatedUploadDate = $row["uploadDate"] == NULL ? "" : date("j M Y H:i:s A", strtotime($row["uploadDate"]));
                                     $FormatedExpiryDate = $row["expiryDate"] == NULL ? "" : date("j M Y H:i:s A", strtotime($row["expiryDate"]));
                                     $filePermission = $row["filePermission"];
@@ -78,7 +79,7 @@
 
                         <?php include "displayAlertMessage.php" ?> 
                         
-                        <table class="table table-striped">
+                        <table class="table table-striped" style="word-break: break-word;">
                             <tbody>
                                 <tr>
                                     <th scope="row">Uploaded by</th>
@@ -95,6 +96,10 @@
                                 <tr>
                                     <th scope="row">File Size</th>
                                     <td><?php echo $fileSize; ?></td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">File Hash</th>
+                                    <td style="word-break: break-word;"><?php echo $fileHash; ?></td>
                                 </tr>
                                 <tr>
                                     <th scope="row">Upload Date</th>

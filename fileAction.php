@@ -13,11 +13,10 @@ if (isset($_POST['actionEdit'])) {
     $fName = $_POST["txtFileName"];
     $fExpiryDate = $_POST["txtExpiryDate"];
     $fPermission = $_POST["DDLFilePermission"];
-     
+      
     //If expiryDate set 
-    if ($fExpiryDate < now())
-    {
-    
+    if ($fExpiryDate < date("Y-m-d H:i:s"))
+    {  
         if ($fExpiryDate == "")
             $datetime = "";
         else
