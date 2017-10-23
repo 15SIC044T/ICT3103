@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Oct 21, 2017 at 04:09 PM
+-- Generation Time: Oct 23, 2017 at 10:46 AM
 -- Server version: 10.1.26-MariaDB
 -- PHP Version: 7.1.9
 
@@ -78,6 +78,7 @@ CREATE TABLE `file` (
   `accountID` int(11) NOT NULL,
   `fileName` varchar(200) NOT NULL,
   `fileURL` varchar(255) NOT NULL,
+  `publicURL` varchar(255) DEFAULT NULL,
   `fileType` varchar(10) NOT NULL,
   `fileSize` int(11) NOT NULL,
   `fileStatus` varchar(50) DEFAULT NULL,
@@ -93,11 +94,12 @@ CREATE TABLE `file` (
 -- Dumping data for table `file`
 --
 
-INSERT INTO `file` (`fileID`, `accountID`, `fileName`, `fileURL`, `fileType`, `fileSize`, `fileStatus`, `filePermission`, `uploadDate`, `expiryDate`, `downloadTimes`, `aesKey`, `hash`) VALUES
-(1, 2, 'car', 'uploads/2_20171021-035907pm_car.jpg', 'jpg', 75653, NULL, 'private', '2017-10-21 21:59:07', NULL, 0, 'keys/aes/car_2017-10-21_15-59-07_aes.key', '5179ca8229edfa9be5fc6d6b2621493518fec5c63a1fc7b009d2ada81c5cb4bf'),
-(2, 2, 'Red_Rose_Black_BG', 'uploads/2_20171021-035910pm_Red_Rose_Black_BG.png', 'png', 259013, NULL, 'private', '2017-10-21 21:59:10', NULL, 0, 'keys/aes/Red_Rose_Black_BG_2017-10-21_15-59-10_aes.key', 'c7f0920c119c7a111aa46ce87e18e1ffdb77583c2b5fd1a903968cc5da20c4a9'),
-(3, 3, 'report', 'uploads/3_20171021-040054pm_report.txt', 'txt', 69, NULL, 'private', '2017-10-21 22:00:54', NULL, 0, 'keys/aes/report_2017-10-21_16-00-54_aes.key', 'a6a590cc2e49fd4d2494c6734f5d938c3095f7af8c9d505b4e04849235922bcd'),
-(4, 3, 'Wet-red-rose', 'uploads/3_20171021-040056pm_Wet-red-rose.png', 'png', 1536581, NULL, 'private', '2017-10-21 22:00:56', NULL, 0, 'keys/aes/Wet-red-rose_2017-10-21_16-00-56_aes.key', '6c2bf469e47f19e944003d3fb342b07ed5aecb5e078b3ee2640d4b1c50f9f513');
+INSERT INTO `file` (`fileID`, `accountID`, `fileName`, `fileURL`, `publicURL`, `fileType`, `fileSize`, `fileStatus`, `filePermission`, `uploadDate`, `expiryDate`, `downloadTimes`, `aesKey`, `hash`) VALUES
+(1, 2, 'car', 'uploads/2_20171021-035907pm_car.jpg', NULL, 'jpg', 75653, NULL, 'private', '2017-10-21 21:59:07', NULL, 0, 'keys/aes/car_2017-10-21_15-59-07_aes.key', '5179ca8229edfa9be5fc6d6b2621493518fec5c63a1fc7b009d2ada81c5cb4bf'),
+(2, 2, 'Red_Rose_Black_BG', 'uploads/2_20171021-035910pm_Red_Rose_Black_BG.png', NULL, 'png', 259013, NULL, 'private', '2017-10-21 21:59:10', NULL, 0, 'keys/aes/Red_Rose_Black_BG_2017-10-21_15-59-10_aes.key', 'c7f0920c119c7a111aa46ce87e18e1ffdb77583c2b5fd1a903968cc5da20c4a9'),
+(3, 3, 'report', 'uploads/3_20171021-040054pm_report.txt', NULL, 'txt', 69, NULL, 'private', '2017-10-21 22:00:54', NULL, 0, 'keys/aes/report_2017-10-21_16-00-54_aes.key', 'a6a590cc2e49fd4d2494c6734f5d938c3095f7af8c9d505b4e04849235922bcd'),
+(4, 3, 'Wet-red-rose', 'uploads/3_20171021-040056pm_Wet-red-rose.png', NULL, 'png', 1536581, NULL, 'private', '2017-10-21 22:00:56', NULL, 0, 'keys/aes/Wet-red-rose_2017-10-21_16-00-56_aes.key', '6c2bf469e47f19e944003d3fb342b07ed5aecb5e078b3ee2640d4b1c50f9f513'),
+(5, 2, 'cat', 'uploads/2_20171023-104421am_cat.jpg', 'uploads/public/2_20171023-104421am_cat.jpg', 'jpg', 86469, NULL, 'Public', '2017-10-23 16:44:21', '2017-10-31 16:44:00', 0, 'keys/aes/cat_2017-10-23_10-44-21_aes.key', '9361dd2ba71d3b05b81d6a0e27b65fd3fa2ce3bb9073e20b1688ce86c6b29219');
 
 -- --------------------------------------------------------
 
@@ -193,7 +195,7 @@ ALTER TABLE `account`
 -- AUTO_INCREMENT for table `file`
 --
 ALTER TABLE `file`
-  MODIFY `fileID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `fileID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `filesharing`

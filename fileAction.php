@@ -1,5 +1,5 @@
 <?php
-
+define('AES_256_CBC', 'aes-256-cbc');
 session_start();
 
 include("db-connection.php");  // Include the class file for database access
@@ -17,6 +17,31 @@ if (isset($_POST['actionEdit'])) {
     //If expiryDate set 
     if ($fExpiryDate < date("Y-m-d H:i:s"))
     {  
+        $conn->connect();
+        if ($fPermission == "Public") {
+            $qry = "SELECT fileURL, aesKey FROM file WHERE fileID = $fileID";
+            
+            $result = $conn->query($qry);
+  
+            if ($conn->num_rows($result) > 0) {
+                while ($row = $conn->fetch_array($result)) {
+                    $file = $row["fileURL"];
+                    $aKey = $row["aesKey"];
+                }
+            }
+            
+            $fileData = file_get_contents($file);
+            $aes = file_get_contents($aKey);
+            $parts = explode(':', $fileData);
+            $decrypted = openssl_decrypt($parts[0], AES_256_CBC, $aes, 0, base64_decode($parts[1]));
+            $pFile = "uploads/public/" . substr($file, 8);
+            file_put_contents($pFile, $decrypted);
+            
+            $qry2 = "UPDATE file SET publicURL='$pFile' WHERE fileID = $fileID";
+            $conn->query($qry2);
+            $conn->close();
+        }
+        
         if ($fExpiryDate == "")
             $datetime = "";
         else
@@ -153,6 +178,4 @@ if (isset($_POST['actionShare'])) {
         header("Location: 404.php");
     }
 }
-
-
 ?>
