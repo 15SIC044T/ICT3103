@@ -5,13 +5,26 @@
     <?php
     include "header.php";
     include "resetPasswordModal.php";
+    include "displayKeyModal.php";
     ?>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            <?php 
+            if (isset($_SESSION['REGISTER_OK']) && ($_SESSION['REGISTER_OK'] == "success")) { ?>
+                $('#ModalDisplayKey').modal('show');
+
+                <?php
+                session_destroy();
+                unset($_SESSION['registerOK']);
+            }
+            ?>
+        });
+    </script>
 
     <body>
         <div class="container-fluid">
             <div class="row">
-
-                <!-- start of coding the website -->
                 <div class="col-sm-7 logoblock">
                     <h1>DropIT Sharing</h1>
                 </div>
@@ -24,7 +37,7 @@
                             include "displayAlertMessage.php";
                             ?>
 
-                            <input name="inputName" type="text" class="form-control" placeholder="Username" required autofocus>
+                            <input name="inputName" type="text" class="form-control" placeholder="Username" required>
 
                             <input name="inputPass" type="password" class="form-control" placeholder="Password" required>
 
@@ -35,8 +48,6 @@
                     <div class="col-sm-12 centerblock">
                         <div class="row">
                             <div class="col-sm-6">
-                                <!--a href="forgetPassword.php">Forgot your password?</a-->
-
                                 <a href="#" data-target="#resetmodal" data-toggle="modal">Forgot Password?</a>
                             </div>
 
@@ -46,8 +57,6 @@
                         </div>
                     </div>
                 </div>
-                <!-- end of coding the website -->
-
             </div>
         </div>  
     </body>
