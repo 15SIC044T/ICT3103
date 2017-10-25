@@ -30,7 +30,7 @@ class Mysql_Driver {
     public function query($qry) {
         $result = mysqli_query($this->connection, $qry);
         if (!$result) {
-            die(mysqli_error($connection));
+            die(mysqli_error($this->connection));
         }
         return $result;
     }
