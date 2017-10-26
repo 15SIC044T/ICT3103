@@ -41,7 +41,7 @@
                             include "displayAlertMessage.php";
                             ?>
 
-                            <input name="inputName" type="text" class="form-control" placeholder="Username" required>
+                            <input name="inputEmail" type="text" class="form-control" placeholder="Email Address" required>
 
                             <input name="inputPass" type="password" class="form-control" placeholder="Password" required>
 

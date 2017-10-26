@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Oct 25, 2017 at 09:14 PM
+-- Generation Time: Oct 26, 2017 at 12:25 PM
 -- Server version: 10.1.26-MariaDB
 -- PHP Version: 7.1.8
 
@@ -37,6 +37,8 @@ CREATE TABLE `account` (
   `accountStatus` varchar(50) NOT NULL,
   `verificationToken` varchar(255) DEFAULT NULL,
   `resetPasswordToken` varchar(255) DEFAULT NULL,
+  `failLoginCount` int(11) NOT NULL,
+  `failLoginTime` datetime DEFAULT NULL,
   `privateKey` varchar(255) NOT NULL,
   `publicKey` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -45,10 +47,10 @@ CREATE TABLE `account` (
 -- Dumping data for table `account`
 --
 
-INSERT INTO `account` (`accountID`, `name`, `email`, `password`, `phone`, `accountStatus`, `verificationToken`, `resetPasswordToken`, `privateKey`, `publicKey`) VALUES
-(1, 'Xinyi', '15SIC044T@sit.singaporetech.edu.sg', '$2y$10$wLd1Bd9yZD5RDb4IAB1pSOkyaroR6Xum33jsa9j7G5asa6IF97V5m', '12345678', 'Verified', NULL, NULL, '../keys/rsa/Xinyi_2017-10-21_15-31-26_private.key', '../keys/rsa/Xinyi_2017-10-21_15-31-26_public.key'),
-(2, 'Meng', 'menghwee.pek_2015@sit.singaporetech.edu.sg', '$2y$10$pF.oSYsqSo2Q0mD5J7.y8uCzi.v7YbXU0QPdN0/0X7W0jvfg4Ba3S', '98765432', 'Verified', NULL, NULL, '../keys/rsa/Meng_2017-10-21_15-33-38_private.key', '../keys/rsa/Meng_2017-10-21_15-33-38_public.key'),
-(3, 'jeremy', '15SIS040D@sit.singaporetech.edu.sg', '$2y$10$YwCJDxYyE8hUotSFrH8T/OMOgzaHn8iDr1quLgtxbrDXDYxXgl7cW', '82332779', 'Verified', NULL, NULL, '../keys/rsa/jeremy_2017-10-21_03-47-10_private.key', '../keys/rsa/jeremy_2017-10-21_03-47-10_public.key');
+INSERT INTO `account` (`accountID`, `name`, `email`, `password`, `phone`, `accountStatus`, `verificationToken`, `resetPasswordToken`, `failLoginCount`, `failLoginTime`, `privateKey`, `publicKey`) VALUES
+(1, 'Xinyi', '15SIC044T@sit.singaporetech.edu.sg', '$2y$10$wLd1Bd9yZD5RDb4IAB1pSOkyaroR6Xum33jsa9j7G5asa6IF97V5m', '12345678', 'Verified', NULL, NULL, 0, NULL, '../keys/rsa/Xinyi_2017-10-21_15-31-26_private.key', '../keys/rsa/Xinyi_2017-10-21_15-31-26_public.key'),
+(2, 'Meng', 'menghwee.pek_2015@sit.singaporetech.edu.sg', '$2y$10$pF.oSYsqSo2Q0mD5J7.y8uCzi.v7YbXU0QPdN0/0X7W0jvfg4Ba3S', '98765432', 'Verified', NULL, NULL, 0, NULL, '../keys/rsa/Meng_2017-10-21_15-33-38_private.key', '../keys/rsa/Meng_2017-10-21_15-33-38_public.key'),
+(3, 'jeremy', '15SIS040D@sit.singaporetech.edu.sg', '$2y$10$YwCJDxYyE8hUotSFrH8T/OMOgzaHn8iDr1quLgtxbrDXDYxXgl7cW', '82332779', 'Verified', NULL, NULL, 0, NULL, '../keys/rsa/jeremy_2017-10-21_03-47-10_private.key', '../keys/rsa/jeremy_2017-10-21_03-47-10_public.key');
 
 -- --------------------------------------------------------
 
