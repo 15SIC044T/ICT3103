@@ -21,6 +21,7 @@ $result = $conn->query($qry);
  
 if ($conn->num_rows($result) == 0) {
     header ("Location: 404.php");
+    exit();
 }
 
 $conn->close();

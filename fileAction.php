@@ -56,8 +56,10 @@ if (isset($_POST['actionEdit'])) {
 
         if (strpos($prevURL, "file.php")) {
             header("Location: ". $prevURL);
+            exit();
         } elseif (strpos($prevURL, "fileManager.php")) {
             header("Location: fileManager.php");
+            exit();
         } else {
             echo "$prevURL";
         }
@@ -94,10 +96,13 @@ if (isset($_POST['actionDelete'])) {
     
     if (strpos($prevURL, "file.php")) {
         header("Location: ". $prevURL);
+        exit();
     } elseif (strpos($prevURL, "fileManager.php")) {
         header("Location: fileManager.php");
+        exit();
     } else {
         header("Location: 404.php");
+        exit();
     }
 }
 
@@ -120,10 +125,13 @@ if (isset($_POST['actionDelShare'])) {
     
     if (strpos($prevURL, "file.php")) {
         header("Location: ". $prevURL);
+        exit();
     } elseif (strpos($prevURL, "fileManager.php")) {
         header("Location: fileManager.php");
+        exit();
     } else {
         header("Location: 404.php");
+        exit();
     }
 }
 
@@ -172,10 +180,13 @@ if (isset($_POST['actionShare'])) {
     
     if (strpos($prevURL, "file.php")) {
         header("Location: ". $prevURL);
+        exit();
     } elseif (strpos($prevURL, "fileManager.php")) {
         header("Location: fileManager.php");
+        exit();
     } else {
         header("Location: 404.php");
+        exit();
     }
 }
 ?>

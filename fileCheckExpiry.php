@@ -1,10 +1,10 @@
 <?php
-   
+ob_start();
 $conn = new Mysql_Driver();  // Create an object for database access
 
 //Query for file URL
 $conn->connect();
-$qry = "SELECT * FROM file WHERE expiryDate <= now()";
+$qry = "SELECT * FROM file WHERE expiryDate <= date('Y-m-d H:i:s')";
 $result = $conn->query($qry);
  
 if ($conn->num_rows($result) > 0) { 
@@ -34,6 +34,8 @@ $conn->close();
     
     if ($conn->num_rows($result) == 0) { 
         header("Location: 404.php");
+        exit();
     }
  }
+ ob_end_flush();
 ?>

@@ -39,7 +39,7 @@
                                                     </div> 
                                                 <script type="text/javascript">
                                                     $(function () {
-                                                            $("#datetimepicker' . $row["fileID"] . '").datetimepicker({  minDate:new Date() });
+                                                            $("#datetimepicker' . $row["fileID"] . '").datetimepicker({ minDate:new Date() });
                                                     });
 
                                                 </script>  
@@ -85,7 +85,9 @@
                                             echo '
                                             </tbody>
                                         </table
- 
+                                     
+                                    <script></script>
+                                            
                                     <br><br>
                                     <p>Enter the person email to share with</p>
                                     <form data-toggle="validator" method="post" action="fileAction.php" class="form-horizontal" role="form">

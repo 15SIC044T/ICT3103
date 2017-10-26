@@ -1,6 +1,6 @@
 <!DOCTYPE html>
-<html lang="en">
-    <?php include "header.php" ?>   
+<html lang="en"> 
+    <?php include "header.php"; ?>   
     <!-- DatePicker -->
     <head>
         <link rel="stylesheet" type="text/css" href="css/datetimepicker.css" /> 
@@ -10,7 +10,7 @@
         <?php include "fileCheckPermission.php"; ?>
     </head>
     <body>
-        <?php include "navbar.php" ?>
+        <?php include "navbar.php"; ?>
         
         <div class="container-fluid">
             <div class="row">
@@ -37,6 +37,7 @@
                                     $uploaderID = $row["accountID"];
                                     $fileName = $row["fileName"];
                                     $fileURL = $row["fileURL"];
+                                    $fileAESKey = $row["aesKey"];
                                     $fileType = $row["fileType"];
                                     $fileSize = round($row["fileSize"] / 1000.0 / 1000.0, 2) .  "MB"; 
                                     $fileHash = $row["hash"];
@@ -48,18 +49,12 @@
                                 } 
                             }
                             $conn->close();
+                              
                     ?>
                     <br>
                     <div class="col-sm-7">
                         <h2><?php echo $fileName; ?></h2> 
-                        <?php 
-                        
-                        //$fileNameURL = str_replace("uploads/","",$fileURL);
-                        //header('Content-Disposition: attachment; filename="$fileNameURL"');  // The name which will be suggested to the user
-                        //readfile('$fileURL');
-
-                        ?>
-                        <input type=button class="btn btn-lg btn-block btn-danger" onClick="location.href='<?php echo $fileURL; ?>'" value='Download Now'><br>
+                        <input type=button class="btn btn-lg btn-block btn-danger" onClick="location.href='<?php echo "filedownload.php?fID=" . $fileID; ?>'" value='Download Now'><br>
                              
                         <?php
                         //Check file type for imaage
@@ -69,7 +64,6 @@
                         } else {
                             echo '<img src="file/no-preview.png" style="width: 100%;"/>';
                         }
-                        
                         
                         ?>  
                     </div>
@@ -144,5 +138,5 @@
             </div>
         </div>
     </div>  
-</body>
+</body> 
 </html>
