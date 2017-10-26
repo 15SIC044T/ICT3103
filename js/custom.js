@@ -34,6 +34,12 @@ $(function(){
       self.on("removedfile", function (file) {
         console.log(file);
       });
+      
+      self.on("success", function() {
+          if (this.getQueuedFiles().length == 0 && this.getUploadingFiles().length == 0) {
+            location.reload();
+        }
+      });
     }
   };
 })

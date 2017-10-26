@@ -32,10 +32,7 @@ if (!empty($_FILES)) {
         $conn->connect();
         $mysql_insert = "INSERT INTO file (accountID, fileName, fileURL, fileType, fileSize, aesKey, hash)VALUES('" . $_SESSION['SESS_ACC_ID'] . "','" . $ext['filename'] . "','" . $uploaded_file . "','" . $ext['extension'] . "','" . filesize($uploaded_file) . "','" . $aesKey . "','" . $hash . "')";
         $conn->query($mysql_insert); 
-        $conn->close();  
-    
-        //After the file is uploaded, draw the datatable again
-        
+        $conn->close();   
     }
 }
 ?>

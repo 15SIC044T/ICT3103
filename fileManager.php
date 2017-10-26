@@ -83,17 +83,29 @@
                                     $FormatedUploadDate = $row["uploadDate"] == NULL ? "" : date("j M Y H:i:s A", strtotime($row["uploadDate"]));
                                     $FormatedExpiryDate = $row["expiryDate"] == NULL ? "" : date("j M Y H:i:s A", strtotime($row["expiryDate"]));
                                     echo '<tr>';
-                                    echo '<td>' . $row["state"] . '</td>
-                                            <td><a href="#" data-target="#edit' . $row["fileID"] . '" data-toggle="modal"><span class="glyphicon glyphicon-pencil"></span></a></td>
-                                            <td><a href="file.php?fID=' . $row["fileID"] . '">' . $row["fileName"] . '</a></td>
+                                    echo '<td>' . $row["state"] . '</td>';
+                                    
+                                    if ($row["state"] == 1) {
+                                        echo '<td><a href="#" data-target="#edit' . $row["fileID"] . '" data-toggle="modal"><span class="glyphicon glyphicon-pencil"></span></a></td>';
+                                    } 
+                                    else {
+                                        echo '<td> </td>';
+                                    }
+                                    
+                                    echo '<td><a href="file.php?fID=' . $row["fileID"] . '">' . $row["fileName"] . '</a></td>
                                             <td>' . $row["fileType"] . '</td>
                                             <td>' . round($row["fileSize"] / 1000.0 / 1000.0, 2) . ' MB</td> 
                                             <td>' . $FormatedUploadDate . '</td> 
                                             <td>' . $FormatedExpiryDate . '</td>
                                             <td>' . $row["filePermission"] . '</td> 
-                                            <td>' . $row["downloadTimes"] . '</td>
-                                            <td><a href="#" data-target="#del' . $row["fileID"] . '" data-toggle="modal"><span class="glyphicon glyphicon-trash"></span></a></td>';
-                                    echo '</a>';
+                                            <td>' . $row["downloadTimes"] . '</td>';
+                                    if ($row["state"] == 1) {
+                                        echo '<td><a href="#" data-target="#del' . $row["fileID"] . '" data-toggle="modal"><span class="glyphicon glyphicon-trash"></span></a></td>';
+                                    }
+                                    else {
+                                        echo '<td><a href="#" data-target="#deI' . $row["fileID"] . '" data-toggle="modal"><span class="glyphicon glyphicon-trash"></span></a></td>';
+                                    }
+                                    echo '</tr>';
                                 }
                             }
                             $conn->close();

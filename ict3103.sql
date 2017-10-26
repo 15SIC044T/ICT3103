@@ -131,16 +131,17 @@ CREATE TABLE `filesharing` (
   `fileID` int(11) NOT NULL,
   `accountID` int(11) NOT NULL,
   `invitationAccepted` tinyint(1) NOT NULL DEFAULT '0',
-  `eAesKey` varchar(255) NOT NULL
+  `eAesKey` varchar(255) NOT NULL,
+  `owner` tinyint(1) NOT NULL DEFAULT '0',
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `filesharing`
 --
 
-INSERT INTO `filesharing` (`fileSharingID`, `fileID`, `accountID`, `invitationAccepted`, `eAesKey`) VALUES
-(1, 1, 3, 1, 'keys/eAes/1_3_2017-10-21_16-05-49_eAes.key'),
-(2, 3, 2, 1, 'keys/eAes/3_2_2017-10-21_16-07-31_eAes.key');
+INSERT INTO `filesharing` (`fileSharingID`, `fileID`, `accountID`, `invitationAccepted`, `eAesKey`, `owner`) VALUES
+(1, 1, 3, 1, 'keys/eAes/1_3_2017-10-21_16-05-49_eAes.key', 0),
+(2, 3, 2, 1, 'keys/eAes/3_2_2017-10-21_16-07-31_eAes.key', 0);
 
 --
 -- Indexes for dumped tables

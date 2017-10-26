@@ -12,6 +12,8 @@
             $expiryDate = $row["expiryDate"];
             $FormatedExpiryDate = $expiryDate == NULL ? "" : date("m-d-Y H:i:s A", strtotime($expiryDate));
              // Modal EDIT
+            
+            if ($row["state"] == 1) {
             echo '<div id="edit' . $row["fileID"] . '" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
                     <div class="modal-dialog" role="document">
                         <div class="modal-content resetmodal">
@@ -34,11 +36,11 @@
                                                 <input name="txtFileName" type="text" class="form-control" placeholder="File Name" value="' . $row["fileName"] . '" required>
                                                 <label for="lblExpiryDate">Expiry Date:</label> 
                                                     <div class="input-group date" id="datetimepicker' . $row["fileID"] . '">
-                                                            <input name="txtExpiryDate" type="text" class="form-control" placeholder="Default: No Expiry Date" value="'. ($row["expiryDate"] == NULL? "" : $FormatedExpiryDate) .'" />
+                                                            <input name="txtExpiryDate" type="text" class="form-control" placeholder="Default: No Expiry Date" value="'. ($row["expiryDate"] == NULL ? "" : $FormatedExpiryDate) .'" />
                                                             <span class="input-group-addon"> <span class="glyphicon glyphicon-calendar"></span> </span>
                                                     </div> 
                                                 <script type="text/javascript">
-                                                    $(function () {
+                                                    $(function () { 
                                                             $("#datetimepicker' . $row["fileID"] . '").datetimepicker({ minDate:new Date() });
                                                     });
 
@@ -67,7 +69,7 @@
                                             </thead> 
                                             <tbody>';    
                                                 //Run SQL statement: to query for the shared 
-                                                $qryShared = "SELECT a.email, fs.* FROM fileSharing fs INNER JOIN account a ON fs.accountID = a.accountID WHERE fs.fileID = " . $row['fileID'];
+                                                $qryShared = "SELECT a.email, fs.* FROM fileSharing fs INNER JOIN account a ON fs.accountID = a.accountID WHERE fs.fileID = " . $row['fileID'] . " AND fs.owner = 0";
                                                 $resultShared = $conn->query($qryShared);
   
                                                 if ($conn->num_rows($resultShared) > 0) { //(result)
@@ -107,7 +109,9 @@
                         </div>
                     </div>
                 </div>';
-                                            
+            }
+            
+            if ($row["state"] == 1) {
             // Modal DELETE
             echo '<div id="del' . $row["fileID"] . '" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
                     <div class="modal-dialog" role="document">
@@ -138,7 +142,40 @@
                         </div>
                     </div>
                 </div>'; 
+            }
             
+            if ($row["state"] == 0) {
+            // Modal DELETE (UNLINK FILES)
+            echo '<div id="deI' . $row["fileID"] . '" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content resetmodal">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="glyphicon glyphicon-remove"></i></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="deleteBlock" style="text-align: center;">
+                                    <h1>' . $row["fileName"] . '</h1>
+                                    <p>Are you sure you want to unlink <strong>' . $row["fileName"] . '</strong>?.</p>
+                                </div>
+                                <!--delete modal content -->
+                                <div class="deleteBlock">
+                                    <form data-toggle="validator" method="post" action="fileAction.php" class="form-horizontal" role="form" >
+                                        <div class="form-group">
+                                            <div class="col-sm-12" style="text-align: center;"> 
+                                                <input type="hidden" name="actionDeIete" value="' . $row["fileID"] . '" />
+                                                    <input type="hidden" name="prevURL" value="' . $_SERVER["REQUEST_URI"] . '" />
+                                                <button class="btn btn-lg" style="width: 45%" name="deleteYes" type="submit">Yes</button>
+                                                <button class="btn btn-lg" style="width: 45%" data-dismiss="modal" aria-hidden="true">No</button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                                <!--delete modal content end-->
+                            </div>
+                        </div>
+                    </div>
+                </div>'; 
+            }
         //Run SQL statement: to query for the shared 
         $qrySharedDel = "SELECT a.email, fs.* FROM fileSharing fs INNER JOIN account a ON fs.accountID = a.accountID WHERE fs.fileID = " . $row['fileID'];
         $resultSharedDel = $conn->query($qrySharedDel);

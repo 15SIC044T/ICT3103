@@ -7,13 +7,25 @@ $conn = new Mysql_Driver();  // Create an object for database access
 //Update File
 if (isset($_POST['actionEdit'])) { 
     
+    $errorForm = false;
+    
     $fileID = $_POST["actionEdit"];
     $prevURL = $_POST["prevURL"];
     
-    $fName = $_POST["txtFileName"];
+    $fName = filter_var($_POST["txtFileName"], FILTER_SANITIZE_STRING);
     $fExpiryDate = $_POST["txtExpiryDate"];
     $fPermission = $_POST["DDLFilePermission"];
       
+    //sanitize input
+    if (!(filter_var($fileID, FILTER_VALIDATE_INT) === 0 || !filter_var($fileID, FILTER_VALIDATE_INT) === false)) { 
+        $errorForm = true;
+    }
+    
+    if (!(!filter_var($prevURL, FILTER_VALIDATE_URL) === false)) {
+        $errorForm = true;
+    }
+    
+    
     //If expiryDate set 
     if ($fExpiryDate < date("Y-m-d H:i:s"))
     {  
@@ -73,9 +85,19 @@ if (isset($_POST['actionDelete'])) {
     $fileID = $_POST["actionDelete"];
     $prevURL = $_POST["prevURL"];
     
+    $errorForm = false;
+    //sanitize input
+    if (!(filter_var($fileID, FILTER_VALIDATE_INT) === 0 || !filter_var($fileID, FILTER_VALIDATE_INT) === false)) { 
+        $errorForm = true;
+    }
+    
+    if (!(!filter_var($prevURL, FILTER_VALIDATE_URL) === false)) {
+        $errorForm = true;
+    }
+    
     //Query for file URL
     $conn->connect();
-    $qry = "SELECT * FROM file WHERE fileID = $fileID";
+    $qry = "SELECT * FROM file WHERE fileID = $fileID AND accountID = " . $_SESSION['SESS_ACC_ID'];
     $result = $conn->query($qry);
     $row = $conn->fetch_array($result);
     
@@ -83,7 +105,7 @@ if (isset($_POST['actionDelete'])) {
     $fileURL = $row["fileURL"];
     
     //Delete file from database 
-    $qryDelete = "DELETE FROM file WHERE fileID = $fileID";
+    $qryDelete = "DELETE FROM file WHERE fileID = $fileID AND accountID = " . $_SESSION['SESS_ACC_ID'];
     $conn->query($qryDelete);
     $conn->close();
  
@@ -94,6 +116,42 @@ if (isset($_POST['actionDelete'])) {
     
     $_SESSION['success_msg'] = "<strong>" . $fileName . "</strong> has been deleted from the system successfully!";
     
+    if (strpos($prevURL, "file.php")) {
+        header("Location: ". $prevURL);
+        exit();
+    } elseif (strpos($prevURL, "fileManager.php")) {
+        header("Location: fileManager.php");
+        exit();
+    } else {
+        header("Location: 404.php");
+        exit();
+    }
+}
+
+//Share File
+if (isset($_POST['actionDeIete'])) { 
+    
+    $fileID = $_POST["actionDeIete"]; 
+    $prevURL = $_POST["prevURL"];
+    
+     //Query for file URL
+    $conn->connect();
+    //Delete the existing sharing emails from database 
+    $qryDelete = "DELETE FROM filesharing WHERE fileID = $fileID AND accountID = " . $_SESSION["SESS_ACC_ID"];
+    $conn->query($qryDelete);
+    $conn->close();  
+    
+    //Query for file URL
+    $conn->connect();
+    $qry = "SELECT * FROM file WHERE fileID = $fileID AND accountID = " . $_SESSION['SESS_ACC_ID'];
+    $result = $conn->query($qry);
+    $row = $conn->fetch_array($result);
+    
+    $fileName = $row["fileName"];
+    
+    $_SESSION['success_msg'] = "<strong>" . $fileName . "</strong> has been unlinked successfully!";
+    $conn->close();  
+     
     if (strpos($prevURL, "file.php")) {
         header("Location: ". $prevURL);
         exit();
@@ -142,6 +200,7 @@ if (isset($_POST['actionShare'])) {
     $fileID = $_POST["actionShare"]; 
     $prevURL = $_POST["prevURL"];
     $email = $_POST["txtEmail"];
+    $fPermission = "private";
     
     $conn->connect();
     
@@ -176,6 +235,12 @@ if (isset($_POST['actionShare'])) {
     $conn->query($qryInsert);
     $conn->close();
     
+    //After insert, update the status of filePermission to "private" just in case someone add sharing users to public 
+    $conn->connect();
+    $qry = "UPDATE file SET filePermission='$fPermission' WHERE fileID = $fileID";
+    $conn->query($qry);
+    $conn->close();
+
     $_SESSION['success_msg'] = "<strong>" . $fileName . "</strong> has been shared successfully!";
     
     if (strpos($prevURL, "file.php")) {

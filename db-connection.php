@@ -34,6 +34,14 @@ class Mysql_Driver {
         }
         return $result;
     }
+    
+    public function insert_id() {
+        $result = mysqli_insert_id($this->connection);
+        if (!$result) {
+            die(mysqli_error($this->connection));
+        }
+        return $result;
+    }
 
     public function num_rows($result) {
         return mysqli_num_rows($result);
