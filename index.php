@@ -12,7 +12,11 @@
         $(document).ready(function () {
             <?php 
             if (isset($_SESSION['REGISTER_OK']) && ($_SESSION['REGISTER_OK'] == "success")) { ?>
-                $('#ModalDisplayKey').modal('show');
+                $('#ModalDisplayKey').modal(
+                {
+                    backdrop: 'static',
+                    keyboard: false
+                });
 
                 <?php
                 session_destroy();
