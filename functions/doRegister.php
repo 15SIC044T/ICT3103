@@ -79,8 +79,8 @@ if ($connection->num_rows($resultName) == 1) {
     $confirmPassHash = password_hash($confirmPassword, PASSWORD_BCRYPT); // password hashing
     $accountToken = md5(uniqid(rand(), true)); // token to verify account
 
-    $queryAdd = "INSERT INTO account(name, email, password, phone, accountStatus, verificationToken) 
-                VALUES('$name', '$email', '$confirmPassHash', '$mobile', 'Unverified', '$accountToken')";
+    $queryAdd = "INSERT INTO account(name, email, password, phone, accountStatus, verificationToken, privateKey, publicKey) 
+                VALUES('$name', '$email', '$confirmPassHash', '$mobile', 'Unverified', '$accountToken', '$privPath', '$pubPath')";
     $addUser = $connection->query($queryAdd);
 
     // send verification email
