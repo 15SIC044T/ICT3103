@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Oct 26, 2017 at 12:06 PM
+-- Generation Time: Oct 26, 2017 at 12:25 PM
 -- Server version: 10.1.26-MariaDB
 -- PHP Version: 7.1.8
 
@@ -38,7 +38,7 @@ CREATE TABLE `account` (
   `verificationToken` varchar(255) DEFAULT NULL,
   `resetPasswordToken` varchar(255) DEFAULT NULL,
   `failLoginCount` int(11) NOT NULL,
-  `failLoginTime` datetime DEFAULT CURRENT_TIMESTAMP,
+  `failLoginTime` datetime DEFAULT NULL,
   `privateKey` varchar(255) NOT NULL,
   `publicKey` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
