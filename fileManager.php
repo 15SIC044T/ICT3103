@@ -61,7 +61,7 @@
                                 <th>Expiry Date</th>
                                 <th>Permission</th> 
                                 <th>Downloads</th>
-                                <th style="text-align: center;"><span class="glyphicon glyphicon-trash"></span></th>
+                                <th></th>
                             </tr>
                         </thead> 
                         <tbody>
@@ -103,7 +103,7 @@
                                         echo '<td><a href="#" data-target="#del' . $row["fileID"] . '" data-toggle="modal"><span class="glyphicon glyphicon-trash"></span></a></td>';
                                     }
                                     else {
-                                        echo '<td><a href="#" data-target="#deI' . $row["fileID"] . '" data-toggle="modal"><span class="glyphicon glyphicon-link"></span></a></td>';
+                                        echo '<td><a href="#" data-target="#deI' . $row["fileID"] . '" data-toggle="modal"><span class="glyphicon glyphicon-trash"><span class="glyphicon glyphicon-link"></span></a></td>';
                                     }
                                     echo '</tr>';
                                 }
