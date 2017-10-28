@@ -46,11 +46,11 @@ $content1 = "";
                 </div>
 
                 <div class="navbar-offcanvas navmenu-fixed-left offcanvas">
-                    <form class="navmenu-brand" role="search" action="search.php" method="post">
+                    <!--<form class="navmenu-brand" role="search" action="search.php" method="post">
                         <div class="form-group">
                             <input type="text" class="form-control" placeholder="Search" name="txtSearch">
                         </div>
-                    </form>
+                    </form>-->
                     <ul class="nav navbar-nav">
                         <li <?php echoActiveClassIfRequestMatches("fileManager"); ?>><a href="fileManager.php">File Manager</a></li>
                         <li <?php echoActiveClassIfRequestMatches("profile"); ?>><a href="profile.php">Account</a></li>
@@ -58,6 +58,7 @@ $content1 = "";
                         <li><a href="functions/doLogout.php">Sign Out</a></li>
                     </ul> 
                     
+                    <div class="input-group"><input  style="margin-top: 10px; float: right;" type=button class="btn btn-danger" onClick="location.href='script/downloadDecrypter.php'" value='Download Decrypter'></div>
                     <!-- Display Search group on bigger screen, e.g. Desktop -->
                     <!--<form class="navbar-form navbar-right hidden-xs hidden-sm" role="search" action="search.php" method="post">
                         <div class="input-group">

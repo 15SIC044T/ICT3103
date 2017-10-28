@@ -130,7 +130,7 @@
                                         }); 
                                         
                                         $(document).ready(function(){
-                                            $("#txtEmail").change(function() {
+                                            $("#txtEmail").on("change", function() {
                                             var usr = $("#txtEmail").val();
                                             if(usr.length >= 8){ 
                                                 $.ajax({ 
