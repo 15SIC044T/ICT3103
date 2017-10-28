@@ -65,7 +65,7 @@ if (isset($_POST['actionEdit'])) {
         $conn->query($qry);
         $conn->close();
 
-        $_SESSION['success_msg'] = "<strong>" . $fName . "</strong> has been updated successfully! ";  
+        $_SESSION['success_msg'] = "<strong>" . $fName . "</strong> DETAILS has been updated successfully! ";  
         
         $fPermission = "private";
     
