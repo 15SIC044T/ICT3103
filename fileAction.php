@@ -131,7 +131,7 @@ if (isset($_POST['actionEdit'])) {
                 $_SESSION['success_msg'] = "<strong>" . $fileName . "</strong> has been shared and save successfully!"; 
             }
             else {
-                $_SESSION['error_msg'] = "The email account has already been shared!";
+                $_SESSION['error_msg'] = "The email account has already been shared or you cannot share to yourself!";
             }
         } else {
             if (!($email == "" || $email == null)) 
