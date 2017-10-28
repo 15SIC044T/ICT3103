@@ -2,6 +2,7 @@
 $(function(){
   Dropzone.options.myAwesomeDropzone = {
     maxFilesize: 5, //MB
+    maxFiles: 3,
     addRemoveLinks: true,
     dictResponseError: 'Server not Configured',
     acceptedFiles: ".png,.jpg,.gif,.bmp,.jpeg,.ico,.mp3,.txt,.sql,.pdf,.docx,.doc,.xlsx,.xls,.csv,.zip,.rar,.7z,.xml,.html,.htm,.php",
@@ -53,8 +54,9 @@ $(document).ready(function() {
         "scrollX": true,
         "destroy": true,
         "paging":   true,
-        "ordering": false,
+        "ordering": true,
         "info":     false,
+        "sortable": true,
         
     } ); 
     
@@ -81,8 +83,9 @@ $(document).ready(function() {
         "scrollX": true,
         "destroy": true,
         "paging":   true,
-        "ordering": false,
-        "info":     false,
+        "ordering": true,
+        "info":     false, 
+        "sortable": true,
         
     } ); 
      
