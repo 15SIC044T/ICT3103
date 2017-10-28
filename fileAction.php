@@ -10,7 +10,8 @@ if (isset($_POST['actionEdit'])) {
     $errorForm = false;
     
     $fileID = $_POST["actionEdit"];
-    $prevURL = $_POST["prevURL"];
+    $prevURL = $_POST["prevURL"]; 
+    $email = filter_var($_POST["txtEmail"], FILTER_SANITIZE_EMAIL);
     
     $fName = filter_var($_POST["txtFileName"], FILTER_SANITIZE_STRING);
     $fExpiryDate = $_POST["txtExpiryDate"];
@@ -64,7 +65,78 @@ if (isset($_POST['actionEdit'])) {
         $conn->query($qry);
         $conn->close();
 
-        $_SESSION['success_msg'] = "<strong>" . $fName . "</strong> has been updated successfully!"; 
+        $_SESSION['success_msg'] = "<strong>" . $fName . "</strong> has been updated successfully! ";  
+        
+        $fPermission = "private";
+    
+        $exist = false;
+        $conn->connect(); 
+        //check if email exists, if exist add, else error
+        $qry = "SELECT accountID FROM account WHERE email = '" . $email . "'";
+        $result = $conn->query($qry);
+
+        if ($conn->num_rows($result) > 0) {
+            while ($row = $conn->fetch_array($result)) {
+                $accountID = $row["accountID"];
+                $exist = true;
+            }
+        } 
+
+        
+        if ($exist) {
+            
+            $existShared = false;
+            //check if the file already inserted into the table
+            //check if email exists, if exist add, else error
+            $qry3 = "SELECT accountID FROM filesharing WHERE fileID = $fileID AND accountID IN (SELECT accountID FROM account WHERE email = '$email') "
+                    . "UNION "
+                    . "SELECT accountID FROM file WHERE fileID = $fileID AND accountID IN (SELECT accountID FROM account WHERE email = '$email')";
+            $result3 = $conn->query($qry3);
+
+            if ($conn->num_rows($result3) > 0) {
+                while ($row3 = $conn->fetch_array($result3)) {
+                    $accountID = $row3["accountID"];
+                    $existShared = true;
+                }
+            } 
+            
+            if (!$existShared) {
+                $qry2 = "SELECT f.aesKey, a.publicKey FROM file f, account a WHERE f.fileID = ".$fileID." AND a.accountID = ". $accountID;
+                $result2 = $conn->query($qry2);
+
+                if ($conn->num_rows($result2) > 0) {
+                    while ($row = $conn->fetch_array($result2)) {
+                        $aKey = $row["aesKey"];
+                        $pKey = $row["publicKey"];
+                    }
+                } 
+                $pKey = substr($pKey, 3);
+                $eAes = "keys/eAes/" . $fileID . "_" . $accountID . "_" . date("Y-m-d_H-i-s",time()) . "_eAes.key";
+                $data = file_get_contents($aKey);
+                $publicKey = file_get_contents($pKey);
+                openssl_public_encrypt($data, $encrypted, $publicKey);
+                file_put_contents($eAes, $encrypted);
+
+                //Insert the sharing emails
+                $qryInsert = "INSERT INTO filesharing (fileID, accountID, invitationAccepted, eAesKey) VALUES ($fileID, $accountID, 1, '$eAes')";
+                $conn->query($qryInsert);
+                $conn->close();
+
+                //After insert, update the status of filePermission to "private" just in case someone add sharing users to public 
+                $conn->connect();
+                $qry = "UPDATE file SET filePermission='$fPermission' WHERE fileID = $fileID";
+                $conn->query($qry);
+                $conn->close();
+ 
+                $_SESSION['success_msg'] = "<strong>" . $fileName . "</strong> has been shared and save successfully!"; 
+            }
+            else {
+                $_SESSION['error_msg'] = "The email account has already been shared!";
+            }
+        } else {
+            if (!($email == "" || $email == null)) 
+                $_SESSION['error_msg'] = "The email account does not exist! Cannot share file!";
+        }
 
         if (strpos($prevURL, "file.php")) {
             header("Location: ". $prevURL);
@@ -200,53 +272,7 @@ if (isset($_POST['actionShare'])) {
     $fileID = $_POST["actionShare"]; 
     $prevURL = $_POST["prevURL"];
     $email = filter_var($_POST["txtEmail"], FILTER_SANITIZE_EMAIL);
-    $fPermission = "private";
     
-    $conn->connect();
-    
-    //check if email exists, if exist add, else error
-    $qry = "SELECT accountID FROM account WHERE email = '" . $email . "'";
-    $result = $conn->query($qry);
-  
-    if ($conn->num_rows($result) > 0) {
-        while ($row = $conn->fetch_array($result)) {
-            $accountID = $row["accountID"];
-            $exist = true;
-        }
-    } 
-    
-    if ($exist) {
-        $qry2 = "SELECT f.aesKey, a.publicKey FROM file f, account a WHERE f.fileID = ".$fileID." AND a.accountID = ". $accountID;
-        $result2 = $conn->query($qry2);
-
-        if ($conn->num_rows($result2) > 0) {
-            while ($row = $conn->fetch_array($result2)) {
-                $aKey = $row["aesKey"];
-                $pKey = $row["publicKey"];
-            }
-        } 
-        $pKey = substr($pKey, 3);
-        $eAes = "keys/eAes/" . $fileID . "_" . $accountID . "_" . date("Y-m-d_H-i-s",time()) . "_eAes.key";
-        $data = file_get_contents($aKey);
-        $publicKey = file_get_contents($pKey);
-        openssl_public_encrypt($data, $encrypted, $publicKey);
-        file_put_contents($eAes, $encrypted);
-
-        //Insert the sharing emails
-        $qryInsert = "INSERT INTO filesharing (fileID, accountID, invitationAccepted, eAesKey) VALUES ($fileID, $accountID, 1, '$eAes')";
-        $conn->query($qryInsert);
-        $conn->close();
-
-        //After insert, update the status of filePermission to "private" just in case someone add sharing users to public 
-        $conn->connect();
-        $qry = "UPDATE file SET filePermission='$fPermission' WHERE fileID = $fileID";
-        $conn->query($qry);
-        $conn->close();
-
-        $_SESSION['success_msg'] = "<strong>" . $fileName . "</strong> has been shared successfully!";
-    } else {
-        $_SESSION['error_msg'] = "The email account does not exist! Cannot share file!";
-    }
     
     if (strpos($prevURL, "file.php")) {
         header("Location: ". $prevURL);

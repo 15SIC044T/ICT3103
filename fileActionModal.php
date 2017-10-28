@@ -54,16 +54,11 @@
                                                     <option' . (($row["filePermission"] == "Private") ? " selected" : "") . '>Private</option>
                                                     <option' . (($row["filePermission"] == "Public") ? " selected" : "") . '>Public</option> 
                                                 </select>   
-                                                <button class="btn btn-lg btn-block btn-success" name="save" type="submit">Save</button>
-                                            </div>
-                                        </div>
-                                    </form>
-                                    
-                                    <hr>
+                                                
+                                                <hr>
 
                                     <div id="fSharing">
-                                        <h2>File Sharing</h2> 
-
+                                        <h2>File Sharing</h2>  
                                         <table id="fileSharingTable" class="display" cellspacing="0" width="100%">
                                             <thead>
                                                 <tr>   
@@ -93,64 +88,62 @@
                                             </tbody>
                                         </table>
                                             
-                                    <br><br>
-                                    <p>Enter the person email to share with</p>
-                                    <form data-toggle="validator" method="post" action="fileAction.php" class="form-horizontal" role="form">
-                                        <div class="form-group">
-                                            <div class="col-sm-12" style="text-align: center;"> 
-                                                <input id="txtEmail" name="txtEmail" type="text" class="form-control" placeholder="Registered Email" required>
-                                                <input type="hidden" name="actionShare" value="'. $row["fileID"] .'" /> 
-                                                <input type="hidden" name="prevURL" value="'. $_SERVER["REQUEST_URI"]. '" />
-                                                <button class="btn btn-lg btn-block btn-success" name="add" type="submit">Add</button> 
-                                            </div>
+                                        <br><br>
+                                        <p>Enter the person email to share with</p>
+                                        <input id="txtEmail" name="txtEmail" type="text" class="form-control" placeholder="Registered Email"> 
                                         </div>
-                                    </form> 
-                                    </div>
-                                    
- 
-                                    <script> 
-                                        $(document).ready(function(){   
-                                            $("#fSharing").hide();
-                                            $("#fSharing:input").attr("disabled", true);
-                                            
-                                            if ( $("#ddlFilePermission").val() == "private" || $("#ddlFilePermission").val() == "Private") {
-                                                $("#fSharing").show();
-                                                $("#fSharing:input").attr("disabled", false);
-                                              }
-                                            
-                                            $("#ddlFilePermission").on("change", function() {
-                                              if ( this.value == "private" || this.value == "Private") {
-                                                $("#fSharing").show();
-                                                $("#fSharing:input").attr("disabled", false);
-                                              } else {
+
+
+                                        <script> 
+                                            $(document).ready(function(){   
                                                 $("#fSharing").hide();
                                                 $("#fSharing:input").attr("disabled", true);
-                                              }
-                                            });
-                                        }); 
-                                        
-                                        $(document).ready(function(){
-                                            $("#txtEmail").on("change", function() {
-                                            var usr = $("#txtEmail").val();
-                                            if(usr.length >= 8){ 
-                                                $.ajax({ 
-                                                type: "POST", 
-                                                url: "checkEmail.php", 
-                                                data: "email="+ usr,
-                                                dataType: "text",
-                                                    success: function(msg){
-                                                        if(msg == "OK"){
-                                                            $("#txtEmail").css("backgrouond-color", "green");
-                                                        } else {
-                                                            $("#txtEmail").addClass("border-color", "red");
-                                                       }
-                                                    }
 
+                                                if ( $("#ddlFilePermission").val() == "private" || $("#ddlFilePermission").val() == "Private") {
+                                                    $("#fSharing").show();
+                                                    $("#fSharing:input").attr("disabled", false);
+                                                  }
+
+                                                $("#ddlFilePermission").on("change", function() {
+                                                  if ( this.value == "private" || this.value == "Private") {
+                                                    $("#fSharing").show();
+                                                    $("#fSharing:input").attr("disabled", false);
+                                                  } else {
+                                                    $("#fSharing").hide();
+                                                    $("#fSharing:input").attr("disabled", true);
+                                                  }
                                                 });
-                                            }  
+                                            }); 
+
+                                            $(document).ready(function(){
+                                                $("#txtEmail").on("change", function() {
+                                                var usr = $("#txtEmail").val();
+                                                if(usr.length >= 8){ 
+                                                    $.ajax({ 
+                                                    type: "POST", 
+                                                    url: "checkEmail.php", 
+                                                    data: "email="+ usr,
+                                                    dataType: "text",
+                                                        success: function(msg){
+                                                            if(msg == "OK"){
+                                                                $("#txtEmail").css("backgrouond-color", "green");
+                                                            } else {
+                                                                $("#txtEmail").addClass("border-color", "red");
+                                                           }
+                                                        }
+
+                                                    });
+                                                }  
+                                                });
                                             });
-                                        });
-                                    </script>
+                                        </script>
+                                                
+
+
+                                                <button class="btn btn-lg btn-block btn-success" name="save" type="submit">Save</button>
+                                            </div>
+                                        </div> 
+                                    </form> 
                                     
 
                                 </div>
