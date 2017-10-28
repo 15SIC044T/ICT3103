@@ -199,7 +199,7 @@ if (isset($_POST['actionShare'])) {
 
     $fileID = $_POST["actionShare"]; 
     $prevURL = $_POST["prevURL"];
-    $email = $_POST["txtEmail"];
+    $email = filter_var($_POST["txtEmail"], FILTER_SANITIZE_EMAIL);
     $fPermission = "private";
     
     $conn->connect();

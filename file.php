@@ -73,7 +73,7 @@
 
                         <?php include "displayAlertMessage.php" ?> 
                         
-                        <table class="table table-striped" style="word-break: break-word;">
+                        <table class="table table-striped">
                             <tbody>
                                 <tr>
                                     <th scope="row">Uploaded by</th>

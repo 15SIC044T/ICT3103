@@ -15,7 +15,6 @@ $email = $_POST['inputEmail'];
 $mobile = $_POST['inputMobile'];
 
 $timestamp = date("Y-m-d_H-i-s", time());
-$privPath = '../keys/rsa/' . $name . '_' . $timestamp . '_private.key';
 $pubPath = '../keys/rsa/' . $name . '_' . $timestamp . '_public.key';
 
 $config = array(
@@ -28,7 +27,6 @@ $privateKey = openssl_pkey_new($config);
 
 // Save the private key
 openssl_pkey_export($privateKey, $pkey);
-file_put_contents($privPath, $pkey);
 
 // Generate the public key for the private key
 $a_key = openssl_pkey_get_details($privateKey);
@@ -79,8 +77,8 @@ if ($connection->num_rows($resultName) == 1) {
     $confirmPassHash = password_hash($confirmPassword, PASSWORD_BCRYPT); // password hashing
     $accountToken = md5(uniqid(rand(), true)); // token to verify account
 
-    $queryAdd = "INSERT INTO account(name, email, password, phone, accountStatus, verificationToken, privateKey, publicKey) 
-                VALUES('$name', '$email', '$confirmPassHash', '$mobile', 'Unverified', '$accountToken', '$privPath', '$pubPath')";
+    $queryAdd = "INSERT INTO account(name, email, password, phone, accountStatus, verificationToken, publicKey) 
+                VALUES('$name', '$email', '$confirmPassHash', '$mobile', 'Unverified', '$accountToken', '$pubPath')";
     $addUser = $connection->query($queryAdd);
 
     // send verification email
