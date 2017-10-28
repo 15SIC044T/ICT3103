@@ -109,13 +109,11 @@
                                     
  
                                     <script> 
-                                        $(document).ready(function(){
-                                            if ( this.value == "private" || this.value == "Private"){
+                                        $(document).ready(function(){   
+                                            $("#fSharing").hide();
+                                            if ( $("#ddlFilePermission").val() == "private" || $("#ddlFilePermission").val() == "Private") {
                                                 $("#fSharing").show();
                                                 $("#fSharing:input").attr("disabled", false);
-                                              } else {
-                                                $("#fSharing").hide();
-                                                $("#fSharing:input").attr("disabled", true);
                                               }
                                             
                                             $("#ddlFilePermission").on("change", function() {
