@@ -25,6 +25,9 @@ if ($conn->num_rows($result) > 0) {
 }
 $conn->close();
 
+
+//send notification when file expires, deleted.
+
 //get current URL, if file does not exists, redirect to 404 
  if ($_SERVER['SCRIPT_NAME'] ==  "/ICT3103/file.php") {
      //Query for file URL

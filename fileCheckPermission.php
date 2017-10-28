@@ -10,11 +10,10 @@ if (session_status() == PHP_SESSION_NONE) {
 $conn = new Mysql_Driver();  // Create an object for database access
 
 $accountID = $_SESSION['SESS_ACC_ID'];
-$fileID = $_GET["fID"];
-
+$fileID = $_GET["fID"]; 
 //Query for file URL
 $conn->connect();
-$qry = "SELECT f.fileID FROM file f WHERE f.fileID = $fileID AND f.filePermission = 'Public' UNION "
+$qry = "SELECT f.fileID FROM file f WHERE f.fileID = $fileID AND f.filePermission = 'public' UNION "
         . "SELECT f.fileID FROM file f WHERE f.accountID = $accountID AND f.fileID = $fileID UNION 
         SELECT fs.fileID FROM filesharing fs WHERE fs.accountID = $accountID AND fs.fileID = $fileID";
 $result = $conn->query($qry);

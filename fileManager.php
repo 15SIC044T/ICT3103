@@ -90,7 +90,7 @@
                                     } 
                                     else {
                                         echo '<td> </td>';
-                                    }
+                                    } 
                                     
                                     echo '<td><a href="file.php?fID=' . $row["fileID"] . '">' . $row["fileName"] . '</a></td>
                                             <td>' . $row["fileType"] . '</td>

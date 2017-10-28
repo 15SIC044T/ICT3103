@@ -36,12 +36,16 @@
                                                 <input name="txtFileName" type="text" class="form-control" placeholder="File Name" value="' . $row["fileName"] . '" required>
                                                 <label for="lblExpiryDate">Expiry Date:</label> 
                                                     <div class="input-group date" id="datetimepicker' . $row["fileID"] . '">
-                                                            <input name="txtExpiryDate" type="text" class="form-control" placeholder="Default: No Expiry Date" value="'. ($row["expiryDate"] == NULL ? "" : $FormatedExpiryDate) .'" />
+                                                            <input name="txtExpiryDate" type="text" class="form-control" placeholder="Default: No Expiry Date" value="'. $FormatedExpiryDate .'" />
                                                             <span class="input-group-addon"> <span class="glyphicon glyphicon-calendar"></span> </span>
                                                     </div> 
                                                 <script type="text/javascript">
                                                     $(function () { 
-                                                            $("#datetimepicker' . $row["fileID"] . '").datetimepicker({ minDate:new Date() });
+                                                            $("#datetimepicker' . $row["fileID"] . '").datetimepicker({ minDate: new Date(), useCurrent: false}); 
+                                                    });
+                                                    
+                                                    $(window).load(function() {
+                                                        $("#datetimepicker' . $row["fileID"] . '").val("");
                                                     });
 
                                                 </script>  
@@ -57,6 +61,7 @@
                                     
                                     <hr>
 
+                                    <div id="fSharing">
                                         <h2>File Sharing</h2> 
 
                                         <table id="fileSharingTable" class="display" cellspacing="0" width="100%">
@@ -86,9 +91,7 @@
                                                 }  
                                             echo '
                                             </tbody>
-                                        </table
-                                     
-                                    <script></script>
+                                        </table>
                                             
                                     <br><br>
                                     <p>Enter the person email to share with</p>
@@ -102,6 +105,31 @@
                                             </div>
                                         </div>
                                     </form> 
+                                    </div>
+                                    
+ 
+                                    <script> 
+                                        $(document).ready(function(){
+                                            if ( this.value == "private" || this.value == "Private"){
+                                                $("#fSharing").show();
+                                                $("#fSharing:input").attr("disabled", false);
+                                              } else {
+                                                $("#fSharing").hide();
+                                                $("#fSharing:input").attr("disabled", true);
+                                              }
+                                            
+                                            $("#ddlFilePermission").on("change", function() {
+                                              if ( this.value == "private" || this.value == "Private") {
+                                                $("#fSharing").show();
+                                                $("#fSharing:input").attr("disabled", false);
+                                              } else {
+                                                $("#fSharing").hide();
+                                                $("#fSharing:input").attr("disabled", true);
+                                              }
+                                            });
+                                        }); 
+                                    </script>
+                                    
 
                                 </div>
                                 <!--edit modal content end-->

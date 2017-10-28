@@ -134,6 +134,11 @@ body{
     border-radius:0;
     border:0;
 }
+
+.navbar {
+    padding-bottom: 15px;
+}
+
 .navbar-header{
     max-width:1024px;
 }

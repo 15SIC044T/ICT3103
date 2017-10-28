@@ -56,24 +56,24 @@ $content1 = "";
                         <li <?php echoActiveClassIfRequestMatches("profile"); ?>><a href="profile.php">Account</a></li>
 
                         <li><a href="functions/doLogout.php">Sign Out</a></li>
-                    </ul>
-
+                    </ul> 
+                    
                     <!-- Display Search group on bigger screen, e.g. Desktop -->
-                    <form class="navbar-form navbar-right hidden-xs hidden-sm" role="search" action="search.php" method="post">
+                    <!--<form class="navbar-form navbar-right hidden-xs hidden-sm" role="search" action="search.php" method="post">
                         <div class="input-group">
                             <input type="text" class="form-control" name="txtSearch" placeholder="Search">
                             <div class="input-group-btn">
                                 <button type="submit" class="btn btn-default"><span class="glyphicon glyphicon-search"></span></button>
                             </div>
                         </div>
-                    </form>   
+                    </form>   -->
                 </div>
                 <!-- nav-collapse -->
 
                 <!-- Display only search button when screen size is reduced -->
-                <form class="navbar-form navbar-left hidden-lg hidden-xs hidden-md" role="search" action="search.php" method="post">
+                <!--<form class="navbar-form navbar-left hidden-lg hidden-xs hidden-md" role="search" action="search.php" method="post">
                     <a class='btn btn-default' href='search.php' role='button'><span class="glyphicon glyphicon-search"></span></a>
-                </form>
+                </form>-->
             </div>
         </div>
     </div>

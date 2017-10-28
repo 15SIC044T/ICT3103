@@ -25,7 +25,7 @@
                             $conn->connect();
 
                             $accountID = $_SESSION['SESS_ACC_ID'];
-                            $fileID = $_GET["fID"];
+                            $fileID = $_GET["fID"]; 
                             $qry = "SELECT a.name, f.* FROM file f INNER JOIN account a ON a.accountID = f.accountID WHERE f.fileID = $fileID";
                             $result = $conn->query($qry);
 
