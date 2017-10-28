@@ -98,7 +98,7 @@
                                     <form data-toggle="validator" method="post" action="fileAction.php" class="form-horizontal" role="form">
                                         <div class="form-group">
                                             <div class="col-sm-12" style="text-align: center;"> 
-                                                <input name="txtEmail" type="text" class="form-control" placeholder="Registered Email" required>
+                                                <input id="txtEmail" name="txtEmail" type="text" class="form-control" placeholder="Registered Email" required>
                                                 <input type="hidden" name="actionShare" value="'. $row["fileID"] .'" /> 
                                                 <input type="hidden" name="prevURL" value="'. $_SERVER["REQUEST_URI"]. '" />
                                                 <button class="btn btn-lg btn-block btn-success" name="add" type="submit">Add</button> 
@@ -111,6 +111,8 @@
                                     <script> 
                                         $(document).ready(function(){   
                                             $("#fSharing").hide();
+                                            $("#fSharing:input").attr("disabled", true);
+                                            
                                             if ( $("#ddlFilePermission").val() == "private" || $("#ddlFilePermission").val() == "Private") {
                                                 $("#fSharing").show();
                                                 $("#fSharing:input").attr("disabled", false);
@@ -126,6 +128,28 @@
                                               }
                                             });
                                         }); 
+                                        
+                                        $(document).ready(function(){
+                                            $("#txtEmail").change(function() {
+                                            var usr = $("#txtEmail").val();
+                                            if(usr.length >= 8){ 
+                                                $.ajax({ 
+                                                type: "POST", 
+                                                url: "checkEmail.php", 
+                                                data: "email="+ usr,
+                                                dataType: "text",
+                                                    success: function(msg){
+                                                        if(msg == "OK"){
+                                                            $("#txtEmail").css("backgrouond-color", "green");
+                                                        } else {
+                                                            $("#txtEmail").addClass("border-color", "red");
+                                                       }
+                                                    }
+
+                                                });
+                                            }  
+                                            });
+                                        });
                                     </script>
                                     
 

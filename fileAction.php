@@ -211,37 +211,42 @@ if (isset($_POST['actionShare'])) {
     if ($conn->num_rows($result) > 0) {
         while ($row = $conn->fetch_array($result)) {
             $accountID = $row["accountID"];
+            $exist = true;
         }
     } 
     
-    $qry2 = "SELECT f.aesKey, a.publicKey FROM file f, account a WHERE f.fileID = ".$fileID." AND a.accountID = ". $accountID;
-    $result2 = $conn->query($qry2);
-  
-    if ($conn->num_rows($result2) > 0) {
-        while ($row = $conn->fetch_array($result2)) {
-            $aKey = $row["aesKey"];
-            $pKey = $row["publicKey"];
-        }
-    } 
-    $pKey = substr($pKey, 3);
-    $eAes = "keys/eAes/" . $fileID . "_" . $accountID . "_" . date("Y-m-d_H-i-s",time()) . "_eAes.key";
-    $data = file_get_contents($aKey);
-    $publicKey = file_get_contents($pKey);
-    openssl_public_encrypt($data, $encrypted, $publicKey);
-    file_put_contents($eAes, $encrypted);
-    
-    //Insert the sharing emails
-    $qryInsert = "INSERT INTO filesharing (fileID, accountID, invitationAccepted, eAesKey) VALUES ($fileID, $accountID, 1, '$eAes')";
-    $conn->query($qryInsert);
-    $conn->close();
-    
-    //After insert, update the status of filePermission to "private" just in case someone add sharing users to public 
-    $conn->connect();
-    $qry = "UPDATE file SET filePermission='$fPermission' WHERE fileID = $fileID";
-    $conn->query($qry);
-    $conn->close();
+    if ($exist) {
+        $qry2 = "SELECT f.aesKey, a.publicKey FROM file f, account a WHERE f.fileID = ".$fileID." AND a.accountID = ". $accountID;
+        $result2 = $conn->query($qry2);
 
-    $_SESSION['success_msg'] = "<strong>" . $fileName . "</strong> has been shared successfully!";
+        if ($conn->num_rows($result2) > 0) {
+            while ($row = $conn->fetch_array($result2)) {
+                $aKey = $row["aesKey"];
+                $pKey = $row["publicKey"];
+            }
+        } 
+        $pKey = substr($pKey, 3);
+        $eAes = "keys/eAes/" . $fileID . "_" . $accountID . "_" . date("Y-m-d_H-i-s",time()) . "_eAes.key";
+        $data = file_get_contents($aKey);
+        $publicKey = file_get_contents($pKey);
+        openssl_public_encrypt($data, $encrypted, $publicKey);
+        file_put_contents($eAes, $encrypted);
+
+        //Insert the sharing emails
+        $qryInsert = "INSERT INTO filesharing (fileID, accountID, invitationAccepted, eAesKey) VALUES ($fileID, $accountID, 1, '$eAes')";
+        $conn->query($qryInsert);
+        $conn->close();
+
+        //After insert, update the status of filePermission to "private" just in case someone add sharing users to public 
+        $conn->connect();
+        $qry = "UPDATE file SET filePermission='$fPermission' WHERE fileID = $fileID";
+        $conn->query($qry);
+        $conn->close();
+
+        $_SESSION['success_msg'] = "<strong>" . $fileName . "</strong> has been shared successfully!";
+    } else {
+        $_SESSION['error_msg'] = "The email account does not exist! Cannot share file!";
+    }
     
     if (strpos($prevURL, "file.php")) {
         header("Location: ". $prevURL);

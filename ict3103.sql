@@ -133,7 +133,7 @@ CREATE TABLE `filesharing` (
   `accountID` int(11) NOT NULL,
   `invitationAccepted` tinyint(1) NOT NULL DEFAULT '0',
   `eAesKey` varchar(255) NOT NULL,
-  `owner` tinyint(1) NOT NULL DEFAULT '0',
+  `owner` tinyint(1) NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
