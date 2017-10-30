@@ -14,10 +14,13 @@
 
                     $queryUser = "SELECT * 
                                 FROM account 
-                                WHERE accountID =" . $_SESSION['SESS_ACC_ID'];
-                    $resultUser = $connection->query($queryUser);
+                                WHERE accountID = ?";
+                    $stmt = $connection->prepare($queryUser);
+                    $stmt->bind_param("s", $_SESSION['SESS_ACC_ID']);
+                    $stmt->execute();
+                    $resultUser = $stmt->get_result();
 
-                    $user = $connection->fetch_array($resultUser);
+                    $user = $resultUser->fetch_array();
                     $dbName = $user['name'];
                     $dbEmail = $user['email'];
                     $dbPhone = $user['phone'];
