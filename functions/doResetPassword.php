@@ -34,10 +34,12 @@ if (!$uppercase || !$lowercase || !$number) {
     $nullValue = 'NULL';
 
     $queryUpdate = "UPDATE account 
-                    SET password = '$confirmPassHash', 
+                    SET password = ?, 
                         resetPasswordToken = $nullValue 
-                    WHERE resetPasswordToken = '$resetPassToken'";
-    $updateDB = $connection->query($queryUpdate);
+                    WHERE resetPasswordToken = ?";
+    $stmt = $connection->prepare($queryUpdate);
+    $stmt->bind_param("ss", $confirmPassHash, $resetPassToken);
+    $stmt->execute();
 
     header("Location: ../index.php");
     $_SESSION['success_msg'] = "Password changed!";

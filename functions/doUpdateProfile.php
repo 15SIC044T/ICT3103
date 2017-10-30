@@ -19,35 +19,34 @@ $connection->connect();
 // look through database based on accountid
 $queryUser = "SELECT * 
             FROM account 
-            WHERE accountID = '$userId'";
-$resultUser = $connection->query($queryUser);
+            WHERE accountID = ?";
+$stmt = $connection->prepare($queryUser);
+$stmt->bind_param("i", $userId);
+$stmt->execute();
+$resultUser = $stmt->get_result();
 
 // look through name on database that is not user
 $queryName = "SELECT name 
             FROM account 
-            WHERE accountID != '$userId'";
-$resultName = $connection->query($queryName);
+            WHERE accountID != ?";
+$stmt1 = $connection->prepare($queryName);
+$stmt1->bind_param("i", $userId);
+$stmt1->execute();
+$resultName = $stmt1->get_result();
 $otherNames = mysqli_fetch_all($resultName, MYSQLI_ASSOC);
-
-// loop other users' name for duplicate
-foreach ($otherNames as $on):
-    $oName = $on['name'];
-endforeach;
 
 // look through email on database that is not user
 $queryEmail = "SELECT email 
-                FROM account 
-                WHERE accountID != '$userId'";
-$resultEmail = $connection->query($queryEmail);
+            FROM account 
+            WHERE accountID != ?";
+$stmt2 = $connection->prepare($queryEmail);
+$stmt2->bind_param("i", $userId);
+$stmt2->execute();
+$resultEmail = $stmt2->get_result();
 $otherEmails = mysqli_fetch_all($resultEmail, MYSQLI_ASSOC);
 
-// loop other users' email for duplicate
-foreach ($otherEmails as $oe):
-    $oEmail = $oe['email'];
-endforeach;
-
 if ($connection->num_rows($resultUser) == 1) {
-    $user = $connection->fetch_array($resultUser);
+    $user = $resultUser->fetch_array();
     $dbName = $user['name'];
     $dbEmail = $user['email'];
     $dbPhone = $user['phone'];
@@ -60,86 +59,137 @@ if ($connection->num_rows($resultUser) == 1) {
             $_SESSION['neutral_msg'] = "No changes made!";
         } else { // other info changed
             if ($dbName != $name && $dbEmail == $email) { // name changed, email not
-                // check name is duplicate
-                if ($oName == $name) {
-                    header("Location: ../profile.php");
-                    $_SESSION['error_msg'] = "Name taken!";
-                } else { // name not duplicate
-                    $queryUpdate = "UPDATE account 
-                                    SET name = '$name' 
-                                    WHERE accountID = $userId";
-                    $updateDB = $connection->query($queryUpdate);
+                // loop other users' name for duplicate
+                foreach ($otherNames as $on):
+                    $oName = $on['name'];
 
-                    header("Location: ../profile.php");
-                    $_SESSION['success_msg'] = "Changes made!";
-                }
+                    // check name is duplicate
+                    if ($oName == $name) {
+                        header("Location: ../profile.php");
+                        $_SESSION['error_msg'] = "Name taken!";
+                        exit();
+                    }
+                endforeach;
+
+                // name not duplicate
+                $queryUpdate = "UPDATE account 
+                                SET name = ? 
+                                WHERE accountID = ?";
+                $stmt = $connection->prepare($queryUpdate);
+                $stmt->bind_param("si", $name, $userId);
+                $stmt->execute();
+
+                header("Location: ../profile.php");
+                $_SESSION['success_msg'] = "Changes made!";
             } elseif ($dbName == $name && $dbEmail != $email) { // name not, email changed
-                // check email is duplicate
-                if ($oEmail == $email) {
-                    header("Location: ../profile.php");
-                    $_SESSION['error_msg'] = "Email address taken!";
-                } else { // email not duplicate
-                    $queryUpdate = "UPDATE account 
-                                    SET email = '$email' 
-                                    WHERE accountID = $userId";
-                    $updateDB = $connection->query($queryUpdate);
+                // loop other users' email for duplicate
+                foreach ($otherEmails as $oe):
+                    $oEmail = $oe['email'];
 
-                    header("Location: ../profile.php");
-                    $_SESSION['success_msg'] = "Changes made!";
-                }
+                    // check email is duplicate
+                    if ($oEmail == $email) {
+                        header("Location: ../profile.php");
+                        $_SESSION['error_msg'] = "Email address taken!";
+                        exit();
+                    }
+                endforeach;
+
+                // email not duplicate
+                $queryUpdate = "UPDATE account 
+                                SET email = ? 
+                                WHERE accountID = ?";
+                $stmt = $connection->prepare($queryUpdate);
+                $stmt->bind_param("si", $email, $userId);
+                $stmt->execute();
+
+                header("Location: ../profile.php");
+                $_SESSION['success_msg'] = "Changes made!";
+            } else {
+                $queryUpdate = "UPDATE account 
+                                SET name = ?, 
+                                    email = ? 
+                                WHERE accountID = ?";
+                $stmt = $connection->prepare($queryUpdate);
+                $stmt->bind_param("ssi", $name, $email, $userId);
+                $stmt->execute();
+
+                header("Location: ../profile.php");
+                $_SESSION['success_msg'] = "Changes made!";
             }
         }
     } else { // mobile changed
         // name and email not changed
         if ($dbName == $name && $dbEmail == $email) {
             $queryUpdate = "UPDATE account 
-                            SET phone = '$mobile' 
-                            WHERE accountID = $userId";
-            $updateDB = $connection->query($queryUpdate);
+                            SET phone = ? 
+                            WHERE accountID = ?";
+            $stmt = $connection->prepare($queryUpdate);
+            $stmt->bind_param("si", $mobile, $userId);
+            $stmt->execute();
 
             header("Location: ../profile.php");
             $_SESSION['success_msg'] = "Changes made!";
         } else { // other info changed
             if ($dbName != $name && $dbEmail == $email) { // name changed, email not
-                // check name is duplicate
-                if ($oName == $name) {
-                    header("Location: ../profile.php");
-                    $_SESSION['error_msg'] = "Name taken!";
-                } else { // name not duplicate
-                    $queryUpdate = "UPDATE account 
-                                    SET name = '$name', 
-                                        phone = '$mobile' 
-                                    WHERE accountID = $userId";
-                    $updateDB = $connection->query($queryUpdate);
+                // loop other users' name for duplicate
+                foreach ($otherNames as $on):
+                    $oName = $on['name'];
 
-                    header("Location: ../profile.php");
-                    $_SESSION['success_msg'] = "Changes made!";
-                }
+                    // check name is duplicate
+                    if ($oName == $name) {
+                        header("Location: ../profile.php");
+                        $_SESSION['error_msg'] = "Name taken!";
+                        exit();
+                    }
+                endforeach;
+
+                // name not duplicate
+                $queryUpdate = "UPDATE account 
+                                SET name = ?, 
+                                    phone = ? 
+                                WHERE accountID = ?";
+                $stmt = $connection->prepare($queryUpdate);
+                $stmt->bind_param("ssi", $name, $mobile, $userId);
+                $stmt->execute();
+
+                header("Location: ../profile.php");
+                $_SESSION['success_msg'] = "Changes made!";
             } elseif ($dbName == $name && $dbEmail != $email) { // name not, email changed
-                // check email is duplicate
-                if ($oEmail == $email) {
-                    header("Location: ../profile.php");
-                    $_SESSION['error_msg'] = "Email address taken!";
-                } else { // email not duplicate
-                    $queryUpdate = "UPDATE account 
-                                    SET email = '$email', 
-                                        phone = '$mobile' 
-                                    WHERE accountID = $userId";
-                    $updateDB = $connection->query($queryUpdate);
+                // loop other users' email for duplicate
+                foreach ($otherEmails as $oe):
+                    $oEmail = $oe['email'];
 
-                    header("Location: ../profile.php");
-                    $_SESSION['success_msg'] = "Changes made!";
-                }
+                    // check email is duplicate
+                    if ($oEmail == $email) {
+                        header("Location: ../profile.php");
+                        $_SESSION['error_msg'] = "Email address taken!";
+                        exit();
+                    }
+                endforeach;
+
+                // email not duplicate
+                $queryUpdate = "UPDATE account 
+                                SET email = ?, 
+                                    phone = ? 
+                                WHERE accountID = ?";
+                $stmt = $connection->prepare($queryUpdate);
+                $stmt->bind_param("ssi", $email, $mobile, $userId);
+                $stmt->execute();
+
+                header("Location: ../profile.php");
+                $_SESSION['success_msg'] = "Changes made!";
             } else {
                 $queryUpdate = "UPDATE account 
-                                SET name = '$name', 
-                                    email = '$email', 
-                                    phone = '$mobile' 
-                                WHERE accountID = $userId";
-                    $updateDB = $connection->query($queryUpdate);
+                                SET name = ?, 
+                                    email = ?, 
+                                    phone = ? 
+                                WHERE accountID = ?";
+                $stmt = $connection->prepare($queryUpdate);
+                $stmt->bind_param("sssi", $name, $email, $mobile, $userId);
+                $stmt->execute();
 
-                    header("Location: ../profile.php");
-                    $_SESSION['success_msg'] = "Changes made!";
+                header("Location: ../profile.php");
+                $_SESSION['success_msg'] = "Changes made!";
             }
         }
     }

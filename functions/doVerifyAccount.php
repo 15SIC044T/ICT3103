@@ -16,9 +16,12 @@ $connection->connect();
 
 // look through database based on name
 $queryUser = "SELECT * 
-                FROM account 
-                WHERE accountID = $userId";
-$resultUser = $connection->query($queryUser);
+            FROM account 
+            WHERE accountID = ?";
+$stmt = $connection->prepare($queryUser);
+$stmt->bind_param("i", $userId);
+$stmt->execute();
+$resultUser = $stmt->get_result();
 
 // check whether the query is successful or not
 if ($connection->num_rows($resultUser) == 1) {
@@ -31,9 +34,11 @@ if ($connection->num_rows($resultUser) == 1) {
         $queryUpdate = "UPDATE account 
                         SET accountStatus = 'Verified', 
                             verificationToken = $nullValue 
-                        WHERE accountID = $userId";
-        $updateDB = $connection->query($queryUpdate);
-        
+                        WHERE accountID = ?";
+        $stmt = $connection->prepare($queryUpdate);
+        $stmt->bind_param("i", $userId);
+        $stmt->execute();
+
         $_SESSION['SESS_USERNAME'] = $dbName;
 
         header("Location: ../fileManager.php");

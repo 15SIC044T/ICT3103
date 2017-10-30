@@ -19,8 +19,11 @@ $connection->connect();
 // look through database based on accountID
 $queryUser = "SELECT * 
             FROM account 
-            WHERE accountID = '$userId'";
-$resultUser = $connection->query($queryUser);
+            WHERE accountID = ?";
+$stmt = $connection->prepare($queryUser);
+$stmt->bind_param("i", $userId);
+$stmt->execute();
+$resultUser = $stmt->get_result();
 
 if ($connection->num_rows($resultUser) == 1) {
     $user = $connection->fetch_array($resultUser);
@@ -51,9 +54,11 @@ if ($connection->num_rows($resultUser) == 1) {
                 $confirmPassHash = password_hash($confirmPassword, PASSWORD_BCRYPT);
 
                 $queryUpdate = "UPDATE account 
-                                SET password = '$confirmPassHash' 
-                                WHERE accountID = $userId";
-                $updateDB = $connection->query($queryUpdate);
+                                SET password = ? 
+                                WHERE accountID = ?";
+                $stmt = $connection->prepare($queryUpdate);
+                $stmt->bind_param("si", $confirmPassHash, $userId);
+                $stmt->execute();
 
                 header("Location: ../profile.php");
                 $_SESSION['success_msg'] = "Password changed!";

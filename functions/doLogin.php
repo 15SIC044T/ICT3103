@@ -17,12 +17,15 @@ $connection->connect();
 // look through database based on name
 $queryUser = "SELECT * 
             FROM account 
-            WHERE email = '$email'";
-$resultUser = $connection->query($queryUser);
+            WHERE email = ?";
+$stmt = $connection->prepare($queryUser);
+$stmt->bind_param("s", $email);
+$stmt->execute();
+$resultUser = $stmt->get_result();
 
 // check whether the query is successful or not
 if ($connection->num_rows($resultUser) == 1) {
-    $user = $connection->fetch_array($resultUser);
+    $user = $resultUser->fetch_array();
     $dbUserId = $user['accountID'];
     $dbPassHash = $user['password'];
     $dbAccountStatus = $user['accountStatus'];
@@ -41,7 +44,6 @@ if ($connection->num_rows($resultUser) == 1) {
         $timeBlock->add(new DateInterval('PT15M')); // datetime after 15min
         $timeUntil = $timeBlock->format('Y-m-d H:i:s'); // convert datetime to string
         $timeNow = date("Y-m-d H:i:s"); // current datetime
-
         // if over 15min
         if ($timeUntil <= $timeNow) {
             $timeNull = 'NULL';
@@ -49,8 +51,10 @@ if ($connection->num_rows($resultUser) == 1) {
             // set time period to NULL
             $queryTimeUpdate = "UPDATE account 
                                 SET failLoginTime = $timeNull 
-                                WHERE accountID = $dbUserId";
-            $updateTime = $connection->query($queryTimeUpdate);
+                                WHERE accountID = ?";
+            $stmt = $connection->prepare($queryTimeUpdate);
+            $stmt->bind_param("i", $dbUserId);
+            $stmt->execute();
 
             // verify the password again
             if ($verifyPassword == 1) {
@@ -68,9 +72,11 @@ if ($connection->num_rows($resultUser) == 1) {
                 $count = $dbLoginCount + 1;
 
                 $queryCountUpdate = "UPDATE account 
-                                    SET failLoginCount = $count 
-                                    WHERE accountID = $dbUserId";
-                $updateCount = $connection->query($queryCountUpdate);
+                                    SET failLoginCount = ? 
+                                    WHERE accountID = ?";
+                $stmt = $connection->prepare($queryCountUpdate);
+                $stmt->bind_param("ii", $count, $dbUserId);
+                $stmt->execute();
 
                 header("Location: ../index.php");
                 $_SESSION['error_msg'] = "Wrong username/password!";
@@ -98,8 +104,10 @@ if ($connection->num_rows($resultUser) == 1) {
                 // set time
                 $queryTimeUpdate = "UPDATE account 
                                     SET failLoginTime = now() 
-                                    WHERE accountID = $dbUserId";
-                $updateTime = $connection->query($queryTimeUpdate);
+                                    WHERE accountID = ?";
+                $stmt = $connection->prepare($queryTimeUpdate);
+                $stmt->bind_param("i", $dbUserId);
+                $stmt->execute();
 
                 header("Location: ../index.php");
                 $_SESSION['error_msg'] = "You have exceed the number of tries! Try again later!";
@@ -108,8 +116,10 @@ if ($connection->num_rows($resultUser) == 1) {
             // reset the count to 0 regardless
             $queryCountUpdate = "UPDATE account 
                                 SET failLoginCount = 0 
-                                WHERE accountID = $dbUserId";
-            $updateCount = $connection->query($queryCountUpdate);
+                                WHERE accountID = ?";
+            $stmt = $connection->prepare($queryCountUpdate);
+            $stmt->bind_param("i", $dbUserId);
+            $stmt->execute();
         } else { // within two attempts to login
             // if password valid in database
             if ($verifyPassword == 1) {
@@ -123,13 +133,23 @@ if ($connection->num_rows($resultUser) == 1) {
 
                     header("Location: ../fileManager.php");
                 }
+
+                // reset the count to 0 regardless
+                $queryCountUpdate = "UPDATE account 
+                                    SET failLoginCount = 0 
+                                    WHERE accountID = ?";
+                $stmt = $connection->prepare($queryCountUpdate);
+                $stmt->bind_param("i", $dbUserId);
+                $stmt->execute();
             } else { // wrong password entered, start the count
                 $count = $dbLoginCount + 1;
 
                 $queryCountUpdate = "UPDATE account 
-                                    SET failLoginCount = $count 
-                                    WHERE accountID = $dbUserId";
-                $updateCount = $connection->query($queryCountUpdate);
+                                    SET failLoginCount = ? 
+                                    WHERE accountID = ?";
+                $stmt = $connection->prepare($queryCountUpdate);
+                $stmt->bind_param("ii", $count, $dbUserId);
+                $stmt->execute();
 
                 header("Location: ../index.php");
                 $_SESSION['error_msg'] = "Wrong username/password!";

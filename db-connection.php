@@ -34,7 +34,7 @@ class Mysql_Driver {
         }
         return $result;
     }
-    
+
     public function insert_id() {
         $result = mysqli_insert_id($this->connection);
         if (!$result) {
@@ -51,5 +51,12 @@ class Mysql_Driver {
         return mysqli_fetch_array($result);
     }
 
+    public function prepare($qry) {
+        $result = mysqli_prepare($this->connection, $qry);
+        if (!$result) {
+            die(mysqli_error($this->connection));
+        }
+        return $result;
+    }
 }
 ?>

@@ -14,8 +14,11 @@ $connection->connect();
 // create query
 $queryEmail = "SELECT * 
                 FROM account 
-                WHERE email = '$email'";
-$resultEmail = $connection->query($queryEmail);
+                WHERE email = ?";
+$stmt = $connection->prepare($queryEmail);
+$stmt->bind_param("s", $email);
+$stmt->execute();
+$resultEmail = $stmt->get_result();
 
 if ($connection->num_rows($resultEmail) == 1) {
     $user = mysqli_fetch_assoc($resultEmail);
@@ -26,9 +29,11 @@ if ($connection->num_rows($resultEmail) == 1) {
     $resetPassToken = md5(uniqid(rand(), true));
 
     $queryUpdate = "UPDATE account 
-                    SET resetPasswordToken = '$resetPassToken' 
-                    WHERE accountID = " . $dbAccountId . "";
-    $updateDB = $connection->query($queryUpdate);
+                    SET resetPasswordToken = ? 
+                    WHERE accountID = ?";
+    $stmt = $connection->prepare($queryUpdate);
+    $stmt->bind_param("si", $resetPassToken, $dbAccountId);
+    $stmt->execute();
 
     // email content
     $subject = "Password Recovery";

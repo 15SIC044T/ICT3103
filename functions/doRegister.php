@@ -43,14 +43,20 @@ $connection->connect();
 // look through database based on name
 $queryName = "SELECT * 
             FROM account 
-            WHERE name = '$name'";
-$resultName = $connection->query($queryName);
+            WHERE name = ?";
+$stmt = $connection->prepare($queryName);
+$stmt->bind_param("s", $name);
+$stmt->execute();
+$resultName = $stmt->get_result();
 
 // look through database based on email
 $queryEmail = "SELECT * 
             FROM account 
-            WHERE email = '$email'";
-$resultEmail = $connection->query($queryEmail);
+            WHERE email = ?";
+$stmt1 = $connection->prepare($queryEmail);
+$stmt1->bind_param("s", $email);
+$stmt1->execute();
+$resultEmail = $stmt1->get_result();
 
 // password validation
 $uppercase = preg_match('@[A-Z]@', $password);
@@ -78,14 +84,19 @@ if ($connection->num_rows($resultName) == 1) {
     $accountToken = md5(uniqid(rand(), true)); // token to verify account
 
     $queryAdd = "INSERT INTO account(name, email, password, phone, accountStatus, verificationToken, publicKey) 
-                VALUES('$name', '$email', '$confirmPassHash', '$mobile', 'Unverified', '$accountToken', '$pubPath')";
-    $addUser = $connection->query($queryAdd);
+                VALUES(?, ?, ?, ?, 'Unverified', ?, ?)";
+    $stmt = $connection->prepare($queryAdd);
+    $stmt->bind_param("ssssss", $name, $email, $confirmPassHash, $mobile, $accountToken, $pubPath);
+    $stmt->execute();
 
     // send verification email
     $queryEmailAgain = "SELECT * 
                         FROM account 
-                        WHERE email = '$email'";
-    $resultEmailAgain = $connection->query($queryEmailAgain);
+                        WHERE email = ?";
+    $stmt1 = $connection->prepare($queryEmailAgain);
+    $stmt1->bind_param("s", $email);
+    $stmt1->execute();
+    $resultEmailAgain = $stmt1->get_result();
 
     if ($connection->num_rows($resultEmailAgain) == 1) {
         $user = mysqli_fetch_assoc($resultEmailAgain);
@@ -105,7 +116,7 @@ if ($connection->num_rows($resultName) == 1) {
 
     header("Location: ../index.php");
     $_SESSION['success_msg'] = "Register Done! Check email to verify account!";
-    
+
     // to display private key to the user
     $_SESSION['REGISTER_OK'] = "success";
     $_SESSION['KEY'] = $pkey;
