@@ -25,7 +25,7 @@ $resultUser = $stmt->get_result();
 
 // check whether the query is successful or not
 if ($connection->num_rows($resultUser) == 1) {
-    $user = $connection->fetch_array($resultUser);
+    $user = $resultUser->fetch_array();
     $dbName = $user['name'];
     $dbToken = $user['verificationToken'];
     $nullValue = 'NULL';

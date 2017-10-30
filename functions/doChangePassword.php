@@ -26,7 +26,7 @@ $stmt->execute();
 $resultUser = $stmt->get_result();
 
 if ($connection->num_rows($resultUser) == 1) {
-    $user = $connection->fetch_array($resultUser);
+    $user = $resultUser->fetch_array();
     $dbPassHash = $user['password'];
 
     // check old password with database
