@@ -2,8 +2,8 @@
 define('AES_256_CBC', 'aes-256-cbc');
 session_start();
 
-include("db-connection.php");  // Include the class file for database access
-$conn = new Mysql_Driver();  // Create an object for database access
+require_once('dbConnection.php');
+
 //Update File
 if (isset($_POST['actionEdit'])) { 
     
@@ -26,18 +26,18 @@ if (isset($_POST['actionEdit'])) {
         $errorForm = true;
     }
     
-    
     //If expiryDate set 
     if ($fExpiryDate < date("Y-m-d H:i:s"))
-    {  
-        $conn->connect();
-        if ($fPermission == "Public") {
-            $qry = "SELECT fileURL, aesKey FROM file WHERE fileID = $fileID";
+    {   
+        if ($fPermission == "Public") { 
             
-            $result = $conn->query($qry);
-  
-            if ($conn->num_rows($result) > 0) {
-                while ($row = $conn->fetch_array($result)) {
+            $stmt = $conn->prepare("SELECT fileURL, aesKey FROM file WHERE fileID = ?");
+            $stmt->bind_param("i", $fileID);
+            $stmt->execute();
+            $result = $stmt->get_result();
+
+            if ($result->num_rows > 0) {
+                while ($row = $result->fetch_assoc()) {
                     $file = $row["fileURL"];
                     $aKey = $row["aesKey"];
                 }
@@ -50,9 +50,10 @@ if (isset($_POST['actionEdit'])) {
             $pFile = "uploads/public/" . substr($file, 8);
             file_put_contents($pFile, $decrypted);
             
-            $qry2 = "UPDATE file SET publicURL='$pFile' WHERE fileID = $fileID";
-            $conn->query($qry2);
-            $conn->close();
+            $stmt = $conn->prepare("UPDATE file SET publicURL=? WHERE fileID = ?"); 
+            $stmt->bind_param('si', $pFile, $fileID);
+            $stmt->execute();  
+            $stmt->close();
         }
         
         if ($fExpiryDate == "")
@@ -60,56 +61,61 @@ if (isset($_POST['actionEdit'])) {
         else
             $datetime = date("Y-m-d H:i:s", strtotime($fExpiryDate));  
 
-        $conn->connect();
-        $qry = "UPDATE file SET fileName='$fName', expiryDate=NULLIF('$datetime',''), filePermission='$fPermission' WHERE fileID = $fileID";
-        $conn->query($qry);
-        $conn->close();
+        $stmt = $conn->prepare("UPDATE file SET fileName=?, expiryDate=NULLIF(?,''), filePermission=? WHERE fileID = ?"); 
+        $stmt->bind_param('sssi', $fName, $datetime, $fPermission, $fileID);
+        $stmt->execute();  
+        $stmt->close(); 
 
         $_SESSION['success_msg'] = "<strong>" . $fName . "</strong> DETAILS has been updated successfully! ";  
         
-        $fPermission = "private";
-    
+        $fPermission = "private"; 
         $exist = false;
-        $conn->connect(); 
-        //check if email exists, if exist add, else error
-        $qry = "SELECT accountID FROM account WHERE email = '" . $email . "'";
-        $result = $conn->query($qry);
+        
+        $stmt = $conn->prepare("SELECT accountID FROM account WHERE email = ?");
+        $stmt->bind_param("s", $email);
+        $stmt->execute();
+        $result = $stmt->get_result();
 
-        if ($conn->num_rows($result) > 0) {
-            while ($row = $conn->fetch_array($result)) {
+        if ($result->num_rows > 0) {
+            while ($row = $result->fetch_assoc()) {
                 $accountID = $row["accountID"];
                 $exist = true;
             }
-        } 
-
+        }   
+        $stmt->close(); 
         
-        if ($exist) {
-            
+        if ($exist) { 
             $existShared = false;
             //check if the file already inserted into the table
-            //check if email exists, if exist add, else error
-            $qry3 = "SELECT accountID FROM filesharing WHERE fileID = $fileID AND accountID IN (SELECT accountID FROM account WHERE email = '$email') "
-                    . "UNION "
-                    . "SELECT accountID FROM file WHERE fileID = $fileID AND accountID IN (SELECT accountID FROM account WHERE email = '$email')";
-            $result3 = $conn->query($qry3);
-
-            if ($conn->num_rows($result3) > 0) {
-                while ($row3 = $conn->fetch_array($result3)) {
+            //check if email exists, if exist add, else error  
+            $stmt = $conn->prepare("SELECT accountID FROM filesharing WHERE fileID = ? AND accountID IN (SELECT accountID FROM account WHERE email = ?) "
+                    . "UNION SELECT accountID FROM file WHERE fileID = ? AND accountID IN (SELECT accountID FROM account WHERE email = ?)");
+            $stmt->bind_param("isis", $fileID, $email, $fileID, $email);
+            $stmt->execute();
+            $result3 = $stmt->get_result();
+            
+            if ($result3->fetch_assoc() > 0) {
+                while ($row3 = $result3->fetch_assoc()) {
                     $accountID = $row3["accountID"];
                     $existShared = true;
                 }
             } 
+            $stmt->close(); 
             
             if (!$existShared) {
-                $qry2 = "SELECT f.aesKey, a.publicKey FROM file f, account a WHERE f.fileID = ".$fileID." AND a.accountID = ". $accountID;
-                $result2 = $conn->query($qry2);
+                $stmt = $conn->prepare("SELECT f.aesKey, a.publicKey FROM file f, account a WHERE f.fileID = ? AND a.accountID = ?");
+                $stmt->bind_param("ii", $fileID, $accountID);
+                $stmt->execute();
+                $result2 = $stmt->get_result(); 
 
-                if ($conn->num_rows($result2) > 0) {
-                    while ($row = $conn->fetch_array($result2)) {
+                if ($result2->fetch_assoc() > 0) {
+                    while ($row = $result2->fetch_assoc()) {
                         $aKey = $row["aesKey"];
                         $pKey = $row["publicKey"];
                     }
                 } 
+                $stmt->close(); 
+                
                 $pKey = substr($pKey, 3);
                 $eAes = "keys/eAes/" . $fileID . "_" . $accountID . "_" . date("Y-m-d_H-i-s",time()) . "_eAes.key";
                 $data = file_get_contents($aKey);
@@ -117,16 +123,17 @@ if (isset($_POST['actionEdit'])) {
                 openssl_public_encrypt($data, $encrypted, $publicKey);
                 file_put_contents($eAes, $encrypted);
 
-                //Insert the sharing emails
-                $qryInsert = "INSERT INTO filesharing (fileID, accountID, invitationAccepted, eAesKey) VALUES ($fileID, $accountID, 1, '$eAes')";
-                $conn->query($qryInsert);
-                $conn->close();
+                //Insert the sharing emails 
+                $stmt = $conn->prepare("INSERT INTO filesharing (fileID, accountID, invitationAccepted, eAesKey) VALUES (?, ?, 1, ?)");
+                $stmt->bind_param("iis", $fileID, $accountID, $eAes);
+                $stmt->execute();
+                $stmt->close(); 
 
-                //After insert, update the status of filePermission to "private" just in case someone add sharing users to public 
-                $conn->connect();
-                $qry = "UPDATE file SET filePermission='$fPermission' WHERE fileID = $fileID";
-                $conn->query($qry);
-                $conn->close();
+                //After insert, update the status of filePermission to "private" just in case someone add sharing users to public
+                $stmt = $conn->prepare("UPDATE file SET filePermission=? WHERE fileID = ?");
+                $stmt->bind_param("si", $fPermission, $fileID);
+                $stmt->execute();
+                $stmt->close();  
  
                 $_SESSION['success_msg'] = "<strong>" . $fileName . "</strong> has been shared and save successfully!"; 
             }
@@ -169,18 +176,23 @@ if (isset($_POST['actionDelete'])) {
     
     //Query for file URL
     $conn->connect();
-    $qry = "SELECT * FROM file WHERE fileID = $fileID AND accountID = " . $_SESSION['SESS_ACC_ID'];
-    $result = $conn->query($qry);
-    $row = $conn->fetch_array($result);
+    $stmt = $conn->prepare("SELECT fileName, fileURL FROM file WHERE fileID = ? AND accountID = ?");
+    $stmt->bind_param("ii", $fileID, $_SESSION["SESS_ACC_ID"]);
+    $stmt->execute();
+    $result = $stmt->get_result();  
+    $row = $result->fetch_assoc(); 
     
     $fileName = $row["fileName"];
     $fileURL = $row["fileURL"];
+    $stmt->close();  
+    
     
     //Delete file from database 
-    $qryDelete = "DELETE FROM file WHERE fileID = $fileID AND accountID = " . $_SESSION['SESS_ACC_ID'];
-    $conn->query($qryDelete);
-    $conn->close();
- 
+    $stmt = $conn->prepare("DELETE FROM file WHERE fileID = ? AND accountID = ?");
+    $stmt->bind_param("ii", $fileID, $_SESSION["SESS_ACC_ID"]);
+    $stmt->execute();
+    $stmt->close(); 
+    
     //Delete file from directory
     if (file_exists($fileURL)) { 
         unlink($fileURL); 
@@ -205,24 +217,23 @@ if (isset($_POST['actionDeIete'])) {
     
     $fileID = $_POST["actionDeIete"]; 
     $prevURL = $_POST["prevURL"];
+     
+    //Delete the existing sharing emails from database   
+    $stmt = $conn->prepare("DELETE FROM filesharing WHERE fileID = ? AND accountID = ?");
+    $stmt->bind_param("ii", $fileID, $_SESSION["SESS_ACC_ID"]);
+    $stmt->execute();
+    $stmt->close();
     
-     //Query for file URL
-    $conn->connect();
-    //Delete the existing sharing emails from database 
-    $qryDelete = "DELETE FROM filesharing WHERE fileID = $fileID AND accountID = " . $_SESSION["SESS_ACC_ID"];
-    $conn->query($qryDelete);
-    $conn->close();  
-    
-    //Query for file URL
-    $conn->connect();
-    $qry = "SELECT * FROM file WHERE fileID = $fileID AND accountID = " . $_SESSION['SESS_ACC_ID'];
-    $result = $conn->query($qry);
-    $row = $conn->fetch_array($result);
-    
+    //Query for file URL 
+    $stmt = $conn->prepare("SELECT fileName FROM file WHERE fileID = ? AND accountID = ?");
+    $stmt->bind_param("ii", $fileID, $_SESSION["SESS_ACC_ID"]);
+    $stmt->execute();
+    $result = $stmt->get_result();  
+    $row = $result->fetch_assoc(); 
     $fileName = $row["fileName"];
+    $stmt->close(); 
     
     $_SESSION['success_msg'] = "<strong>" . $fileName . "</strong> has been unlinked successfully!";
-    $conn->close();  
      
     if (strpos($prevURL, "file.php")) {
         header("Location: ". $prevURL);
@@ -244,14 +255,23 @@ if (isset($_POST['actionDelShare'])) {
     $sharedID = $_POST["actionDelShare"]; 
     $prevURL = $_POST["prevURL"];
     
-     //Query for file URL
-    $conn->connect();
-    //Delete the existing sharing emails from database 
-    $qryDelete = "DELETE FROM filesharing WHERE filesharingID = $sharedID";
-    $conn->query($qryDelete);
-    $conn->close();  
+     //Query for file URL 
+    //Delete the existing sharing emails from database  
+    $stmt = $conn->prepare("DELETE FROM filesharing WHERE filesharingID = ?");
+    $stmt->bind_param("i", $sharedID);
+    $stmt->execute();
+    $stmt->close();
     
-     $_SESSION['success_msg'] = "<strong>" . $fileName . "</strong> has been unlinked successfully!";
+    //Query for file URL 
+    $stmt = $conn->prepare("SELECT fileName FROM file WHERE fileID = ? AND accountID = ?");
+    $stmt->bind_param("ii", $fileID, $_SESSION["SESS_ACC_ID"]);
+    $stmt->execute();
+    $result = $stmt->get_result();  
+    $row = $result->fetch_assoc(); 
+    $fileName = $row["fileName"];
+    $stmt->close(); 
+
+    $_SESSION['success_msg'] = "<strong>" . $fileName . "</strong> has been unlinked successfully!";
     
     if (strpos($prevURL, "file.php")) {
         header("Location: ". $prevURL);
@@ -272,8 +292,7 @@ if (isset($_POST['actionShare'])) {
     $fileID = $_POST["actionShare"]; 
     $prevURL = $_POST["prevURL"];
     $email = filter_var($_POST["txtEmail"], FILTER_SANITIZE_EMAIL);
-    
-    
+     
     if (strpos($prevURL, "file.php")) {
         header("Location: ". $prevURL);
         exit();

@@ -67,18 +67,20 @@
                         <tbody>
 
                             <?php
-                            $conn = new Mysql_Driver();
-                            $conn->connect();
+                            require_once('dbConnection.php');
 
                             $accountID = $_SESSION['SESS_ACC_ID'];
-                            $qry = "SELECT (CASE WHEN (f.accountID = $accountID) THEN 1 ELSE 0 END) AS state, f.* FROM file f WHERE f.accountID = $accountID"
+                            
+                            $stmt = $conn->prepare("SELECT (CASE WHEN (f.accountID = ?) THEN 1 ELSE 0 END) AS state, f.uploadDate, f.expiryDate, f.fileID, f.fileName, f.fileType, f.fileSize, f.filePermission, f.downloadTimes FROM file f WHERE f.accountID = ?"
                                     . " UNION "
-                                    . "SELECT (CASE WHEN (f.accountID = $accountID) THEN 1 ELSE 0 END) AS state, f.* FROM file f WHERE f.fileID IN (SELECT fileID FROM filesharing WHERE accountID = $accountID)";
-                            $result = $conn->query($qry);
+                                    . "SELECT (CASE WHEN (f.accountID = ?) THEN 1 ELSE 0 END) AS state, f.uploadDate, f.expiryDate, f.fileID, f.fileName, f.fileType, f.fileSize, f.filePermission, f.downloadTimes FROM file f WHERE f.fileID IN (SELECT fileID FROM filesharing WHERE accountID = ?)");
+                            $stmt->bind_param("iiii", $accountID, $accountID, $accountID, $accountID);
+                            $stmt->execute();
+                            $result = $stmt->get_result();   
 
-                            if ($conn->num_rows($result) > 0) { //(result)
+                            if ($result->num_rows > 0) { //(result)
                                 //Loop tdrough tde result and print tde data to tde table
-                                while ($row = $conn->fetch_array($result)) {
+                                while ($row = $result->fetch_assoc()) {
 
                                     $FormatedUploadDate = $row["uploadDate"] == NULL ? "" : date("j M Y H:i:s A", strtotime($row["uploadDate"]));
                                     $FormatedExpiryDate = $row["expiryDate"] == NULL ? "" : date("j M Y H:i:s A", strtotime($row["expiryDate"]));
@@ -108,7 +110,7 @@
                                     echo '</tr>';
                                 }
                             }
-                            $conn->close();
+                            $stmt->close();
                             ?>
 
                         </tbody>

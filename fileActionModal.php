@@ -1,14 +1,18 @@
- <?php
-    $conn = new Mysql_Driver();
-    $conn->connect();
-    $accountID = $_SESSION['SESS_ACC_ID'];
-    $qry = "SELECT (CASE WHEN (f.accountID = $accountID) THEN 1 ELSE 0 END) AS state, f.* FROM file f WHERE f.accountID = $accountID"
-            . " UNION "
-            . "SELECT (CASE WHEN (f.accountID = $accountID) THEN 1 ELSE 0 END) AS state, f.* FROM file f WHERE f.fileID IN (SELECT fileID FROM filesharing WHERE accountID = $accountID)";
-    $result = $conn->query($qry);
-    if ($conn->num_rows($result) > 0) { //(result)
+<?php
+
+require_once('dbConnection.php');
+$accountID = $_SESSION['SESS_ACC_ID']; 
+
+$stmt = $conn->prepare("SELECT (CASE WHEN (f.accountID = ?) THEN 1 ELSE 0 END) AS state, f.fileID, f.fileName, f.expiryDate, f.filePermission FROM file f WHERE f.accountID = ?"
+        . " UNION SELECT (CASE WHEN (f.accountID = ?) THEN 1 ELSE 0 END) AS state, f.fileID, f.fileName, f.expiryDate, f.filePermission FROM file f WHERE f.fileID IN "
+        . "(SELECT fileID FROM filesharing WHERE accountID = ?)");
+$stmt->bind_param("iiii", $accountID, $accountID, $accountID, $accountID);
+$stmt->execute();
+$result = $stmt->get_result();
+
+if ($result->num_rows > 0) { //(result)
         //Loop tdrough tde result and print tde data to tde table
-        while ($row = $conn->fetch_array($result)) {
+        while ($row = $result->fetch_assoc()) {
             $expiryDate = $row["expiryDate"];
             $FormatedExpiryDate = $expiryDate == NULL ? "" : date("m-d-Y H:i:s A", strtotime($expiryDate));
              // Modal EDIT
@@ -68,13 +72,15 @@
                                                 </tr>
                                             </thead> 
                                             <tbody>';    
-                                                //Run SQL statement: to query for the shared 
-                                                $qryShared = "SELECT a.email, fs.* FROM fileSharing fs INNER JOIN account a ON fs.accountID = a.accountID WHERE fs.fileID = " . $row['fileID'] . " AND fs.owner = 0";
-                                                $resultShared = $conn->query($qryShared);
+                                                //Run SQL statement: to query for the shared   
+                                                $stmt = $conn->prepare("SELECT a.email, fs.* FROM fileSharing fs INNER JOIN account a ON fs.accountID = a.accountID WHERE fs.fileID = ? AND fs.owner = 0");
+                                                $stmt->bind_param("i", $row['fileID']);
+                                                $stmt->execute();
+                                                $resultShared = $stmt->get_result(); 
   
-                                                if ($conn->num_rows($resultShared) > 0) { //(result)
+                                                if ($resultShared->num_rows > 0) { //(result)
                                                     //Loop tdrough tde result and print tde data to tde table
-                                                    while ($rowShared = $conn->fetch_array($resultShared)) { 
+                                                    while ($rowShared = $resultShared->fetch_assoc()) { 
                                                         $shareFileID = $rowShared["fileSharingID"];
 
                                                         echo '<tr>';
@@ -136,10 +142,8 @@
                                                 }  
                                                 });
                                             });
-                                        </script>
-                                                
-
-
+                                        </script> 
+                                        
                                                 <button class="btn btn-lg btn-block btn-success" name="save" type="submit">Save</button>
                                             </div>
                                         </div> 
@@ -219,9 +223,11 @@
                     </div>
                 </div>'; 
             }
-        //Run SQL statement: to query for the shared 
-        $qrySharedDel = "SELECT a.email, fs.* FROM fileSharing fs INNER JOIN account a ON fs.accountID = a.accountID WHERE fs.fileID = " . $row['fileID'];
-        $resultSharedDel = $conn->query($qrySharedDel);
+        //Run SQL statement: to query for the shared  
+        $stmt = $conn->prepare("SELECT a.email, fs.* FROM fileSharing fs INNER JOIN account a ON fs.accountID = a.accountID WHERE fs.fileID = ?");
+	$stmt->bind_param("i", $row['fileID']);
+        $stmt->execute();
+        $resultSharedDel = $stmt->get_result();
 
         echo '<form id="delShareForm" name="delShareForm" method="post" action="fileAction.php">
                 <input type="hidden" id="sharedEmail" name="sharedEmail" />
@@ -229,9 +235,9 @@
                 <input type="hidden" id="prevURL" name="prevURL" /> 
                     </form>';
         
-        if ($conn->num_rows($resultSharedDel) > 0) { //(result)
+        if ($resultSharedDel->num_rows > 0) { //(result)
             //Loop tdrough tde result and print tde data to tde table
-            while ($rowSharedDel = $conn->fetch_array($resultSharedDel)) {
+            while ($rowSharedDel = $resultSharedDel->fetch_assoc()) {
                 $shareFileID = $rowSharedDel["fileSharingID"];
                 $sharedEmail = $rowSharedDel["email"];
                 
@@ -250,5 +256,5 @@
             }
         }
     }
-    $conn->close();
+    $stmt->close();
 ?>

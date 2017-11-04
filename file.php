@@ -21,23 +21,20 @@
                     <?php echo "<h1>" . $_SESSION['SESS_USERNAME'] . "'s File</h1>" ?>
                     
                     <?php
-                            $conn = new Mysql_Driver();
-                            $conn->connect();
-
+                            require_once('dbConnection.php');
                             $accountID = $_SESSION['SESS_ACC_ID'];
-                            $fileID = $_GET["fID"]; 
-                            $qry = "SELECT a.name, f.* FROM file f INNER JOIN account a ON a.accountID = f.accountID WHERE f.fileID = $fileID";
-                            $result = $conn->query($qry);
-
-                            if ($conn->num_rows($result) > 0) { //(result)
+                            $fileID = $_GET["fID"];  
+                            $stmt = $conn->prepare("SELECT a.name, f.accountID, f.fileName, f.fileType, f.fileSize, f.hash, f.uploadDate, f.expiryDate, f.filePermission, f.fileStatus, f.downloadTimes FROM file f INNER JOIN account a ON a.accountID = f.accountID WHERE f.fileID = ?");
+                            $stmt->bind_param("i", $fileID);
+                            $stmt->execute();
+                            $result = $stmt->get_result();   
+                            if ($result->num_rows > 0) { //(result)
                                 //Loop tdrough tde result and print tde data to tde table
-                                while ($row = $conn->fetch_array($result)) {
+                                while ($row = $result->fetch_assoc()) {
                                     
-                                    $uploadPerson = $row["name"]; 
+                                    $uploadPerson = $row["name"];  
                                     $uploaderID = $row["accountID"];
                                     $fileName = $row["fileName"];
-                                    $fileURL = $row["fileURL"];
-                                    $fileAESKey = $row["aesKey"];
                                     $fileType = $row["fileType"];
                                     $fileSize = round($row["fileSize"] / 1000.0 / 1000.0, 2) .  "MB"; 
                                     $fileHash = $row["hash"];
@@ -48,7 +45,7 @@
                                     $downloadTimes = $row["downloadTimes"]; 
                                 } 
                             }
-                            $conn->close();
+                            $stmt->close();
                               
                     ?>
                     <br>
@@ -60,7 +57,7 @@
                         //Check file type for imaage
                         $imgExtensions = ".png,.jpg,.gif,.bmp,.jpeg,.ico";
                         if (strpos($imgExtensions, "." . $fileType) == false) {
-                            echo '<img src="' . $fileURL . '" style="width: 100%;"/>';
+                            echo '<img src="file/no-preview.png" style="width: 100%;"/>';
                         } else {
                             echo '<img src="file/no-preview.png" style="width: 100%;"/>';
                         }

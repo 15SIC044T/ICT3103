@@ -1,10 +1,7 @@
 <?php
 // start session
 session_start();
-define('AES_256_CBC', 'aes-256-cbc');
-
-include_once('db-connection.php'); 
-$conn = new Mysql_Driver();
+define('AES_256_CBC', 'aes-256-cbc'); 
 
 if (!empty($_FILES)) {
     
@@ -25,14 +22,14 @@ if (!empty($_FILES)) {
     $hash = hash_file('sha256', $_FILES['file']['tmp_name']);
     
     if (move_uploaded_file($_FILES['file']['tmp_name'], $uploaded_file)) {
-
-        //echo "<script>javascript: alert('test msgbox')></script>";
+ 
+        require_once('dbConnection.php');
+        //insert file information into db table 
         
-        //insert file information into db table
-        $conn->connect();
-        $mysql_insert = "INSERT INTO file (accountID, fileName, fileURL, fileType, fileSize, aesKey, hash)VALUES('" . $_SESSION['SESS_ACC_ID'] . "','" . $ext['filename'] . "','" . $uploaded_file . "','" . $ext['extension'] . "','" . filesize($uploaded_file) . "','" . $aesKey . "','" . $hash . "')";
-        $conn->query($mysql_insert); 
-        $conn->close();   
+        $stmt = $conn->prepare("INSERT INTO file (accountID, fileName, fileURL, fileType, fileSize, aesKey, hash) VALUES (?, ?, ?, ?, ?, ?, ?)");
+	$stmt->bind_param("issssss", $_SESSION['SESS_ACC_ID'], $ext['filename'], $uploaded_file, $ext['extension'], filesize($uploaded_file), $aesKey, $hash);
+        $stmt->execute();
+        $stmt->close();   
     }
 }
 ?>

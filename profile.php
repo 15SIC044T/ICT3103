@@ -9,13 +9,12 @@
             <div class="row">
                 <div class="col-sm-12">
                     <?php
-                    $connection = new Mysql_Driver();
-                    $connection->connect();
+                    require_once('dbConnection.php');
 
                     $queryUser = "SELECT * 
                                 FROM account 
                                 WHERE accountID = ?";
-                    $stmt = $connection->prepare($queryUser);
+                    $stmt = $conn->prepare($queryUser);
                     $stmt->bind_param("s", $_SESSION['SESS_ACC_ID']);
                     $stmt->execute();
                     $resultUser = $stmt->get_result();
@@ -24,6 +23,7 @@
                     $dbName = $user['name'];
                     $dbEmail = $user['email'];
                     $dbPhone = $user['phone'];
+                    $stmt->close();
 
                     echo "<h1>" . $dbName . "'s Profile</h1>"
                     ?>

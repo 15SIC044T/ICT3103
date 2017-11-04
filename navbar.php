@@ -5,6 +5,7 @@ if (session_status() == PHP_SESSION_NONE) {
 
     // include database connection details
     include 'db-connection.php';
+    require_once('dbConnection.php'); 
 } 
 
 // set active to navbar link

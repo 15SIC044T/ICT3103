@@ -2,20 +2,19 @@
  
 include "fileCheckPermission.php";
 include "fileCheckExpiry.php";
-
-$conn = new Mysql_Driver();
-$conn->connect();
-
+ 
 $accountID = $_SESSION['SESS_ACC_ID'];
 $fileID = $_GET["fID"];
 
-$qry = "SELECT a.name, f.* FROM file f INNER JOIN account a ON a.accountID = f.accountID WHERE f.fileID = $fileID";
-$result = $conn->query($qry);
+require_once('dbConnection.php');
+$stmt = $conn->prepare("SELECT a.name, f.accountID, f.fileName, f.fileURL, f.aesKey, f.fileType, f.fileSize, f.hash, f.filePermission, f.publicURL FROM file f INNER JOIN account a ON a.accountID = f.accountID WHERE f.fileID = ?");
+$stmt->bind_param("i", $fileID);
+$stmt->execute();
+$result = $stmt->get_result(); 
 
-if ($conn->num_rows($result) > 0) { //(result)
+if ($result->num_rows > 0) { //(result)
     //Loop tdrough tde result and print tde data to tde table
-    while ($row = $conn->fetch_array($result)) {
-         
+    while ($row = $result->fetch_assoc()) { 
         $uploaderID = $row["accountID"];
         $fileName = $row["fileName"];
         $fileURL = $row["fileURL"];
@@ -27,6 +26,7 @@ if ($conn->num_rows($result) > 0) { //(result)
         $publicURL = $row["publicURL"];
     }
 }
+$stmt->close();
 
 $realKey = ""; 
 
@@ -35,23 +35,22 @@ if ($uploaderID == $accountID) {
     $realKey = $fileAESKey;
 } else {
     //Get the uploader file
-    //check if owner itself has its filehsaring private key  
-    $qry2 = "SELECT eAesKey FROM filesharing WHERE fileID = $fileID AND accountID = $accountID"; 
-    $result2 = $conn->query($qry2);
+    //check if owner itself has its filehsaring private key   
+    $stmt = $conn->prepare("SELECT eAesKey FROM filesharing WHERE fileID = ? AND accountID = ?");
+    $stmt->bind_param("ii", $fileID, $accountID);
+    $stmt->execute();
+    $result = $stmt->get_result();
 
-    if ($conn->num_rows($result2) > 0) { //(result)
+    if ($result->num_rows > 0) { //(result)
         //Loop tdrough tde result and print tde data to tde table
-        while ($row2 = $conn->fetch_array($result2)) {
- 
+        while ($row2 = $result->fetch_assoc()) { 
             $fileEAESKey = $row2["eAesKey"];  
         }
     } 
     $realKey = $fileEAESKey;
-}
-
-
+} 
 //Do all the logic before closing connection. If not zip file will cause error.
-$conn->close();
+$stmt->close();
 
  
 //Create a zip file in the directory for download
@@ -74,11 +73,12 @@ if ($filePermission == "private") {
 }
 $zip->close();
 
-//Update file download times
-$conn->connect();
-$qry = "UPDATE file SET downloadTimes = (downloadTimes + 1) WHERE fileID = $fileID";
-$conn->query($qry);
-$conn->close();
+
+//Update file download times 
+$stmt = $conn->prepare("UPDATE file SET downloadTimes = (downloadTimes + 1) WHERE fileID = ?");
+$stmt->bind_param("i", $fileID);
+$stmt->execute(); 
+$stmt->close(); 
 
 sleep(1);
 
@@ -92,9 +92,7 @@ readfile($zip_name);
 //Delete file from directory
 if (file_exists($zip_name)) {
     unlink($zip_name);
-} 
+}  
 
-
-exit();
-
+exit(); 
 ?>

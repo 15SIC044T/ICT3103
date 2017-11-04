@@ -4,25 +4,23 @@ if (session_status() == PHP_SESSION_NONE) {
     session_start(); 
     
     // include database connection details
-    include 'db-connection.php';
+    require_once('dbConnection.php');
 } 
-
-$conn = new Mysql_Driver();  // Create an object for database access
 
 $accountID = $_SESSION['SESS_ACC_ID'];
 $fileID = $_GET["fID"]; 
-//Query for file URL
-$conn->connect();
-$qry = "SELECT f.fileID FROM file f WHERE f.fileID = $fileID AND f.filePermission = 'public' UNION "
-        . "SELECT f.fileID FROM file f WHERE f.accountID = $accountID AND f.fileID = $fileID UNION 
-        SELECT fs.fileID FROM filesharing fs WHERE fs.accountID = $accountID AND fs.fileID = $fileID";
-$result = $conn->query($qry);
- 
-if ($conn->num_rows($result) == 0) {
+//Query for file URL  
+$stmt = $conn->prepare("SELECT f.fileID FROM file f WHERE f.fileID = ? AND f.filePermission = 'public' UNION "
+        . "SELECT f.fileID FROM file f WHERE f.accountID = ? AND f.fileID = ? UNION "
+        . "SELECT fs.fileID FROM filesharing fs WHERE fs.accountID = ? AND fs.fileID = ?");
+$stmt->bind_param("iiiii", $fileID, $accountID, $fileID, $accountID, $fileID);
+$stmt->execute();
+$result = $stmt->get_result();
+
+if ($result->num_rows == 0) {
     header ("Location: 404.php");
     exit();
-}
-
-$conn->close();
+} 
+$stmt->close();
 
 ?>
