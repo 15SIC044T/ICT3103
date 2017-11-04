@@ -4,18 +4,14 @@
 session_start();
 
 // include database connection details
-include "../db-connection.php";
+require_once('../dbConnection.php');
 
 // sanitize the POST values
 $userId = $_SESSION['SESS_ACC_ID'];
 $oldPassword = $_POST['inputOld'];
 $newPassword = $_POST['inputNew'];
 $confirmPassword = $_POST['inputConfirm'];
-
-// connect database
-$connection = new Mysql_Driver();
-$connection->connect();
-
+ 
 // look through database based on accountID
 $queryUser = "SELECT * 
             FROM account 
@@ -83,4 +79,5 @@ if ($connection->num_rows($resultUser) == 1) {
     header("Location: ../profile.php");
     $_SESSION['error_msg'] = "Invalid password!";
 }
+$stmt->close();
 ?>

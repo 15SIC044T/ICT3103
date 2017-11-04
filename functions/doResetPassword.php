@@ -4,16 +4,12 @@
 session_start();
 
 // include database connection details
-include "../db-connection.php";
+require_once('../dbConnection.php');
 
 // sanitize the POST values
 $resetPassToken = $_SESSION['SESS_TOKEN'];
 $password = $_POST['inputPass'];
 $confirmPassword = $_POST['inputConfirmPass'];
-
-// connect database
-$connection = new Mysql_Driver();
-$connection->connect();
 
 // password validation
 $uppercase = preg_match('@[A-Z]@', $password);
@@ -44,4 +40,5 @@ if (!$uppercase || !$lowercase || !$number) {
     header("Location: ../index.php");
     $_SESSION['success_msg'] = "Password changed!";
 }
+$stmt->close();
 ?>

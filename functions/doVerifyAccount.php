@@ -4,15 +4,11 @@
 session_start();
 
 // include database connection details
-include "../db-connection.php";
+require_once('../dbConnection.php');
 
 // sanitize the POST values
 $userId = $_POST['userID'];
-$verifyToken = $_POST['inputToken'];
-
-// connect database
-$connection = new Mysql_Driver();
-$connection->connect();
+$verifyToken = $_POST['inputToken']; 
 
 // look through database based on name
 $queryUser = "SELECT * 
@@ -51,4 +47,5 @@ if ($connection->num_rows($resultUser) == 1) {
     header("Location: ../index.php");
     $_SESSION['error_msg'] = "Wrong username/password!";
 }
+$stmt->close();
 ?>

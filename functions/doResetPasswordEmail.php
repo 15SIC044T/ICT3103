@@ -1,15 +1,11 @@
 <?php
 
 // include database connection details
-include "../db-connection.php";
+require_once('../dbConnection.php');
 include "doEmailConnection.php";
 
 // sanitize the POST values
-$email = $_POST['email'];
-
-// connect database
-$connection = new Mysql_Driver();
-$connection->connect();
+$email = $_POST['email']; 
 
 // create query
 $queryEmail = "SELECT * 
@@ -51,4 +47,5 @@ if ($connection->num_rows($resultEmail) == 1) {
 } else {
     $_SESSION['error_msg'] = "Email address not valid!";
 }
+$stmt->close();
 ?>

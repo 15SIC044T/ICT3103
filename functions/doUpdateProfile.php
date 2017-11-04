@@ -4,17 +4,13 @@
 session_start();
 
 // include database connection details
-include "../db-connection.php";
+require_once('../dbConnection.php');
 
 // sanitize the POST values
 $userId = $_SESSION['SESS_ACC_ID'];
 $name = $_POST['inputName'];
 $email = $_POST['inputEmail'];
-$mobile = $_POST['inputMobile'];
-
-// connect database
-$connection = new Mysql_Driver();
-$connection->connect();
+$mobile = $_POST['inputMobile']; 
 
 // look through database based on accountid
 $queryUser = "SELECT * 
@@ -194,4 +190,5 @@ if ($connection->num_rows($resultUser) == 1) {
         }
     }
 }
+$stmt->close();
 ?>

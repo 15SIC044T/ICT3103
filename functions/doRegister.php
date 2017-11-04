@@ -4,7 +4,7 @@
 session_start();
 
 // include database connection details
-include "../db-connection.php";
+require_once('../dbConnection.php');
 include "doEmailConnection.php";
 
 // sanitize the POST values
@@ -34,11 +34,7 @@ $a_key = openssl_pkey_get_details($privateKey);
 file_put_contents($pubPath, $a_key['key']);
 
 // Free the private Key.
-openssl_free_key($privateKey);
-
-// connect database
-$connection = new Mysql_Driver();
-$connection->connect();
+openssl_free_key($privateKey); 
 
 // look through database based on name
 $queryName = "SELECT * 
@@ -121,4 +117,5 @@ if ($connection->num_rows($resultName) == 1) {
     $_SESSION['REGISTER_OK'] = "success";
     $_SESSION['KEY'] = $pkey;
 }
+$stmt->close();
 ?>
