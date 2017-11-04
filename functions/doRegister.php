@@ -40,7 +40,7 @@ openssl_free_key($privateKey);
 $queryName = "SELECT * 
             FROM account 
             WHERE name = ?";
-$stmt = $connection->prepare($queryName);
+$stmt = $conn->prepare($queryName);
 $stmt->bind_param("s", $name);
 $stmt->execute();
 $resultName = $stmt->get_result();
@@ -49,7 +49,7 @@ $resultName = $stmt->get_result();
 $queryEmail = "SELECT * 
             FROM account 
             WHERE email = ?";
-$stmt1 = $connection->prepare($queryEmail);
+$stmt1 = $conn->prepare($queryEmail);
 $stmt1->bind_param("s", $email);
 $stmt1->execute();
 $resultEmail = $stmt1->get_result();
@@ -60,10 +60,10 @@ $lowercase = preg_match('@[a-z]@', $password);
 $number = preg_match('@[0-9]@', $password);
 
 // check for name duplication
-if ($connection->num_rows($resultName) == 1) {
+if ($resultName->num_rows == 1) {
     header("Location: ../registerAcc.php");
     $_SESSION['error_msg'] = "Name taken!";
-} elseif ($connection->num_rows($resultEmail) == 1) { // check for email duplication
+} elseif ($resultEmail->num_rows == 1) { // check for email duplication
     header("Location: ../registerAcc.php");
     $_SESSION['error_msg'] = "Email address used!";
 } elseif (!$uppercase || !$lowercase || !$number) { // do not pass the password validation
@@ -81,7 +81,7 @@ if ($connection->num_rows($resultName) == 1) {
 
     $queryAdd = "INSERT INTO account(name, email, password, phone, accountStatus, verificationToken, publicKey) 
                 VALUES(?, ?, ?, ?, 'Unverified', ?, ?)";
-    $stmt = $connection->prepare($queryAdd);
+    $stmt = $conn->prepare($queryAdd);
     $stmt->bind_param("ssssss", $name, $email, $confirmPassHash, $mobile, $accountToken, $pubPath);
     $stmt->execute();
 
@@ -89,12 +89,12 @@ if ($connection->num_rows($resultName) == 1) {
     $queryEmailAgain = "SELECT * 
                         FROM account 
                         WHERE email = ?";
-    $stmt1 = $connection->prepare($queryEmailAgain);
+    $stmt1 = $conn->prepare($queryEmailAgain);
     $stmt1->bind_param("s", $email);
     $stmt1->execute();
     $resultEmailAgain = $stmt1->get_result();
 
-    if ($connection->num_rows($resultEmailAgain) == 1) {
+    if ($resultEmailAgain->num_rows == 1) {
         $user = mysqli_fetch_assoc($resultEmailAgain);
         $_SESSION['SESS_ACC_ID'] = $user['accountID'];
         $_SESSION['SESS_USERNAME'] = $user['name'];

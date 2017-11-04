@@ -14,13 +14,13 @@ $password = $_POST['inputPass'];
 $queryUser = "SELECT * 
             FROM account 
             WHERE email = ?";
-$stmt = $connection->prepare($queryUser);
+$stmt = $conn->prepare($queryUser);
 $stmt->bind_param("s", $email);
 $stmt->execute();
 $resultUser = $stmt->get_result();
 
 // check whether the query is successful or not
-if ($connection->num_rows($resultUser) == 1) {
+if ($resultUser->num_rows == 1) {
     $user = $resultUser->fetch_array();
     $dbUserId = $user['accountID'];
     $dbPassHash = $user['password'];
@@ -48,7 +48,7 @@ if ($connection->num_rows($resultUser) == 1) {
             $queryTimeUpdate = "UPDATE account 
                                 SET failLoginTime = $timeNull 
                                 WHERE accountID = ?";
-            $stmt = $connection->prepare($queryTimeUpdate);
+            $stmt = $conn->prepare($queryTimeUpdate);
             $stmt->bind_param("i", $dbUserId);
             $stmt->execute();
 
@@ -70,7 +70,7 @@ if ($connection->num_rows($resultUser) == 1) {
                 $queryCountUpdate = "UPDATE account 
                                     SET failLoginCount = ? 
                                     WHERE accountID = ?";
-                $stmt = $connection->prepare($queryCountUpdate);
+                $stmt = $conn->prepare($queryCountUpdate);
                 $stmt->bind_param("ii", $count, $dbUserId);
                 $stmt->execute();
 
@@ -101,7 +101,7 @@ if ($connection->num_rows($resultUser) == 1) {
                 $queryTimeUpdate = "UPDATE account 
                                     SET failLoginTime = now() 
                                     WHERE accountID = ?";
-                $stmt = $connection->prepare($queryTimeUpdate);
+                $stmt = $conn->prepare($queryTimeUpdate);
                 $stmt->bind_param("i", $dbUserId);
                 $stmt->execute();
 
@@ -113,7 +113,7 @@ if ($connection->num_rows($resultUser) == 1) {
             $queryCountUpdate = "UPDATE account 
                                 SET failLoginCount = 0 
                                 WHERE accountID = ?";
-            $stmt = $connection->prepare($queryCountUpdate);
+            $stmt = $conn->prepare($queryCountUpdate);
             $stmt->bind_param("i", $dbUserId);
             $stmt->execute();
         } else { // within two attempts to login
@@ -134,7 +134,7 @@ if ($connection->num_rows($resultUser) == 1) {
                 $queryCountUpdate = "UPDATE account 
                                     SET failLoginCount = 0 
                                     WHERE accountID = ?";
-                $stmt = $connection->prepare($queryCountUpdate);
+                $stmt = $conn->prepare($queryCountUpdate);
                 $stmt->bind_param("i", $dbUserId);
                 $stmt->execute();
             } else { // wrong password entered, start the count
@@ -143,7 +143,7 @@ if ($connection->num_rows($resultUser) == 1) {
                 $queryCountUpdate = "UPDATE account 
                                     SET failLoginCount = ? 
                                     WHERE accountID = ?";
-                $stmt = $connection->prepare($queryCountUpdate);
+                $stmt = $conn->prepare($queryCountUpdate);
                 $stmt->bind_param("ii", $count, $dbUserId);
                 $stmt->execute();
 

@@ -3,8 +3,7 @@
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 
-    // include database connection details
-    include 'db-connection.php';
+    // include database connection details 
     require_once('dbConnection.php'); 
 } 
 

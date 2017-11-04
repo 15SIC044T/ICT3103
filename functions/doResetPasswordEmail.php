@@ -11,12 +11,12 @@ $email = $_POST['email'];
 $queryEmail = "SELECT * 
                 FROM account 
                 WHERE email = ?";
-$stmt = $connection->prepare($queryEmail);
+$stmt = $conn->prepare($queryEmail);
 $stmt->bind_param("s", $email);
 $stmt->execute();
 $resultEmail = $stmt->get_result();
 
-if ($connection->num_rows($resultEmail) == 1) {
+if ($resultEmail->num_rows == 1) {
     $user = mysqli_fetch_assoc($resultEmail);
     $dbAccountId = $user['accountID'];
     $dbName = $user['name'];
@@ -27,7 +27,7 @@ if ($connection->num_rows($resultEmail) == 1) {
     $queryUpdate = "UPDATE account 
                     SET resetPasswordToken = ? 
                     WHERE accountID = ?";
-    $stmt = $connection->prepare($queryUpdate);
+    $stmt = $conn->prepare($queryUpdate);
     $stmt->bind_param("si", $resetPassToken, $dbAccountId);
     $stmt->execute();
 

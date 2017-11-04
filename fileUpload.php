@@ -20,16 +20,31 @@ if (!empty($_FILES)) {
     $encrypted = $encrypted . ':' . base64_encode($iv);
     file_put_contents($_FILES['file']['tmp_name'], $encrypted);
     $hash = hash_file('sha256', $_FILES['file']['tmp_name']);
+    $okay = true;
     
-    if (move_uploaded_file($_FILES['file']['tmp_name'], $uploaded_file)) {
- 
-        require_once('dbConnection.php');
-        //insert file information into db table 
-        
-        $stmt = $conn->prepare("INSERT INTO file (accountID, fileName, fileURL, fileType, fileSize, aesKey, hash) VALUES (?, ?, ?, ?, ?, ?, ?)");
-	$stmt->bind_param("issssss", $_SESSION['SESS_ACC_ID'], $ext['filename'], $uploaded_file, $ext['extension'], filesize($uploaded_file), $aesKey, $hash);
-        $stmt->execute();
-        $stmt->close();   
+    $allowed =  array('png','jpg','gif','bmp','jpeg','ico','mp3','txt','sql','pdf','docx','doc','xlsx','xls','csv','zip','rar','7z','xml','html','htm','php');
+    if (!in_array(pathinfo($fileName, PATHINFO_EXTENSION), $allowed)) {
+        $okay = false;
     }
+    
+    if ($_FILES["uploaded_file"]["size"] >= 5000000)
+        $okay = false;
+
+    if ($okay){
+        if (move_uploaded_file($_FILES['file']['tmp_name'], $uploaded_file)) {
+
+            require_once('dbConnection.php');
+            //insert file information into db table 
+
+            $stmt = $conn->prepare("INSERT INTO file (accountID, fileName, fileURL, fileType, fileSize, aesKey, hash) VALUES (?, ?, ?, ?, ?, ?, ?)");
+            $stmt->bind_param("issssss", $_SESSION['SESS_ACC_ID'], $ext['filename'], $uploaded_file, $ext['extension'], filesize($uploaded_file), $aesKey, $hash);
+            $stmt->execute();
+             
+            $stmt->close();   
+        } 
+    }
+    else
+        $_SESSION['error_msg'] = $fileName ." cannot be uploaded! Please check your file extension or file size must be less 5 MB!";
+        
 }
 ?>

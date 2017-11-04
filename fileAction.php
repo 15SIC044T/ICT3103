@@ -164,6 +164,7 @@ if (isset($_POST['actionDelete'])) {
 
     $fileID = $_POST["actionDelete"];
     $prevURL = $_POST["prevURL"];
+    $accID = $_SESSION["SESS_ACC_ID"];
     
     $errorForm = false;
     //sanitize input
@@ -175,10 +176,11 @@ if (isset($_POST['actionDelete'])) {
         $errorForm = true;
     }
     
-    //Query for file URL
-    $conn->connect();
+    echo $fileID . "  s " . $accID;
+    
+    //Query for file URL 
     $stmt = $conn->prepare("SELECT fileName, fileURL FROM file WHERE fileID = ? AND accountID = ?");
-    $stmt->bind_param("ii", $fileID, $_SESSION["SESS_ACC_ID"]);
+    $stmt->bind_param("ii", $fileID, $accID);
     $stmt->execute();
     $result = $stmt->get_result();  
     $row = $result->fetch_assoc(); 
@@ -187,10 +189,9 @@ if (isset($_POST['actionDelete'])) {
     $fileURL = $row["fileURL"];
     $stmt->close();  
     
-    
     //Delete file from database 
     $stmt = $conn->prepare("DELETE FROM file WHERE fileID = ? AND accountID = ?");
-    $stmt->bind_param("ii", $fileID, $_SESSION["SESS_ACC_ID"]);
+    $stmt->bind_param("ii", $fileID, $accID);
     $stmt->execute();
     $stmt->close(); 
     
@@ -218,16 +219,17 @@ if (isset($_POST['actionDeIete'])) {
     
     $fileID = $_POST["actionDeIete"]; 
     $prevURL = $_POST["prevURL"];
+    $accID = $_SESSION["SESS_ACC_ID"];
      
     //Delete the existing sharing emails from database   
     $stmt = $conn->prepare("DELETE FROM filesharing WHERE fileID = ? AND accountID = ?");
-    $stmt->bind_param("ii", $fileID, $_SESSION["SESS_ACC_ID"]);
+    $stmt->bind_param("ii", $fileID, $accID);
     $stmt->execute();
     $stmt->close();
     
     //Query for file URL 
     $stmt = $conn->prepare("SELECT fileName FROM file WHERE fileID = ? AND accountID = ?");
-    $stmt->bind_param("ii", $fileID, $_SESSION["SESS_ACC_ID"]);
+    $stmt->bind_param("ii", $fileID, $accID);
     $stmt->execute();
     $result = $stmt->get_result();  
     $row = $result->fetch_assoc(); 
@@ -255,6 +257,7 @@ if (isset($_POST['actionDelShare'])) {
     $sharedEmail = $_POST["sharedEmaail"];
     $sharedID = $_POST["actionDelShare"]; 
     $prevURL = $_POST["prevURL"];
+    $accID = $_SESSION["SESS_ACC_ID"];
     
      //Query for file URL 
     //Delete the existing sharing emails from database  
@@ -265,7 +268,7 @@ if (isset($_POST['actionDelShare'])) {
     
     //Query for file URL 
     $stmt = $conn->prepare("SELECT fileName FROM file WHERE fileID = ? AND accountID = ?");
-    $stmt->bind_param("ii", $fileID, $_SESSION["SESS_ACC_ID"]);
+    $stmt->bind_param("ii", $fileID, $accID);
     $stmt->execute();
     $result = $stmt->get_result();  
     $row = $result->fetch_assoc(); 

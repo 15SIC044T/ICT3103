@@ -16,12 +16,12 @@ $confirmPassword = $_POST['inputConfirm'];
 $queryUser = "SELECT * 
             FROM account 
             WHERE accountID = ?";
-$stmt = $connection->prepare($queryUser);
+$stmt = $conn->prepare($queryUser);
 $stmt->bind_param("i", $userId);
 $stmt->execute();
 $resultUser = $stmt->get_result();
 
-if ($connection->num_rows($resultUser) == 1) {
+if ($resultUser->num_rows == 1) {
     $user = $resultUser->fetch_array();
     $dbPassHash = $user['password'];
 
@@ -52,7 +52,7 @@ if ($connection->num_rows($resultUser) == 1) {
                 $queryUpdate = "UPDATE account 
                                 SET password = ? 
                                 WHERE accountID = ?";
-                $stmt = $connection->prepare($queryUpdate);
+                $stmt = $conn->prepare($queryUpdate);
                 $stmt->bind_param("si", $confirmPassHash, $userId);
                 $stmt->execute();
 

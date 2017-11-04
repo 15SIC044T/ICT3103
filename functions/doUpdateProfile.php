@@ -16,7 +16,7 @@ $mobile = $_POST['inputMobile'];
 $queryUser = "SELECT * 
             FROM account 
             WHERE accountID = ?";
-$stmt = $connection->prepare($queryUser);
+$stmt = $conn->prepare($queryUser);
 $stmt->bind_param("i", $userId);
 $stmt->execute();
 $resultUser = $stmt->get_result();
@@ -25,7 +25,7 @@ $resultUser = $stmt->get_result();
 $queryName = "SELECT name 
             FROM account 
             WHERE accountID != ?";
-$stmt1 = $connection->prepare($queryName);
+$stmt1 = $conn->prepare($queryName);
 $stmt1->bind_param("i", $userId);
 $stmt1->execute();
 $resultName = $stmt1->get_result();
@@ -35,13 +35,13 @@ $otherNames = mysqli_fetch_all($resultName, MYSQLI_ASSOC);
 $queryEmail = "SELECT email 
             FROM account 
             WHERE accountID != ?";
-$stmt2 = $connection->prepare($queryEmail);
+$stmt2 = $conn->prepare($queryEmail);
 $stmt2->bind_param("i", $userId);
 $stmt2->execute();
 $resultEmail = $stmt2->get_result();
 $otherEmails = mysqli_fetch_all($resultEmail, MYSQLI_ASSOC);
 
-if ($connection->num_rows($resultUser) == 1) {
+if ($resultUser->num_rows == 1) {
     $user = $resultUser->fetch_array();
     $dbName = $user['name'];
     $dbEmail = $user['email'];
@@ -71,7 +71,7 @@ if ($connection->num_rows($resultUser) == 1) {
                 $queryUpdate = "UPDATE account 
                                 SET name = ? 
                                 WHERE accountID = ?";
-                $stmt = $connection->prepare($queryUpdate);
+                $stmt = $conn->prepare($queryUpdate);
                 $stmt->bind_param("si", $name, $userId);
                 $stmt->execute();
 
@@ -94,7 +94,7 @@ if ($connection->num_rows($resultUser) == 1) {
                 $queryUpdate = "UPDATE account 
                                 SET email = ? 
                                 WHERE accountID = ?";
-                $stmt = $connection->prepare($queryUpdate);
+                $stmt = $conn->prepare($queryUpdate);
                 $stmt->bind_param("si", $email, $userId);
                 $stmt->execute();
 
@@ -105,7 +105,7 @@ if ($connection->num_rows($resultUser) == 1) {
                                 SET name = ?, 
                                     email = ? 
                                 WHERE accountID = ?";
-                $stmt = $connection->prepare($queryUpdate);
+                $stmt = $conn->prepare($queryUpdate);
                 $stmt->bind_param("ssi", $name, $email, $userId);
                 $stmt->execute();
 
@@ -119,7 +119,7 @@ if ($connection->num_rows($resultUser) == 1) {
             $queryUpdate = "UPDATE account 
                             SET phone = ? 
                             WHERE accountID = ?";
-            $stmt = $connection->prepare($queryUpdate);
+            $stmt = $conn->prepare($queryUpdate);
             $stmt->bind_param("si", $mobile, $userId);
             $stmt->execute();
 
@@ -144,7 +144,7 @@ if ($connection->num_rows($resultUser) == 1) {
                                 SET name = ?, 
                                     phone = ? 
                                 WHERE accountID = ?";
-                $stmt = $connection->prepare($queryUpdate);
+                $stmt = $conn->prepare($queryUpdate);
                 $stmt->bind_param("ssi", $name, $mobile, $userId);
                 $stmt->execute();
 
@@ -168,7 +168,7 @@ if ($connection->num_rows($resultUser) == 1) {
                                 SET email = ?, 
                                     phone = ? 
                                 WHERE accountID = ?";
-                $stmt = $connection->prepare($queryUpdate);
+                $stmt = $conn->prepare($queryUpdate);
                 $stmt->bind_param("ssi", $email, $mobile, $userId);
                 $stmt->execute();
 
@@ -180,7 +180,7 @@ if ($connection->num_rows($resultUser) == 1) {
                                     email = ?, 
                                     phone = ? 
                                 WHERE accountID = ?";
-                $stmt = $connection->prepare($queryUpdate);
+                $stmt = $conn->prepare($queryUpdate);
                 $stmt->bind_param("sssi", $name, $email, $mobile, $userId);
                 $stmt->execute();
 

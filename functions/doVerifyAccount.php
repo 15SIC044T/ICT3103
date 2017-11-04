@@ -14,13 +14,13 @@ $verifyToken = $_POST['inputToken'];
 $queryUser = "SELECT * 
             FROM account 
             WHERE accountID = ?";
-$stmt = $connection->prepare($queryUser);
+$stmt = $conn->prepare($queryUser);
 $stmt->bind_param("i", $userId);
 $stmt->execute();
 $resultUser = $stmt->get_result();
 
 // check whether the query is successful or not
-if ($connection->num_rows($resultUser) == 1) {
+if ($resultUser->num_rows == 1) {
     $user = $resultUser->fetch_array();
     $dbName = $user['name'];
     $dbToken = $user['verificationToken'];
@@ -31,7 +31,7 @@ if ($connection->num_rows($resultUser) == 1) {
                         SET accountStatus = 'Verified', 
                             verificationToken = $nullValue 
                         WHERE accountID = ?";
-        $stmt = $connection->prepare($queryUpdate);
+        $stmt = $conn->prepare($queryUpdate);
         $stmt->bind_param("i", $userId);
         $stmt->execute();
 

@@ -33,7 +33,7 @@ if (!$uppercase || !$lowercase || !$number) {
                     SET password = ?, 
                         resetPasswordToken = $nullValue 
                     WHERE resetPasswordToken = ?";
-    $stmt = $connection->prepare($queryUpdate);
+    $stmt = $conn->prepare($queryUpdate);
     $stmt->bind_param("ss", $confirmPassHash, $resetPassToken);
     $stmt->execute();
 
