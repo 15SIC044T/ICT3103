@@ -94,7 +94,7 @@ if (isset($_POST['actionEdit'])) {
             $stmt->execute();
             $result3 = $stmt->get_result();
             
-            if ($result3->fetch_assoc() > 0) {
+            if ($result3->num_rows > 0) {
                 while ($row3 = $result3->fetch_assoc()) {
                     $accountID = $row3["accountID"];
                     $existShared = true;
@@ -103,13 +103,14 @@ if (isset($_POST['actionEdit'])) {
             $stmt->close(); 
             
             if (!$existShared) {
-                $stmt = $conn->prepare("SELECT f.aesKey, a.publicKey FROM file f, account a WHERE f.fileID = ? AND a.accountID = ?");
+                $stmt = $conn->prepare("SELECT f.aesKey, a.publicKey, f.fileName FROM file f, account a WHERE f.fileID = ? AND a.accountID = ?");
                 $stmt->bind_param("ii", $fileID, $accountID);
                 $stmt->execute();
                 $result2 = $stmt->get_result(); 
 
-                if ($result2->fetch_assoc() > 0) {
+                if ($result2->num_rows > 0) {
                     while ($row = $result2->fetch_assoc()) {
+                        $fileName = $row["fileName"];
                         $aKey = $row["aesKey"];
                         $pKey = $row["publicKey"];
                     }
