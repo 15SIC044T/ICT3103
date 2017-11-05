@@ -34,7 +34,7 @@ $stmt->close();
      
     //Query for file URL  
     $stmt = $conn->prepare("SELECT fileID FROM file WHERE fileID = ?");
-    $stmt > bind_param("i", $fileID);
+    $stmt -> bind_param("i", $fileID);
     $stmt->execute();
     $result = $stmt->get_result();
 

@@ -60,6 +60,7 @@
                                 <th>Upload Date</th> 
                                 <th>Expiry Date</th>
                                 <th>Permission</th> 
+                                <th>File Status</th>
                                 <th>Downloads</th>
                                 <th></th>
                             </tr>
@@ -71,9 +72,9 @@
 
                             $accountID = $_SESSION['SESS_ACC_ID'];
                             
-                            $stmt = $conn->prepare("SELECT (CASE WHEN (f.accountID = ?) THEN 1 ELSE 0 END) AS state, f.uploadDate, f.expiryDate, f.fileID, f.fileName, f.fileType, f.fileSize, f.filePermission, f.downloadTimes FROM file f WHERE f.accountID = ?"
+                            $stmt = $conn->prepare("SELECT (CASE WHEN (f.accountID = ?) THEN 1 ELSE 0 END) AS state, f.uploadDate, f.expiryDate, f.fileID, f.fileName, f.fileType, f.fileSize, f.filePermission, f.fileStatus, f.downloadTimes FROM file f WHERE f.accountID = ?"
                                     . " UNION "
-                                    . "SELECT (CASE WHEN (f.accountID = ?) THEN 1 ELSE 0 END) AS state, f.uploadDate, f.expiryDate, f.fileID, f.fileName, f.fileType, f.fileSize, f.filePermission, f.downloadTimes FROM file f WHERE f.fileID IN (SELECT fileID FROM filesharing WHERE accountID = ?)");
+                                    . "SELECT (CASE WHEN (f.accountID = ?) THEN 1 ELSE 0 END) AS state, f.uploadDate, f.expiryDate, f.fileID, f.fileName, f.fileType, f.fileSize, f.filePermission, f.fileStatus, f.downloadTimes FROM file f WHERE f.fileID IN (SELECT fileID FROM filesharing WHERE accountID = ?)");
                             $stmt->bind_param("iiii", $accountID, $accountID, $accountID, $accountID);
                             $stmt->execute();
                             $result = $stmt->get_result();   
@@ -100,6 +101,7 @@
                                             <td>' . $FormatedUploadDate . '</td> 
                                             <td>' . $FormatedExpiryDate . '</td>
                                             <td>' . $row["filePermission"] . '</td> 
+                                            <td>' . $row["fileStatus"] . '</td> 
                                             <td>' . $row["downloadTimes"] . '</td>';
                                     if ($row["state"] == 1) {
                                         echo '<td><a href="#" data-target="#del' . $row["fileID"] . '" data-toggle="modal"><span class="glyphicon glyphicon-trash"></span></a></td>';
