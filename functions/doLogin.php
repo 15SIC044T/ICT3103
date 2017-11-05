@@ -28,6 +28,15 @@ if ($resultUser->num_rows == 1) {
     $dbToken = $user['verificationToken'];
     $dbLoginCount = $user['failLoginCount'];
     $dbLoginTime = $user['failLoginTime'];
+    
+    // Make sure we have a canary set
+    if (!isset($_SESSION['canary'])) {
+        session_regenerate_id(true);
+        $_SESSION['canary'] = [
+            'birth' => time(),
+            'IP' => $_SERVER['REMOTE_ADDR']
+        ];
+    }
 
     // check old password with database
     $verifyPassword = password_verify($password, $dbPassHash);

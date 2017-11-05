@@ -1,6 +1,6 @@
 <?php
 // start session
-session_start();
+include "checkSession.php";
 define('AES_256_CBC', 'aes-256-cbc'); 
 
 if (!empty($_FILES)) {

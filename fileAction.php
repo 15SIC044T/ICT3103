@@ -1,8 +1,8 @@
 <?php
-define('AES_256_CBC', 'aes-256-cbc');
-session_start();
+define('AES_256_CBC', 'aes-256-cbc'); 
 
-require_once('dbConnection.php');
+include "checkSession.php";
+ 
 
 //Update File
 if (isset($_POST['actionEdit'])) { 

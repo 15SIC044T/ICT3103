@@ -1,11 +1,6 @@
 <?php
-// start session
-if (session_status() == PHP_SESSION_NONE) {
-    session_start(); 
 
-    // include database connection details 
-    require_once('dbConnection.php'); 
-} 
+include "checkSession.php";
 
 // set active to navbar link
 function echoActiveClassIfRequestMatches($requestUri) {
@@ -15,15 +10,7 @@ function echoActiveClassIfRequestMatches($requestUri) {
         echo 'class="active"';
     }
 }
-
-// Check if user logged in 
-if (! isset($_SESSION["SESS_ACC_ID"])) 
-{
-	// redirect to login page if the session variable shopperid is not set
-	header ("Location: index.php");
-	exit;
-}
-
+ 
 $content1 = "";
 ?>
 
