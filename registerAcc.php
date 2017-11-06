@@ -15,7 +15,7 @@
 
                 <div class="col-sm-12 registerblock">
                     <div>
-                        <form action="functions/doRegister.php" method="POST">
+                        <form action="functions/doRegister.php" method="POST" autocomplete="off">
                             <?php
                             // prompt message
                             include "displayAlertMessage.php";

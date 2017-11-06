@@ -181,12 +181,13 @@ if (isset($_POST['actionDelete'])) {
     echo $fileID . "  s " . $accID;
     
     //Query for file URL 
-    $stmt = $conn->prepare("SELECT fileName, fileURL FROM file WHERE fileID = ? AND accountID = ?");
+    $stmt = $conn->prepare("SELECT fileName, fileURL, aesKey FROM file WHERE fileID = ? AND accountID = ?");
     $stmt->bind_param("ii", $fileID, $accID);
     $stmt->execute();
     $result = $stmt->get_result();  
     $row = $result->fetch_assoc(); 
     
+    $aesKey = $row["aesKey"];
     $fileName = $row["fileName"];
     $fileURL = $row["fileURL"];
     $stmt->close();  
@@ -196,6 +197,25 @@ if (isset($_POST['actionDelete'])) {
     $stmt->bind_param("ii", $fileID, $accID);
     $stmt->execute();
     $stmt->close(); 
+    
+    //delete the existing key as well for file sharing
+    $stmt = $conn->prepare("SELECT eAesKey FROM filesharing WHERE fileID = ?");
+    $stmt->bind_param("i", $fileID);
+    $stmt->execute();
+    $result = $stmt->get_result();  
+    if ($result->num_rows > 0) {
+        while ($row = $result->fetch_assoc()) {
+            //Delete the existing key as well from file directory as well
+            if (file_exists($row['eAesKey'])) {
+                unlink($row['eAesKey']);
+            }
+        }
+    } 
+    
+    //Delete the existing key as well from file directory as well
+    if (file_exists($aesKey)) { 
+        unlink($aesKey); 
+    } 
     
     //Delete file from directory
     if (file_exists($fileURL)) { 
@@ -223,11 +243,22 @@ if (isset($_POST['actionDeIete'])) {
     $prevURL = $_POST["prevURL"];
     $accID = $_SESSION["SESS_ACC_ID"];
      
+    //Query for file URL 
+    $stmt = $conn->prepare("SELECT eAesKey FROM filesharing WHERE fileID = ? AND accountID = ?");
+    $stmt->bind_param("ii", $fileID, $accID);
+    $stmt->execute();
+    $result = $stmt->get_result();  
+    $row = $result->fetch_assoc(); 
+    if (file_exists($row['eAesKey'])) {
+        unlink($row['eAesKey']);
+    }
+    $stmt->close(); 
+    
     //Delete the existing sharing emails from database   
     $stmt = $conn->prepare("DELETE FROM filesharing WHERE fileID = ? AND accountID = ?");
     $stmt->bind_param("ii", $fileID, $accID);
     $stmt->execute();
-    $stmt->close();
+    $stmt->close(); 
     
     //Query for file URL 
     $stmt = $conn->prepare("SELECT fileName FROM file WHERE fileID = ? AND accountID = ?");
@@ -261,12 +292,23 @@ if (isset($_POST['actionDelShare'])) {
     $prevURL = $_POST["prevURL"];
     $accID = $_SESSION["SESS_ACC_ID"];
     
+    //Query for file URL 
+    $stmt = $conn->prepare("SELECT eAesKey FROM filesharing WHERE filesharingID = ?");
+    $stmt->bind_param("i", $sharedID);
+    $stmt->execute();
+    $result = $stmt->get_result();  
+    $row = $result->fetch_assoc(); 
+    if (file_exists($row['eAesKey'])) {
+        unlink($row['eAesKey']);
+    }
+    $stmt->close();  
+    
      //Query for file URL 
     //Delete the existing sharing emails from database  
     $stmt = $conn->prepare("DELETE FROM filesharing WHERE filesharingID = ?");
     $stmt->bind_param("i", $sharedID);
     $stmt->execute();
-    $stmt->close();
+    $stmt->close();  
     
     //Query for file URL 
     $stmt = $conn->prepare("SELECT fileName FROM file WHERE fileID = ? AND accountID = ?");

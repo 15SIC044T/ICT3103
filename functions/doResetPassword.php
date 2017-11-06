@@ -36,9 +36,9 @@ if (!$uppercase || !$lowercase || !$number) {
     $stmt = $conn->prepare($queryUpdate);
     $stmt->bind_param("ss", $confirmPassHash, $resetPassToken);
     $stmt->execute();
+    $stmt->close();
 
     header("Location: ../index.php");
     $_SESSION['success_msg'] = "Password changed!";
 }
-$stmt->close();
 ?>

@@ -35,7 +35,7 @@
 
                 <div class="col-sm-5 loginblock">
                     <div>
-                        <form action="functions/doLogin.php" method="POST">
+                        <form action="functions/doLogin.php" method="POST" autocomplete="off">
                             <?php
                             // prompt message
                             include "displayAlertMessage.php";

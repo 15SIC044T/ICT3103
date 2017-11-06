@@ -20,7 +20,7 @@ $_SESSION['SESS_TOKEN'] = $_GET['t'];
 
                 <div class="col-sm-12 resetblockconfirm">
                     <div>
-                        <form action="functions/doResetPassword.php" method="POST">
+                        <form action="functions/doResetPassword.php" method="POST" autocomplete="off">
                             <h3>Reset Password Confirmation</h3>
 
                             <?php
