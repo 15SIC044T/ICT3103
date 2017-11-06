@@ -17,9 +17,9 @@ if (!empty($_FILES)) {
         $okay = false;
     }
     
-    if ($_FILES["uploaded_file"]["size"] >= 5000000)
+    if ($_FILES["uploaded_file"]["size"] >= 5000000) {
         $okay = false;
-     
+    }
     
     if ($okay){   
         $ext = pathinfo($upload_dir . $fileName);

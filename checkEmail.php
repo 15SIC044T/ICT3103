@@ -3,8 +3,13 @@
 if(isset($_POST['email'])) { //change isSet to isset (it will not make any difference)
     $email = mysql_real_escape_string($_POST['email']); //escape the string
   
-    $sql_check = mysql_query("SELECT email FROM account WHERE email='$email'") or die(mysql_error());
-        if(mysql_num_rows($sql_check) > 0) { //check rows greater then zero (although it will also not make any difference)
+    require_once('dbConnection.php');
+    $stmt = $conn->prepare("SELECT email FROM account WHERE email= ");
+    $stmt->bind_param("s", $email);
+    $stmt->execute();
+    $result = $stmt->get_result();
+     
+        if($result->num_rows > 0) { //check rows greater then zero (although it will also not make any difference)
             echo 'OK';
         } else {
             echo '<font color="red">The email <strong>'.$email.'</strong>'. ' is invalid.</font>';
