@@ -2,6 +2,9 @@
  
 include "fileCheckPermission.php";
 include "fileCheckExpiry.php";
+if (!isset($_SESSION['SESS_ACC_ID'])) {
+    header("Location: index.php");
+}
  
 $accountID = $_SESSION['SESS_ACC_ID'];
 $fileID = $_GET["fID"];

@@ -21,7 +21,8 @@
         <script type="text/javascript" src="js/custom.js"></script>
     </head>
     <body>
-        <?php include "navbar.php" ?>
+        <?php include "navbar.php"; 
+        ?>
 
         <div class="container-fluid">
             <div class="row">

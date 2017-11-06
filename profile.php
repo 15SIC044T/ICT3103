@@ -3,7 +3,12 @@
     <?php include "header.php"; ?>
 
     <body>
-        <?php include "navbar.php"; ?>
+        <?php include "navbar.php"; 
+        if (! isset($_SESSION['SESS_ACC_ID']))
+        {
+            header ("Location: index.php");
+        }
+        ?>
 
         <div class="container-fluid">
             <div class="row">

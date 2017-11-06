@@ -2,7 +2,9 @@
 define('AES_256_CBC', 'aes-256-cbc'); 
 
 include "checkSession.php";
- 
+if (!isset($_SESSION['SESS_ACC_ID'])) {
+    header("Location: index.php");
+} 
 
 //Update File
 if (isset($_POST['actionEdit'])) { 

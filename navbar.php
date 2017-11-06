@@ -2,6 +2,10 @@
 
 include "checkSession.php";
 
+if (!isset($_SESSION['SESS_ACC_ID'])) {
+    header("Location: index.php");
+}
+
 // set active to navbar link
 function echoActiveClassIfRequestMatches($requestUri) {
     $requestedURL = $_SERVER['PHP_SELF'];

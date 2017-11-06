@@ -1,6 +1,11 @@
 <?php 
 require_once('dbConnection.php');
 
+include "checkSession.php";
+if (!isset($_SESSION['SESS_ACC_ID'])) {
+    header("Location: index.php");
+} 
+
 $stmt = $conn->prepare("SELECT fileID, fileURL FROM file WHERE expiryDate <= date('Y-m-d H:i:s')");
 $stmt->execute();
 $result = $stmt->get_result();
