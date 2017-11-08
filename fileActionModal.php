@@ -253,30 +253,30 @@ if ($result->num_rows > 0) { //(result)
                 $sharedEmail = $rowSharedDel["email"]; 
                 
                 $hashSharedFileID = password_hash($rowSharedDel["fileSharingID"] . $rowSharedDel["email"] . $_SESSION['SESS_ACC_ID'], PASSWORD_BCRYPT);
-                
-                echo print_r($_SESSION['fileSharedArray'] );
-                
-                foreach ($_SESSION['fileSharedArray'] as $product) {
-                    if ($product['hashID'] == $hashSharedFileID) {
-                        $countID = $product['countID'];
-                        break;
+
+                if (isset($_SESSION['fileSharedArray'])) {
+                    foreach ($_SESSION['fileSharedArray'] as $product) {
+                        if ($product['hashID'] == $hashSharedFileID) {
+                            $countID = $product['countID'];
+                            break;
+                        }
                     }
-                }
-                
-                echo ' 
+
+                    echo ' 
                     <script>
                     function myFunction' . $countID . '() { 
                         if (confirm("Are you sure you want to unlink file with ' . $sharedEmail . '") == true) { 
-                                document.getElementById("actionDelShare").value = "'. $countID . '";
-                                document.getElementById("sharedEmail").value = "'. $sharedEmail . '";
+                                document.getElementById("actionDelShare").value = "' . $countID . '";
+                                document.getElementById("sharedEmail").value = "' . $sharedEmail . '";
                                 document.getElementById("prevURL").value = "' . $_SERVER["REQUEST_URI"] . '";
                                 document.forms["delShareForm"].submit(); 
                         }  
                     }
-                    </script>';  
+                    </script>';
                 }
             }
         }
     }
-    $stmt->close();
+}
+$stmt->close();
 ?>
