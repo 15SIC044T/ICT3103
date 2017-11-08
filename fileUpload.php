@@ -28,6 +28,7 @@ if (!empty($_FILES)) {
         $msg = "";
         $VTAPIKEY = "e6a99e1902664b5b89c352fb9a290cee161561c9accf9910f030a5f4e6edf58d";
         $apiEndPoint = "https://www.virustotal.com/vtapi/v2/file/report?";
+        $hash = hash_file('sha256', $_FILES['file']['tmp_name']);
         $finalURL = $apiEndPoint."resource=$hash&apikey=".$VTAPIKEY;
 
 
@@ -44,7 +45,7 @@ if (!empty($_FILES)) {
         $encrypted = openssl_encrypt($data, AES_256_CBC, $encryption_key, 0, $iv);
         $encrypted = $encrypted . ':' . base64_encode($iv);
         file_put_contents($_FILES['file']['tmp_name'], $encrypted);
-        $hash = hash_file('sha256', $_FILES['file']['tmp_name']);
+        //$hash = hash_file('sha256', $_FILES['file']['tmp_name']);
         $fileStatus = "";
     
         if($j->response_code==1) {
@@ -52,14 +53,16 @@ if (!empty($_FILES)) {
             if($j->positives>0){
                     $msg .=  "File is Malicious with a score of $j->positives/$j->total";
                     $fileStatus = "Malicious";
+                    $_SESSION['error_msg'] = $msg;
             }else{
                     $msg .=  "File is Clean!";
                     $fileStatus = "Safe";
+                    $_SESSION['success_msg'] = $msg;
             }
         }
         
         if($j->response_code==0){
-            $msg .= "File or its analysis is not available on Virustotal";
+            $msg .= "File is Clean no virus detected";
 
             if (move_uploaded_file($_FILES['file']['tmp_name'], $uploaded_file)) {
 
@@ -71,9 +74,9 @@ if (!empty($_FILES)) {
                 $stmt->execute(); 
                 $stmt->close();   
                 
-                $_SESSION['success_msg'] = $ext['filename'] . " uploaded successfully! " . $msg;
+                $_SESSION['success_msg'] .= $ext['filename'] . " uploaded successfully! " . $msg;
             }   else{
-                $_SESSION['error_msg'] = "There was an error uploading the file, please try again!";
+                $_SESSION['error_msg'] .= " There was an error uploading the file, please try again!";
             }
         }
     }
