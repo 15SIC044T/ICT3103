@@ -7,7 +7,14 @@ if (!isset($_SESSION['SESS_ACC_ID'])) {
 } 
 
 $accountID = $_SESSION['SESS_ACC_ID'];
-$fileID = $_GET["fID"]; 
+$fileHashing = $_GET["fID"];
+$fileID = 0;
+foreach ($_SESSION['fileArray'] as $product) {
+    if ($product['hashID'] == $fileHashing) {
+        $fileID = $product['fileID'];
+        break;
+    }
+}
 //Query for file URL  
 $stmt = $conn->prepare("SELECT f.fileID FROM file f WHERE f.fileID = ? AND f.filePermission = 'public' UNION "
         . "SELECT f.fileID FROM file f WHERE f.accountID = ? AND f.fileID = ? UNION "

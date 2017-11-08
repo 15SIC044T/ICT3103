@@ -10,8 +10,16 @@ if (!isset($_SESSION['SESS_ACC_ID'])) {
 if (isset($_POST['actionEdit'])) { 
     
     $errorForm = false;
+     
+    $fileHashing = $_POST["actionEdit"];
+    $fileID = 0;
+    foreach ($_SESSION['fileArray'] as $product) {
+        if ($product['hashID'] == $fileHashing) {
+            $fileID = $product['fileID'];
+            break;
+        }
+    }
     
-    $fileID = $_POST["actionEdit"];
     $prevURL = $_POST["prevURL"]; 
     $email = filter_var($_POST["txtEmail"], FILTER_SANITIZE_EMAIL);
     
@@ -33,8 +41,8 @@ if (isset($_POST['actionEdit'])) {
     {   
         if ($fPermission == "Public") { 
             
-            $stmt = $conn->prepare("SELECT fileURL, aesKey FROM file WHERE fileID = ?");
-            $stmt->bind_param("i", $fileID);
+            $stmt = $conn->prepare("SELECT fileURL, aesKey FROM file WHERE fileID = ? AND accountID = ?");
+            $stmt->bind_param("ii", $fileID, $_SESSION['SESS_ACC_ID']);
             $stmt->execute();
             $result = $stmt->get_result();
 
@@ -52,8 +60,8 @@ if (isset($_POST['actionEdit'])) {
             $pFile = "uploads/public/" . substr($file, 8);
             file_put_contents($pFile, $decrypted);
             
-            $stmt = $conn->prepare("UPDATE file SET publicURL=? WHERE fileID = ?"); 
-            $stmt->bind_param('si', $pFile, $fileID);
+            $stmt = $conn->prepare("UPDATE file SET publicURL=? WHERE fileID = ? AND accountID = ?"); 
+            $stmt->bind_param('sii', $pFile, $fileID, $accountID);
             $stmt->execute();  
             $stmt->close();
         }
@@ -63,8 +71,8 @@ if (isset($_POST['actionEdit'])) {
         else
             $datetime = date("Y-m-d H:i:s", strtotime($fExpiryDate));  
 
-        $stmt = $conn->prepare("UPDATE file SET fileName=?, expiryDate=NULLIF(?,''), filePermission=? WHERE fileID = ?"); 
-        $stmt->bind_param('sssi', $fName, $datetime, $fPermission, $fileID);
+        $stmt = $conn->prepare("UPDATE file SET fileName=?, expiryDate=NULLIF(?,''), filePermission=? WHERE fileID = ? AND accountID = ?"); 
+        $stmt->bind_param('sssii', $fName, $datetime, $fPermission, $fileID, $_SESSION['SESS_ACC_ID']);
         $stmt->execute();  
         $stmt->close(); 
 
@@ -163,8 +171,15 @@ if (isset($_POST['actionEdit'])) {
 
 //Delete File
 if (isset($_POST['actionDelete'])) {
-
-    $fileID = $_POST["actionDelete"];
+ 
+    $fileHashing = $_POST["actionDelete"];
+    $fileID = 0;
+    foreach ($_SESSION['fileArray'] as $product) {
+        if ($product['hashID'] == $fileHashing) {
+            $fileID = $product['fileID'];
+            break;
+        }
+    }
     $prevURL = $_POST["prevURL"];
     $accID = $_SESSION["SESS_ACC_ID"];
     
@@ -177,8 +192,6 @@ if (isset($_POST['actionDelete'])) {
     if (!(!filter_var($prevURL, FILTER_VALIDATE_URL) === false)) {
         $errorForm = true;
     }
-    
-    echo $fileID . "  s " . $accID;
     
     //Query for file URL 
     $stmt = $conn->prepare("SELECT fileName, fileURL, aesKey FROM file WHERE fileID = ? AND accountID = ?");
@@ -238,8 +251,15 @@ if (isset($_POST['actionDelete'])) {
 
 //Share File
 if (isset($_POST['actionDeIete'])) { 
-    
-    $fileID = $_POST["actionDeIete"]; 
+     
+    $fileHashing = $_POST["actionDeIete"];
+    $fileID = 0;
+    foreach ($_SESSION['fileArray'] as $product) {
+        if ($product['hashID'] == $fileHashing) {
+            $fileID = $product['fileID'];
+            break;
+        }
+    }
     $prevURL = $_POST["prevURL"];
     $accID = $_SESSION["SESS_ACC_ID"];
      
@@ -286,9 +306,17 @@ if (isset($_POST['actionDeIete'])) {
 
 //Share File
 if (isset($_POST['actionDelShare'])) { 
+     
+    $hashSharedFileID = $_POST["actionDelShare"];
+    $sharedID = 0;
+    foreach ($_SESSION['fileSharedArray'] as $product) {
+        if ($product['countID'] == $hashSharedFileID) {
+            $sharedID = $product['fileSharedID'];
+            break;
+        }
+    } 
     
-    $sharedEmail = $_POST["sharedEmaail"];
-    $sharedID = $_POST["actionDelShare"]; 
+    $sharedEmail = $_POST["sharedEmail"]; 
     $prevURL = $_POST["prevURL"];
     $accID = $_SESSION["SESS_ACC_ID"];
     
@@ -336,8 +364,15 @@ if (isset($_POST['actionDelShare'])) {
 
 //Share File - Insert record to data table ONE-BY-ONE
 if (isset($_POST['actionShare'])) {
-
-    $fileID = $_POST["actionShare"]; 
+ 
+    $fileHashing = $_POST["actionShare"];
+    $fileID = 0;
+    foreach ($_SESSION['fileArray'] as $product) {
+        if ($product['hashID'] == $fileHashing) {
+            $fileID = $product['fileID'];
+            break;
+        }
+    }
     $prevURL = $_POST["prevURL"];
     $email = filter_var($_POST["txtEmail"], FILTER_SANITIZE_EMAIL);
      

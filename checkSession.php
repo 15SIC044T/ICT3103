@@ -24,7 +24,7 @@ if (session_status() == PHP_SESSION_NONE) {
     } 
 
     // include database connection details 
-    require_once('dbConnection.php'); 
+    require_once('dbConnection.php');  
 } 
 
 ?>

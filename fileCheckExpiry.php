@@ -35,8 +35,15 @@ $stmt->close();
 //get current URL, if file does not exists, redirect to 404 
  if ($_SERVER['SCRIPT_NAME'] ==  "/ICT3103/file.php") {
      
-     $fileID = $_GET['fID'];
-     
+    $fileHashing = $_GET["fID"];
+    $fileID = 0;
+    foreach ($_SESSION['fileArray'] as $product) {
+        if ($product['hashID'] == $fileHashing) {
+            $fileID = $product['fileID'];
+            break;
+        }
+    }
+
     //Query for file URL  
     $stmt = $conn->prepare("SELECT fileID FROM file WHERE fileID = ?");
     $stmt -> bind_param("i", $fileID);

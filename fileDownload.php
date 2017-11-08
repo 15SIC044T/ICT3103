@@ -7,7 +7,14 @@ if (!isset($_SESSION['SESS_ACC_ID'])) {
 }
  
 $accountID = $_SESSION['SESS_ACC_ID'];
-$fileID = $_GET["fID"];
+$fileHashing = $_GET["fID"];
+$fileID = 0;
+foreach ($_SESSION['fileArray'] as $product) {
+    if ($product['hashID'] == $fileHashing) {
+        $fileID = $product['fileID'];
+        break;
+    }
+}
 
 require_once('dbConnection.php');
 $stmt = $conn->prepare("SELECT a.name, f.accountID, f.fileName, f.fileURL, f.aesKey, f.fileType, f.fileSize, f.hash, f.filePermission, f.publicURL FROM file f INNER JOIN account a ON a.accountID = f.accountID WHERE f.fileID = ?");

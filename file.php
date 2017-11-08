@@ -22,8 +22,18 @@
                     
                     <?php
                             require_once('dbConnection.php');
-                            $accountID = $_SESSION['SESS_ACC_ID'];
-                            $fileID = $_GET["fID"];  
+                            $accountID = $_SESSION['SESS_ACC_ID']; 
+                               
+                            $fileHashing = $_GET["fID"];  
+                            $fileID = 0;
+                            foreach ($_SESSION['fileArray'] as $product) { 
+                                if ($product['hashID'] == $fileHashing) {
+                                    $fileID = $product['fileID']; 
+                                    $countID = $product['countID']; 
+                                   break;
+                                }
+                            } 
+                            
                             $stmt = $conn->prepare("SELECT a.name, f.accountID, f.fileName, f.fileType, f.fileSize, f.hash, f.uploadDate, f.expiryDate, f.filePermission, f.fileStatus, f.downloadTimes FROM file f INNER JOIN account a ON a.accountID = f.accountID WHERE f.fileID = ?");
                             $stmt->bind_param("i", $fileID);
                             $stmt->execute();
@@ -51,7 +61,7 @@
                     <br>
                     <div class="col-sm-7">
                         <h2><?php echo $fileName; ?></h2> 
-                        <input type=button class="btn btn-lg btn-block btn-danger" onClick="location.href='<?php echo "filedownload.php?fID=" . $fileID; ?>'" value='Download Now'><br>
+                        <input type=button class="btn btn-lg btn-block btn-danger" onClick="location.href='<?php echo "filedownload.php?fID=" . $fileHashing; ?>'" value='Download Now'><br>
                              
                         <?php
                         //Check file type for imaage
@@ -120,7 +130,7 @@
                         if ($_SESSION["SESS_ACC_ID"] == $uploaderID) {
 
                             //display edit button
-                            echo '<span data-target="#edit' . $fileID . '" data-toggle="modal"><button class="btn btn-lg btn-block" name="edit">Edit</button></span><br>';
+                            echo '<span data-target="#edit' . $countID . '" data-toggle="modal"><button class="btn btn-lg btn-block" name="edit">Edit</button></span><br>';
                             //upload person able to upload the details 
                             include "fileActionModal.php";
 

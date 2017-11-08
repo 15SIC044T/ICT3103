@@ -40,7 +40,7 @@
 
                     <div class="row">
                         <div class="col-sm-6">
-                            <form action="functions/doUpdateProfile.php" method="POST">
+                            <form action="functions/doUpdateProfile.php" method="POST" autocomplete="off">
                                 <h4>My Profile</h4>
                                 <div class="form-group">
                                     <label for="">Name</label>
@@ -57,7 +57,7 @@
                         </div>
 
                         <div class="col-sm-6">
-                            <form action="functions/doChangePassword.php" method="POST" >
+                            <form action="functions/doChangePassword.php" method="POST"  autocomplete="off">
                                 <h4>Change Password</h4>
                                 <div class="form-group">
                                     <label for="">Old password</label>

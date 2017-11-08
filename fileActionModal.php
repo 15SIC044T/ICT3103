@@ -16,9 +16,17 @@ if ($result->num_rows > 0) { //(result)
             $expiryDate = $row["expiryDate"];
             $FormatedExpiryDate = $expiryDate == NULL ? "" : date("m-d-Y H:i:s A", strtotime($expiryDate));
              // Modal EDIT
+              
+            foreach ($_SESSION['fileArray'] as $product) {
+                if ($product['fileID'] == $row["fileID"]) {
+                    $fileHashing = $product['hashID'];
+                    $countID = $product['countID'];
+                    break;
+                }
+            }
             
             if ($row["state"] == 1) {
-            echo '<div id="edit' . $row["fileID"] . '" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+            echo '<div id="edit' . $countID . '" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
                     <div class="modal-dialog" role="document">
                         <div class="modal-content resetmodal">
                             <div class="modal-header">
@@ -34,22 +42,22 @@ if ($result->num_rows > 0) { //(result)
                                     <form data-toggle="validator" method="post" action="fileAction.php" class="form-horizontal" role="form" >
                                         <div class="form-group">
                                             <div class="col-sm-12" style="text-align: center;"> 
-                                                <input type="hidden" name="actionEdit" value="' . $row["fileID"] . '" />
+                                                <input type="hidden" name="actionEdit" value="' . $fileHashing . '" />
                                                 <input type="hidden" name="prevURL" value="' . $_SERVER["REQUEST_URI"] . '" />
                                                 <label for="lblExpiryDate">File Name:</label>
                                                 <input name="txtFileName" type="text" class="form-control" placeholder="File Name" value="' . $row["fileName"] . '" required>
                                                 <label for="lblExpiryDate">Expiry Date:</label> 
-                                                    <div class="input-group date" id="datetimepicker' . $row["fileID"] . '">
+                                                    <div class="input-group date" id="datetimepicker' . $countID . '">
                                                             <input name="txtExpiryDate" type="text" class="form-control" placeholder="Default: No Expiry Date" value="'. $FormatedExpiryDate .'" />
                                                             <span class="input-group-addon"> <span class="glyphicon glyphicon-calendar"></span> </span>
                                                     </div> 
                                                 <script type="text/javascript">
                                                     $(function () { 
-                                                            $("#datetimepicker' . $row["fileID"] . '").datetimepicker({ minDate: new Date(), useCurrent: false}); 
+                                                            $("#datetimepicker' . $countID . '").datetimepicker({ minDate: new Date(), useCurrent: false}); 
                                                     });
                                                     
                                                     $(window).load(function() {
-                                                        $("#datetimepicker' . $row["fileID"] . '").val("");
+                                                        $("#datetimepicker' . $countID . '").val("");
                                                     });
 
                                                 </script>  
@@ -73,21 +81,25 @@ if ($result->num_rows > 0) { //(result)
                                             </thead> 
                                             <tbody>';    
                                                 //Run SQL statement: to query for the shared   
-                                                $stmt = $conn->prepare("SELECT a.email, fs.* FROM fileSharing fs INNER JOIN account a ON fs.accountID = a.accountID WHERE fs.fileID = ? AND fs.owner = 0");
+                                                $stmt = $conn->prepare("SELECT a.email, fs.* FROM fileSharing fs INNER JOIN account a ON fs.accountID = a.accountID WHERE fs.fileID = ? AND fs.owner = 0 ORDER BY fs.fileSharingID ASC");
                                                 $stmt->bind_param("i", $row['fileID']);
                                                 $stmt->execute();
                                                 $resultShared = $stmt->get_result(); 
   
-                                                if ($resultShared->num_rows > 0) { //(result)
+                                                if ($resultShared->num_rows > 0) { //(result) 
+                                                    $_SESSION['fileSharedArray'] = array();
                                                     //Loop tdrough tde result and print tde data to tde table
                                                     while ($rowShared = $resultShared->fetch_assoc()) { 
+                                                        $hashSharedFileID = password_hash($rowShared["fileSharingID"] . $rowShared["email"] . $_SESSION['SESS_ACC_ID'], PASSWORD_BCRYPT);
+                                                        $countID = preg_replace("/[^A-Za-z0-9 ]/", '', $hashSharedFileID);
+                                                        array_push($_SESSION['fileSharedArray'], ['hashID' => $hashSharedFileID, 'countID' => $countID, 'fileSharedID' => $rowShared["fileSharingID"]]);
                                                         $shareFileID = $rowShared["fileSharingID"];
 
                                                         echo '<tr>';
                                                         echo '<td>' . $rowShared["email"] . '</td>
                                                                     <td>' . $rowShared["invitationAccepted"] . '</td>
-                                                                    <td><a style="cursor: pointer;" onClick="myFunction' . $rowShared["fileSharingID"] . '()"><span class="glyphicon glyphicon-trash"></span></a></td>';
-                                                        echo '</tr>';
+                                                                    <td><a style="cursor: pointer;" onClick="myFunction' . $countID . '()"><span class="glyphicon glyphicon-trash"></span></a></td>';
+                                                        echo '</tr>'; 
                                                     }
                                                 }  
                                             echo '
@@ -160,7 +172,7 @@ if ($result->num_rows > 0) { //(result)
             
             if ($row["state"] == 1) {
             // Modal DELETE
-            echo '<div id="del' . $row["fileID"] . '" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+            echo '<div id="del' . $countID . '" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
                     <div class="modal-dialog" role="document">
                         <div class="modal-content resetmodal">
                             <div class="modal-header">
@@ -176,7 +188,7 @@ if ($result->num_rows > 0) { //(result)
                                     <form data-toggle="validator" method="post" action="fileAction.php" class="form-horizontal" role="form" >
                                         <div class="form-group">
                                             <div class="col-sm-12" style="text-align: center;"> 
-                                                <input type="hidden" name="actionDelete" value="' . $row["fileID"] . '" />
+                                                <input type="hidden" name="actionDelete" value="' . $fileHashing . '" />
                                                     <input type="hidden" name="prevURL" value="' . $_SERVER["REQUEST_URI"] . '" />
                                                 <button class="btn btn-lg" style="width: 45%" name="deleteYes" type="submit">Yes</button>
                                                 <button class="btn btn-lg" style="width: 45%" data-dismiss="modal" aria-hidden="true">No</button>
@@ -193,7 +205,7 @@ if ($result->num_rows > 0) { //(result)
             
             if ($row["state"] == 0) {
             // Modal DELETE (UNLINK FILES)
-            echo '<div id="deI' . $row["fileID"] . '" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+            echo '<div id="deI' . $countID . '" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
                     <div class="modal-dialog" role="document">
                         <div class="modal-content resetmodal">
                             <div class="modal-header">
@@ -209,7 +221,7 @@ if ($result->num_rows > 0) { //(result)
                                     <form data-toggle="validator" method="post" action="fileAction.php" class="form-horizontal" role="form" >
                                         <div class="form-group">
                                             <div class="col-sm-12" style="text-align: center;"> 
-                                                <input type="hidden" name="actionDeIete" value="' . $row["fileID"] . '" />
+                                                <input type="hidden" name="actionDeIete" value="' . $fileHashing . '" />
                                                     <input type="hidden" name="prevURL" value="' . $_SERVER["REQUEST_URI"] . '" />
                                                 <button class="btn btn-lg" style="width: 45%" name="deleteYes" type="submit">Yes</button>
                                                 <button class="btn btn-lg" style="width: 45%" data-dismiss="modal" aria-hidden="true">No</button>
@@ -224,7 +236,7 @@ if ($result->num_rows > 0) { //(result)
                 </div>'; 
             }
         //Run SQL statement: to query for the shared  
-        $stmt = $conn->prepare("SELECT a.email, fs.* FROM fileSharing fs INNER JOIN account a ON fs.accountID = a.accountID WHERE fs.fileID = ?");
+        $stmt = $conn->prepare("SELECT a.email, fs.* FROM fileSharing fs INNER JOIN account a ON fs.accountID = a.accountID WHERE fs.fileID = ? AND fs.owner = 0 ORDER BY fs.fileSharingID ASC");
 	$stmt->bind_param("i", $row['fileID']);
         $stmt->execute();
         $resultSharedDel = $stmt->get_result();
@@ -236,22 +248,32 @@ if ($result->num_rows > 0) { //(result)
                     </form>';
         
         if ($resultSharedDel->num_rows > 0) { //(result)
-            //Loop tdrough tde result and print tde data to tde table
-            while ($rowSharedDel = $resultSharedDel->fetch_assoc()) {
-                $shareFileID = $rowSharedDel["fileSharingID"];
-                $sharedEmail = $rowSharedDel["email"];
+            //Loop tdrough tde result and print tde data to tde table  
+            while ($rowSharedDel = $resultSharedDel->fetch_assoc()) { 
+                $sharedEmail = $rowSharedDel["email"]; 
+                
+                $hashSharedFileID = password_hash($rowSharedDel["fileSharingID"] . $rowSharedDel["email"] . $_SESSION['SESS_ACC_ID'], PASSWORD_BCRYPT);
+                
+                echo print_r($_SESSION['fileSharedArray'] );
+                
+                foreach ($_SESSION['fileSharedArray'] as $product) {
+                    if ($product['hashID'] == $hashSharedFileID) {
+                        $countID = $product['countID'];
+                        break;
+                    }
+                }
                 
                 echo ' 
                     <script>
-                    function myFunction' . $shareFileID . '() { 
+                    function myFunction' . $countID . '() { 
                         if (confirm("Are you sure you want to unlink file with ' . $sharedEmail . '") == true) { 
-                                document.getElementById("actionDelShare").value = "'. $shareFileID . '";
+                                document.getElementById("actionDelShare").value = "'. $countID . '";
                                 document.getElementById("sharedEmail").value = "'. $sharedEmail . '";
                                 document.getElementById("prevURL").value = "' . $_SERVER["REQUEST_URI"] . '";
                                 document.forms["delShareForm"].submit(); 
                         }  
                     }
-                    </script>';
+                    </script>';  
                 }
             }
         }
