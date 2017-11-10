@@ -78,82 +78,84 @@ if (isset($_POST['actionEdit'])) {
 
         $_SESSION['success_msg'] = "<strong>" . $fName . "</strong> DETAILS has been updated successfully! ";  
         
-        $fPermission = "private"; 
-        $exist = false;
-        
-        $stmt = $conn->prepare("SELECT accountID FROM account WHERE email = ?");
-        $stmt->bind_param("s", $email);
-        $stmt->execute();
-        $result = $stmt->get_result();
+        if ($fPermission == "Private") { 
+            //$fPermission = "private"; 
+            $exist = false;
 
-        if ($result->num_rows > 0) {
-            while ($row = $result->fetch_assoc()) {
-                $accountID = $row["accountID"];
-                $exist = true;
-            }
-        }   
-        $stmt->close(); 
-        
-        if ($exist) { 
-            $existShared = false;
-            //check if the file already inserted into the table
-            //check if email exists, if exist add, else error  
-            $stmt = $conn->prepare("SELECT accountID FROM filesharing WHERE fileID = ? AND accountID IN (SELECT accountID FROM account WHERE email = ?) "
-                    . "UNION SELECT accountID FROM file WHERE fileID = ? AND accountID IN (SELECT accountID FROM account WHERE email = ?)");
-            $stmt->bind_param("isis", $fileID, $email, $fileID, $email);
+            $stmt = $conn->prepare("SELECT accountID FROM account WHERE email = ?");
+            $stmt->bind_param("s", $email);
             $stmt->execute();
-            $result3 = $stmt->get_result();
-            
-            if ($result3->num_rows > 0) {
-                while ($row3 = $result3->fetch_assoc()) {
-                    $accountID = $row3["accountID"];
-                    $existShared = true;
-                }
-            } 
-            $stmt->close(); 
-            
-            if (!$existShared) {
-                $stmt = $conn->prepare("SELECT f.aesKey, a.publicKey, f.fileName FROM file f, account a WHERE f.fileID = ? AND a.accountID = ?");
-                $stmt->bind_param("ii", $fileID, $accountID);
-                $stmt->execute();
-                $result2 = $stmt->get_result(); 
+            $result = $stmt->get_result();
 
-                if ($result2->num_rows > 0) {
-                    while ($row = $result2->fetch_assoc()) {
-                        $fileName = $row["fileName"];
-                        $aKey = $row["aesKey"];
-                        $pKey = $row["publicKey"];
+            if ($result->num_rows > 0) {
+                while ($row = $result->fetch_assoc()) {
+                    $accountID = $row["accountID"];
+                    $exist = true;
+                }
+            }   
+            $stmt->close(); 
+
+            if ($exist) { 
+                $existShared = false;
+                //check if the file already inserted into the table
+                //check if email exists, if exist add, else error  
+                $stmt = $conn->prepare("SELECT accountID FROM filesharing WHERE fileID = ? AND accountID IN (SELECT accountID FROM account WHERE email = ?) "
+                        . "UNION SELECT accountID FROM file WHERE fileID = ? AND accountID IN (SELECT accountID FROM account WHERE email = ?)");
+                $stmt->bind_param("isis", $fileID, $email, $fileID, $email);
+                $stmt->execute();
+                $result3 = $stmt->get_result();
+
+                if ($result3->num_rows > 0) {
+                    while ($row3 = $result3->fetch_assoc()) {
+                        $accountID = $row3["accountID"];
+                        $existShared = true;
                     }
                 } 
                 $stmt->close(); 
-                
-                $pKey = substr($pKey, 3);
-                $eAes = "keys/eAes/" . $fileID . "_" . $accountID . "_" . date("Y-m-d_H-i-s",time()) . "_eAes.key";
-                $data = file_get_contents($aKey);
-                $publicKey = file_get_contents($pKey);
-                openssl_public_encrypt($data, $encrypted, $publicKey);
-                file_put_contents($eAes, $encrypted);
 
-                //Insert the sharing emails 
-                $stmt = $conn->prepare("INSERT INTO filesharing (fileID, accountID, invitationAccepted, eAesKey) VALUES (?, ?, 1, ?)");
-                $stmt->bind_param("iis", $fileID, $accountID, $eAes);
-                $stmt->execute();
-                $stmt->close(); 
+                if (!$existShared) {
+                    $stmt = $conn->prepare("SELECT f.aesKey, a.publicKey, f.fileName FROM file f, account a WHERE f.fileID = ? AND a.accountID = ?");
+                    $stmt->bind_param("ii", $fileID, $accountID);
+                    $stmt->execute();
+                    $result2 = $stmt->get_result(); 
 
-                //After insert, update the status of filePermission to "private" just in case someone add sharing users to public
-                $stmt = $conn->prepare("UPDATE file SET filePermission=? WHERE fileID = ?");
-                $stmt->bind_param("si", $fPermission, $fileID);
-                $stmt->execute();
-                $stmt->close();  
- 
-                $_SESSION['success_msg'] = "<strong>" . $fileName . "</strong> has been shared and save successfully!"; 
+                    if ($result2->num_rows > 0) {
+                        while ($row = $result2->fetch_assoc()) {
+                            $fileName = $row["fileName"];
+                            $aKey = $row["aesKey"];
+                            $pKey = $row["publicKey"];
+                        }
+                    } 
+                    $stmt->close(); 
+
+                    $pKey = substr($pKey, 3);
+                    $eAes = "keys/eAes/" . $fileID . "_" . $accountID . "_" . date("Y-m-d_H-i-s",time()) . "_eAes.key";
+                    $data = file_get_contents($aKey);
+                    $publicKey = file_get_contents($pKey);
+                    openssl_public_encrypt($data, $encrypted, $publicKey);
+                    file_put_contents($eAes, $encrypted);
+
+                    //Insert the sharing emails 
+                    $stmt = $conn->prepare("INSERT INTO filesharing (fileID, accountID, invitationAccepted, eAesKey) VALUES (?, ?, 1, ?)");
+                    $stmt->bind_param("iis", $fileID, $accountID, $eAes);
+                    $stmt->execute();
+                    $stmt->close(); 
+
+                    //After insert, update the status of filePermission to "private" just in case someone add sharing users to public
+                    $stmt = $conn->prepare("UPDATE file SET filePermission=? WHERE fileID = ?");
+                    $stmt->bind_param("si", $fPermission, $fileID);
+                    $stmt->execute();
+                    $stmt->close();  
+
+                    $_SESSION['success_msg'] = "<strong>" . $fileName . "</strong> has been shared and save successfully!"; 
+                }
+                else {
+                    $_SESSION['error_msg'] = "The email account has already been shared or you cannot share to yourself!";
+                }
+            } else {
+                if (!($email == "" || $email == null)) 
+                    $_SESSION['error_msg'] = "The email account does not exist! Cannot share file!";
             }
-            else {
-                $_SESSION['error_msg'] = "The email account has already been shared or you cannot share to yourself!";
-            }
-        } else {
-            if (!($email == "" || $email == null)) 
-                $_SESSION['error_msg'] = "The email account does not exist! Cannot share file!";
         }
 
         if (strpos($prevURL, "file.php")) {
@@ -165,7 +167,10 @@ if (isset($_POST['actionEdit'])) {
         } else {
             echo "$prevURL";
         }
+    } else {
+        $_SESSION['error_msg'] = "You cannot set past expiry date!";
     }
+        
 }
 
 

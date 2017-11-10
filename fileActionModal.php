@@ -151,7 +151,6 @@ if ($result->num_rows > 0) { //(result)
                                                                 $("#txtEmail").addClass("border-color", "red");
                                                            }
                                                         }
-
                                                     });
                                                 }  
                                                 });
