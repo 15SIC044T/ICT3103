@@ -9,8 +9,7 @@ if (!isset($_SESSION['SESS_ACC_ID'])) {
 //Update File
 if (isset($_POST['actionEdit'])) { 
     
-    $errorForm = false;
-     
+    $errorForm = false; 
     $fileHashing = $_POST["actionEdit"];
     $fileID = 0;
     foreach ($_SESSION['fileArray'] as $product) {
@@ -59,9 +58,9 @@ if (isset($_POST['actionEdit'])) {
             $decrypted = openssl_decrypt($parts[0], AES_256_CBC, $aes, 0, base64_decode($parts[1]));
             $pFile = "uploads/public/" . substr($file, 8);
             file_put_contents($pFile, $decrypted);
-            
+             
             $stmt = $conn->prepare("UPDATE file SET publicURL=? WHERE fileID = ? AND accountID = ?"); 
-            $stmt->bind_param('sii', $pFile, $fileID, $accountID);
+            $stmt->bind_param('sii', $pFile, $fileID, $_SESSION['SESS_ACC_ID']);
             $stmt->execute();  
             $stmt->close();
         }

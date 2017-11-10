@@ -14,7 +14,7 @@ foreach ($_SESSION['fileArray'] as $product) {
         $fileID = $product['fileID'];
         break;
     }
-}
+} 
 
 require_once('dbConnection.php');
 $stmt = $conn->prepare("SELECT a.name, f.accountID, f.fileName, f.fileURL, f.aesKey, f.fileType, f.fileSize, f.hash, f.filePermission, f.publicURL FROM file f INNER JOIN account a ON a.accountID = f.accountID WHERE f.fileID = ?");
@@ -60,7 +60,6 @@ if ($uploaderID == $accountID) {
     $realKey = $fileEAESKey;
 } 
 //Do all the logic before closing connection. If not zip file will cause error.
-$stmt->close();
 
  
 //Create a zip file in the directory for download
@@ -96,7 +95,7 @@ sleep(1);
 header('Content-Type: application/zip');
 header('Content-disposition: attachment; filename=' . $zip_name);
 header('Content-Length: ' . filesize($zip_name));
-readfile($zip_name);
+readfile($zip_name); 
 
 
 //Delete file from directory
