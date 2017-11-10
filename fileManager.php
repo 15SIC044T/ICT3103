@@ -86,7 +86,7 @@
                                 //Loop tdrough tde result and print tde data to tde table
                                 while ($row = $result->fetch_assoc()) {
                                     
-                                    $hashFileID = password_hash($row["fileID"]. $count . $row['uploadDate'] . $_SESSION['SESS_ACC_ID'], PASSWORD_BCRYPT); 
+                                    $hashFileID = password_hash($row["fileID"]. $count . date("Y-m-d H:i:s.u") . $_SESSION['SESS_ACC_ID'], PASSWORD_BCRYPT); 
                                     array_push($_SESSION['fileArray'], ['hashID' => $hashFileID, 'countID' => $count, 'fileID' => $row["fileID"]]); 
                                     
                                     $FormatedUploadDate = $row["uploadDate"] == NULL ? "" : date("j M Y H:i:s A", strtotime($row["uploadDate"]));
