@@ -90,7 +90,9 @@ if ($result->num_rows > 0) { //(result)
                                                     $_SESSION['fileSharedArray'] = array();
                                                     //Loop tdrough tde result and print tde data to tde table
                                                     while ($rowShared = $resultShared->fetch_assoc()) { 
-                                                        $hashSharedFileID = password_hash($rowShared["fileSharingID"] . date("Y-m-d H:i:s.u") . $_SESSION['SESS_ACC_ID'], PASSWORD_BCRYPT);
+                                                        $now = DateTime::createFromFormat('U.u', microtime(true)); 
+                                                        
+                                                        $hashSharedFileID = password_hash($rowShared["fileSharingID"] . $now->format("m-d-Y H:i:s.u") . $_SESSION['SESS_ACC_ID'], PASSWORD_BCRYPT);
                                                         $countID = preg_replace("/[^A-Za-z0-9 ]/", '', $hashSharedFileID);
                                                         array_push($_SESSION['fileSharedArray'], ['hashID' => $hashSharedFileID, 'countID' => $countID, 'fileSharedID' => $rowShared["fileSharingID"]]);
                                                         $shareFileID = $rowShared["fileSharingID"];
