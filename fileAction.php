@@ -38,7 +38,7 @@ if (isset($_POST['actionEdit'])) {
     //If expiryDate set 
     if ($fExpiryDate < date("Y-m-d H:i:s"))
     {   
-        if ($fPermission == "Public") { 
+        if ($fPermission == "Public" || $fPermission == "public") { 
             
             $stmt = $conn->prepare("SELECT fileURL, aesKey FROM file WHERE fileID = ? AND accountID = ?");
             $stmt->bind_param("ii", $fileID, $_SESSION['SESS_ACC_ID']);
@@ -77,8 +77,8 @@ if (isset($_POST['actionEdit'])) {
 
         $_SESSION['success_msg'] = "<strong>" . $fName . "</strong> DETAILS has been updated successfully! ";  
         
-        if ($fPermission == "Private") { 
-            //$fPermission = "private"; 
+        if ($fPermission == "Private" || $fPermission == "private") { 
+            $fPermission = "private"; 
             $exist = false;
 
             $stmt = $conn->prepare("SELECT accountID FROM account WHERE email = ?");
@@ -318,7 +318,7 @@ if (isset($_POST['actionDelShare'])) {
             $sharedID = $product['fileSharedID'];
             break;
         }
-    } 
+    }  
     
     $sharedEmail = $_POST["sharedEmail"]; 
     $prevURL = $_POST["prevURL"];
@@ -353,7 +353,7 @@ if (isset($_POST['actionDelShare'])) {
 
     $_SESSION['success_msg'] = "<strong>" . $fileName . "</strong> has been unlinked successfully!";
     
-    if (strpos($prevURL, "file.php")) {
+    /*if (strpos($prevURL, "file.php")) {
         header("Location: ". $prevURL);
         exit();
     } elseif (strpos($prevURL, "fileManager.php")) {
@@ -362,7 +362,7 @@ if (isset($_POST['actionDelShare'])) {
     } else {
         header("Location: 404.php");
         exit();
-    }
+    }*/
 }
 
 

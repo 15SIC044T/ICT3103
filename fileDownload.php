@@ -66,7 +66,7 @@ if ($uploaderID == $accountID) {
 $zip_name = $fileName . ".zip";
 $zip = new ZipArchive(); 
 $zip->open($zip_name, ZipArchive::CREATE);
-if ($filePermission == "private") { 
+if ($filePermission == "private" || $filePermission == "Private") { 
     if (file_exists($fileURL)) {
         $zip->addFromString(basename($fileURL), file_get_contents($fileURL));
     }

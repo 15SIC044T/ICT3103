@@ -63,8 +63,8 @@ if ($result->num_rows > 0) { //(result)
                                                 </script>  
                                                 <label for="lblFilePermission">File Permission:</label>
                                                 <select class="form-control" id="ddlFilePermission" name="DDLFilePermission">
-                                                    <option' . (($row["filePermission"] == "Private") ? " selected" : "") . '>Private</option>
-                                                    <option' . (($row["filePermission"] == "Public") ? " selected" : "") . '>Public</option> 
+                                                    <option' . (($row["filePermission"] == "Private" || $row["filePermission"] == "private") ? " selected" : "") . '>Private</option>
+                                                    <option' . (($row["filePermission"] == "Public" || $row["filePermission"] == "public") ? " selected" : "") . '>Public</option> 
                                                 </select>   
                                                 
                                                 <hr>
@@ -133,28 +133,7 @@ if ($result->num_rows > 0) { //(result)
                                                     $("#fSharing:input").attr("disabled", true);
                                                   }
                                                 });
-                                            }); 
-
-                                            $(document).ready(function(){
-                                                $("#txtEmail").on("change", function() {
-                                                var usr = $("#txtEmail").val();
-                                                if(usr.length >= 8){ 
-                                                    $.ajax({ 
-                                                    type: "POST", 
-                                                    url: "checkEmail.php", 
-                                                    data: "email="+ usr,
-                                                    dataType: "text",
-                                                        success: function(msg){
-                                                            if(msg == "OK"){
-                                                                $("#txtEmail").css("backgrouond-color", "green");
-                                                            } else {
-                                                                $("#txtEmail").addClass("border-color", "red");
-                                                           }
-                                                        }
-                                                    });
-                                                }  
-                                                });
-                                            });
+                                            });  
                                         </script> 
                                         
                                                 <button class="btn btn-lg btn-block btn-success" name="save" type="submit">Save</button>
