@@ -93,14 +93,14 @@ if ($result->num_rows > 0) { //(result)
                                                         $now = DateTime::createFromFormat('U.u', microtime(true)); 
                                                         
                                                         $hashSharedFileID = password_hash($rowShared["fileSharingID"] . $now->format("m-d-Y H:i:s.u") . $_SESSION['SESS_ACC_ID'], PASSWORD_BCRYPT);
-                                                        $countID = preg_replace("/[^A-Za-z0-9 ]/", '', $hashSharedFileID);
-                                                        array_push($_SESSION['fileSharedArray'], ['hashID' => $hashSharedFileID, 'countID' => $countID, 'fileSharedID' => $rowShared["fileSharingID"]]);
+                                                        $countzID = preg_replace("/[^A-Za-z0-9 ]/", '', $hashSharedFileID);
+                                                        array_push($_SESSION['fileSharedArray'], ['hashID' => $hashSharedFileID, 'countID' => $countzID, 'fileSharedID' => $rowShared["fileSharingID"]]);
                                                         $shareFileID = $rowShared["fileSharingID"];
 
                                                         echo '<tr>';
                                                         echo '<td>' . $rowShared["email"] . '</td>
                                                                     <td>' . $rowShared["invitationAccepted"] . '</td>
-                                                                    <td><a style="cursor: pointer;" onClick="myFunction' . $countID . '()"><span class="glyphicon glyphicon-trash"></span></a></td>';
+                                                                    <td><a style="cursor: pointer;" onClick="myFunction' . $countzID . '()"><span class="glyphicon glyphicon-trash"></span></a></td>';
                                                         echo '</tr>'; 
                                                     }
                                                 }  
@@ -112,18 +112,15 @@ if ($result->num_rows > 0) { //(result)
                                         <p>Enter the person email to share with</p>
                                         <input id="txtEmail" name="txtEmail" type="text" class="form-control" placeholder="Registered Email"> 
                                         </div>
-
-
-                                        <script> 
+ 
+                                         <script> 
                                             $(document).ready(function(){   
                                                 $("#fSharing").hide();
                                                 $("#fSharing:input").attr("disabled", true);
-
                                                 if ( $("#ddlFilePermission").val() == "private" || $("#ddlFilePermission").val() == "Private") {
                                                     $("#fSharing").show();
                                                     $("#fSharing:input").attr("disabled", false);
                                                   }
-
                                                 $("#ddlFilePermission").on("change", function() {
                                                   if ( this.value == "private" || this.value == "Private") {
                                                     $("#fSharing").show();
@@ -135,13 +132,11 @@ if ($result->num_rows > 0) { //(result)
                                                 });
                                             });  
                                         </script> 
-                                        
+                                            
                                                 <button class="btn btn-lg btn-block btn-success" name="save" type="submit">Save</button>
                                             </div>
                                         </div> 
-                                    </form> 
-                                    
-
+                                    </form>  
                                 </div>
                                 <!--edit modal content end-->
                             </div>
@@ -237,16 +232,16 @@ if ($result->num_rows > 0) { //(result)
                 if (isset($_SESSION['fileSharedArray'])) {
                     foreach ($_SESSION['fileSharedArray'] as $product) {
                         if ($product['hashID'] == $hashSharedFileID) {
-                            $countID = $product['countID'];
+                            $countzID = $product['countID'];
                             break;
                         }
                     }
 
                     echo ' 
                     <script>
-                    function myFunction' . $countID . '() { 
+                    function myFunction' . $countzID . '() { 
                         if (confirm("Are you sure you want to unlink file with ' . $sharedEmail . '") == true) { 
-                                document.getElementById("actionDelShare").value = "' . $countID . '";
+                                document.getElementById("actionDelShare").value = "' . $countzID . '";
                                 document.getElementById("sharedEmail").value = "' . $sharedEmail . '";
                                 document.getElementById("prevURL").value = "' . $_SERVER["REQUEST_URI"] . '";
                                 document.forms["delShareForm"].submit(); 
