@@ -2,25 +2,43 @@
  
 include "fileCheckPermission.php";
 include "fileCheckExpiry.php";
-if (!isset($_SESSION['SESS_ACC_ID'])) {
-    header("Location: index.php");
-}
- 
-$accountID = $_SESSION['SESS_ACC_ID'];
+
 $fileHashing = $_GET["fID"];
-$fileID = 0;
-foreach ($_SESSION['fileArray'] as $product) {
-    if ($product['filePer'] == "private" || $product['filePer'] == "Private") {
-        if ($product['hashID'] == $fileHashing) {
-            $fileID = $product['fileID'];
-            $countID = $product['countID'];
-            break;
+
+if (isset($_SESSION['fileArray'])) {
+    if (!isset($_SESSION['SESS_ACC_ID'])) {
+        header("Location: index.php");
+    }
+
+    $accountID = $_SESSION['SESS_ACC_ID'];
+    $fileHashing = $_GET["fID"];
+    $fileID = 0;
+    foreach ($_SESSION['fileArray'] as $product) {
+        if ($product['filePer'] == "private" || $product['filePer'] == "Private") {
+            if ($product['hashID'] == $fileHashing) {
+                $fileID = $product['fileID'];
+                $countID = $product['countID'];
+                break;
+            }
+        } else {
+            if ($product['fileID'] == $fileHashing) {
+                $fileID = $product['fileID'];
+                break;
+            }
         }
+    }
+} else {
+    //Query for file URL  
+    $stmt = $conn->prepare("SELECT f.filePermission FROM file f WHERE f.fileID = ?");
+    $stmt->bind_param("i", $fileHashing);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    if ($result->num_rows == 0) {
+        header("Location: 404.php");
+        exit();
     } else {
-        if ($product['fileID'] == $fileHashing) {
-            $fileID = $product['fileID'];
-            break;
-        }
+        $fileID = $fileHashing;
     }
 }
 
@@ -48,27 +66,28 @@ $stmt->close();
 
 $realKey = ""; 
 
-//Check if file uploader is the same as user who access the download website
-if ($uploaderID == $accountID) { 
-    $realKey = $fileAESKey;
-} else {
-    //Get the uploader file
-    //check if owner itself has its filehsaring private key   
-    $stmt = $conn->prepare("SELECT eAesKey FROM filesharing WHERE fileID = ? AND accountID = ?");
-    $stmt->bind_param("ii", $fileID, $accountID);
-    $stmt->execute();
-    $result = $stmt->get_result();
+if (isset($_SESSION['SESS_ACC_ID'])) { 
+    //Check if file uploader is the same as user who access the download website
+    if ($uploaderID == $accountID) { 
+        $realKey = $fileAESKey;
+    } else {
+        //Get the uploader file
+        //check if owner itself has its filehsaring private key   
+        $stmt = $conn->prepare("SELECT eAesKey FROM filesharing WHERE fileID = ? AND accountID = ?");
+        $stmt->bind_param("ii", $fileID, $accountID);
+        $stmt->execute();
+        $result = $stmt->get_result();
 
-    if ($result->num_rows > 0) { //(result)
-        //Loop tdrough tde result and print tde data to tde table
-        while ($row2 = $result->fetch_assoc()) { 
-            $fileEAESKey = $row2["eAesKey"];  
-        }
+        if ($result->num_rows > 0) { //(result)
+            //Loop tdrough tde result and print tde data to tde table
+            while ($row2 = $result->fetch_assoc()) { 
+                $fileEAESKey = $row2["eAesKey"];  
+            }
+        } 
+        $realKey = $fileEAESKey;
     } 
-    $realKey = $fileEAESKey;
-} 
-//Do all the logic before closing connection. If not zip file will cause error.
-
+    //Do all the logic before closing connection. If not zip file will cause error.
+}
  
 //Create a zip file in the directory for download
 $zip_name = $fileName . ".zip";

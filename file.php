@@ -10,7 +10,13 @@
         <?php include "fileCheckPermission.php"; ?>
     </head>
     <body>
-        <?php include "navbar.php";  ?>
+        <?php 
+        if (isset($_SESSION['SESS_ACC_ID'])) {
+            include "navbar.php";
+        } else { ?>
+            <input type=button class="btn btn-lg btn-block btn-info" onClick="location.href='<?php echo "index.php" ?>'" value='Login Now'><br>
+        <?php }
+        ?>
         
         <div class="container-fluid">
             <div class="row">
@@ -18,29 +24,49 @@
                     
                     <?php include "fileCheckExpiry.php"; ?> 
                     
-                    <?php echo "<h1>" . $_SESSION['SESS_USERNAME'] . "'s File</h1>" ?>
+                    <?php echo "<h1>" . ( isset($_SESSION['SESS_USERNAME'])? ($_SESSION['SESS_USERNAME'] . "'s") : "") . " File</h1>" ?>
                     
                     <?php
                             require_once('dbConnection.php');
-                            $accountID = $_SESSION['SESS_ACC_ID']; 
-                               
+                            if (isset($_SESSION["SESS_ACC_ID"])) {
+                                $accountID = $_SESSION['SESS_ACC_ID']; 
+                            }
+                            else {
+                                $accountID = 0;
+                            }
+                            
                             $fileHashing = $_GET["fID"];  
                             $fileID = 0;
-                            foreach ($_SESSION['fileArray'] as $product) { 
-                                if ($product['filePer'] == "private" || $product['filePer'] == "Private") {
-                                    if ($product['hashID'] == $fileHashing) {
-                                        $fileID = $product['fileID']; 
-                                        $countID = $product['countID']; 
-                                       break;
+                            if (isset($_SESSION['fileArray'])) {
+                                foreach ($_SESSION['fileArray'] as $product) { 
+                                    if ($product['filePer'] == "private" || $product['filePer'] == "Private") {
+                                        if ($product['hashID'] == $fileHashing) {
+                                            $fileID = $product['fileID']; 
+                                            $countID = $product['countID']; 
+                                           break;
+                                        }
+                                    } else {
+                                        if ($product['fileID'] == $fileHashing) { 
+                                            $fileID = $product['fileID']; 
+                                            $countID = $product['countID']; 
+                                            break;
+                                        }
                                     }
+                                } 
+                            } else {
+                                //Query for file URL  
+                                $stmt = $conn->prepare("SELECT f.filePermission FROM file f WHERE f.fileID = ?");
+                                $stmt->bind_param("i", $fileHashing);
+                                $stmt->execute();
+                                $result = $stmt->get_result();
+
+                                if ($result->num_rows == 0) {
+                                    header ("Location: 404.php"); 
+                                    exit();
                                 } else {
-                                    if ($product['fileID'] == $fileHashing) { 
-                                        $fileID = $product['fileID']; 
-                                        $countID = $product['countID']; 
-                                        break;
-                                    }
+                                    $fileID = $fileHashing;
                                 }
-                            } 
+                            }
                             
                             $stmt = $conn->prepare("SELECT a.name, f.accountID, f.fileName, f.fileType, f.fileSize, f.hash, f.uploadDate, f.expiryDate, f.filePermission, f.fileStatus, f.downloadTimes FROM file f INNER JOIN account a ON a.accountID = f.accountID WHERE f.fileID = ?");
                             $stmt->bind_param("i", $fileID);
@@ -135,13 +161,15 @@
 
                         <?php
                         //display different views
-                        if ($_SESSION["SESS_ACC_ID"] == $uploaderID) {
+                        if (isset($_SESSION["SESS_ACC_ID"])) {
+                            if ($_SESSION["SESS_ACC_ID"] == $uploaderID) {
 
-                            //display edit button
-                            echo '<span data-target="#edit' . $countID . '" data-toggle="modal"><button class="btn btn-lg btn-block" name="edit">Edit</button></span><br>';
-                            //upload person able to upload the details 
-                            include "fileActionModal.php";
+                                //display edit button
+                                echo '<span data-target="#edit' . $countID . '" data-toggle="modal"><button class="btn btn-lg btn-block" name="edit">Edit</button></span><br>';
+                                //upload person able to upload the details 
+                                include "fileActionModal.php";
 
+                            }
                         }
                         ?> 
                         <br><br><br><br><br>
