@@ -23,7 +23,7 @@ if ($result->num_rows > 0) { //(result)
                     $countID = $product['countID'];
                     break;
                 }
-            }
+            } 
             
             if ($row["state"] == 1) {
             echo '<div id="edit' . $countID . '" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
@@ -81,7 +81,7 @@ if ($result->num_rows > 0) { //(result)
                                             </thead> 
                                             <tbody>';    
                                                 //Run SQL statement: to query for the shared   
-                                                $stmt = $conn->prepare("SELECT a.email, fs.* FROM fileSharing fs INNER JOIN account a ON fs.accountID = a.accountID WHERE fs.fileID = ? AND fs.owner = 0 ORDER BY fs.fileSharingID ASC");
+                                                $stmt = $conn->prepare("SELECT a.email, a.password, fs.* FROM fileSharing fs INNER JOIN account a ON fs.accountID = a.accountID WHERE fs.fileID = ? AND fs.owner = 0 ORDER BY fs.fileSharingID ASC");
                                                 $stmt->bind_param("i", $row['fileID']);
                                                 $stmt->execute();
                                                 $resultShared = $stmt->get_result(); 
@@ -92,7 +92,7 @@ if ($result->num_rows > 0) { //(result)
                                                     while ($rowShared = $resultShared->fetch_assoc()) { 
                                                         $now = DateTime::createFromFormat('U.u', microtime(true)); 
                                                         
-                                                        $hashSharedFileID = password_hash($rowShared["fileSharingID"] . $now->format("m-d-Y H:i:s.u") . $_SESSION['SESS_ACC_ID'], PASSWORD_BCRYPT);
+                                                        $hashSharedFileID = password_hash($rowShared["fileSharingID"] . $rowShared["email"] . $_SESSION['SESS_ACC_ID'], PASSWORD_BCRYPT);
                                                         $countzID = preg_replace("/[^A-Za-z0-9 ]/", '', $hashSharedFileID);
                                                         array_push($_SESSION['fileSharedArray'], ['hashID' => $hashSharedFileID, 'countID' => $countzID, 'fileSharedID' => $rowShared["fileSharingID"]]);
                                                         $shareFileID = $rowShared["fileSharingID"];
@@ -211,7 +211,7 @@ if ($result->num_rows > 0) { //(result)
                 </div>'; 
             }
         //Run SQL statement: to query for the shared  
-        $stmt = $conn->prepare("SELECT a.email, fs.* FROM fileSharing fs INNER JOIN account a ON fs.accountID = a.accountID WHERE fs.fileID = ? AND fs.owner = 0 ORDER BY fs.fileSharingID ASC");
+        $stmt = $conn->prepare("SELECT a.email, a.password, fs.* FROM fileSharing fs INNER JOIN account a ON fs.accountID = a.accountID WHERE fs.fileID = ? AND fs.owner = 0 ORDER BY fs.fileSharingID ASC");
 	$stmt->bind_param("i", $row['fileID']);
         $stmt->execute();
         $resultSharedDel = $stmt->get_result();
@@ -227,27 +227,23 @@ if ($result->num_rows > 0) { //(result)
             while ($rowSharedDel = $resultSharedDel->fetch_assoc()) { 
                 $sharedEmail = $rowSharedDel["email"]; 
                 
-                $hashSharedFileID = password_hash($rowSharedDel["fileSharingID"] . $rowSharedDel["email"] . $_SESSION['SESS_ACC_ID'], PASSWORD_BCRYPT);
-                $countzID = 0;
+                $hashSharedFileID = password_hash($rowSharedDel["fileSharingID"] . $rowSharedDel["email"] . $_SESSION['SESS_ACC_ID'], PASSWORD_BCRYPT); 
+                
                 if (isset($_SESSION['fileSharedArray'])) {
                     foreach ($_SESSION['fileSharedArray'] as $product) {
-                        if ($product['hashID'] == $hashSharedFileID) {
-                            $countzID = $product['countID'];
-                            break;
+                        $countzID = $product["countID"];
+                        echo ' 
+                        <script>
+                        function myFunction' . $countzID . '() { 
+                            if (confirm("Are you sure you want to unlink file with ' . $sharedEmail . '") == true) { 
+                                    document.getElementById("actionDelShare").value = "' . $countzID . '";
+                                    document.getElementById("sharedEmail").value = "' . $sharedEmail . '";
+                                    document.getElementById("prevURL").value = "' . $_SERVER["REQUEST_URI"] . '";
+                                    document.forms["delShareForm"].submit(); 
+                            }  
                         }
-                    }
-
-                    echo ' 
-                    <script>
-                    function myFunction' . $countzID . '() { 
-                        if (confirm("Are you sure you want to unlink file with ' . $sharedEmail . '") == true) { 
-                                document.getElementById("actionDelShare").value = "' . $countzID . '";
-                                document.getElementById("sharedEmail").value = "' . $sharedEmail . '";
-                                document.getElementById("prevURL").value = "' . $_SERVER["REQUEST_URI"] . '";
-                                document.forms["delShareForm"].submit(); 
-                        }  
-                    }
-                    </script>';
+                        </script>';
+                    } 
                 }
             }
         }
