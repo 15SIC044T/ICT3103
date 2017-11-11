@@ -25,7 +25,7 @@ if (isset($_POST['actionEdit'])) {
     $fName = filter_var($_POST["txtFileName"], FILTER_SANITIZE_STRING);
     $fExpiryDate = $_POST["txtExpiryDate"];
     $fPermission = $_POST["DDLFilePermission"];
-      
+       
     //sanitize input
     if (!(filter_var($fileID, FILTER_VALIDATE_INT) === 0 || !filter_var($fileID, FILTER_VALIDATE_INT) === false)) { 
         $errorForm = true;
@@ -62,7 +62,10 @@ if (isset($_POST['actionEdit'])) {
             $stmt = $conn->prepare("UPDATE file SET publicURL=? WHERE fileID = ? AND accountID = ?"); 
             $stmt->bind_param('sii', $pFile, $fileID, $_SESSION['SESS_ACC_ID']);
             $stmt->execute();  
-            $stmt->close();
+            $stmt->close(); 
+            
+            if (!($email == "" || $email == null))
+                $_SESSION['error_msg'] = "You cannot share file privately when its PUBLIC!";
         }
         
         if ($fExpiryDate == "")
@@ -76,6 +79,10 @@ if (isset($_POST['actionEdit'])) {
         $stmt->close(); 
 
         $_SESSION['success_msg'] = "<strong>" . $fName . "</strong> DETAILS has been updated successfully! ";  
+        
+        
+        if ((!($email == "" || $email == null)) && ($fPermission == "Public" || $fPermission == "public"))
+                $_SESSION['error_msg'] = "You cannot share file privately when its PUBLIC!";
         
         if ($fPermission == "Private" || $fPermission == "private") { 
             $fPermission = "private"; 

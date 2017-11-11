@@ -89,22 +89,26 @@
                                     $now = DateTime::createFromFormat('U.u', microtime(true)); 
                                     
                                     $hashFileID = password_hash($row["fileID"]. $count . $now->format("m-d-Y H:i:s.u") . $_SESSION['SESS_ACC_ID'], PASSWORD_BCRYPT); 
-                                    array_push($_SESSION['fileArray'], ['hashID' => $hashFileID, 'countID' => $count, 'fileID' => $row["fileID"]]); 
+                                    array_push($_SESSION['fileArray'], ['hashID' => $hashFileID, 'countID' => $count, 'fileID' => $row["fileID"], 'filePer' => $row['filePermission']]); 
                                     
                                     $FormatedUploadDate = $row["uploadDate"] == NULL ? "" : date("j M Y H:i:s A", strtotime($row["uploadDate"]));
                                     $FormatedExpiryDate = $row["expiryDate"] == NULL ? "" : date("j M Y H:i:s A", strtotime($row["expiryDate"]));
                                     echo '<tr>';
                                     echo '<td>' . $row["state"] . '</td>';
                                     
-                                    if ($row["state"] == 1) {
+                                    if ($row["state"] == 1) { 
                                         echo '<td><a href="#" data-target="#edit' . $count . '" data-toggle="modal"><span class="glyphicon glyphicon-pencil"></span></a></td>';
                                     } 
                                     else {
                                         echo '<td> </td>';
                                     } 
                                     
-                                    echo '<td><a href="file.php?fID=' . $hashFileID . '">' . $row["fileName"] . '</a></td>
-                                            <td>' . $row["fileType"] . '</td>
+                                    if ($row["filePermission"] == "private" || $row["filePermission"] == "Private") {
+                                        echo '<td><a href="file.php?fID=' . $hashFileID . '">' . $row["fileName"] . '</a></td>';
+                                    }else {
+                                        echo '<td><a href="file.php?fID=' . $row["fileID"] . '">' . $row["fileName"] . '</a></td>';
+                                    } 
+                                    echo '<td>' . $row["fileType"] . '</td>
                                             <td>' . round($row["fileSize"] / 1000.0 / 1000.0, 2) . ' MB</td> 
                                             <td>' . $FormatedUploadDate . '</td> 
                                             <td>' . $FormatedExpiryDate . '</td>

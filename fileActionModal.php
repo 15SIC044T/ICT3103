@@ -228,7 +228,7 @@ if ($result->num_rows > 0) { //(result)
                 $sharedEmail = $rowSharedDel["email"]; 
                 
                 $hashSharedFileID = password_hash($rowSharedDel["fileSharingID"] . $rowSharedDel["email"] . $_SESSION['SESS_ACC_ID'], PASSWORD_BCRYPT);
-
+                $countzID = 0;
                 if (isset($_SESSION['fileSharedArray'])) {
                     foreach ($_SESSION['fileSharedArray'] as $product) {
                         if ($product['hashID'] == $hashSharedFileID) {

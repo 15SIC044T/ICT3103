@@ -27,10 +27,18 @@
                             $fileHashing = $_GET["fID"];  
                             $fileID = 0;
                             foreach ($_SESSION['fileArray'] as $product) { 
-                                if ($product['hashID'] == $fileHashing) {
-                                    $fileID = $product['fileID']; 
-                                    $countID = $product['countID']; 
-                                   break;
+                                if ($product['filePer'] == "private" || $product['filePer'] == "Private") {
+                                    if ($product['hashID'] == $fileHashing) {
+                                        $fileID = $product['fileID']; 
+                                        $countID = $product['countID']; 
+                                       break;
+                                    }
+                                } else {
+                                    if ($product['fileID'] == $fileHashing) { 
+                                        $fileID = $product['fileID']; 
+                                        $countID = $product['countID']; 
+                                        break;
+                                    }
                                 }
                             } 
                             
