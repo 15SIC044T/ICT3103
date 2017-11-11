@@ -39,7 +39,7 @@ if (isset($_POST['actionEdit'])) {
     if ($fExpiryDate < date("Y-m-d H:i:s"))
     {   
         if ($fPermission == "Public" || $fPermission == "public") { 
-            
+            $fPermission = "public";
             $stmt = $conn->prepare("SELECT fileURL, aesKey FROM file WHERE fileID = ? AND accountID = ?");
             $stmt->bind_param("ii", $fileID, $_SESSION['SESS_ACC_ID']);
             $stmt->execute();
@@ -353,7 +353,7 @@ if (isset($_POST['actionDelShare'])) {
 
     $_SESSION['success_msg'] = "<strong>" . $fileName . "</strong> has been unlinked successfully!";
     
-    /*if (strpos($prevURL, "file.php")) {
+    if (strpos($prevURL, "file.php")) {
         header("Location: ". $prevURL);
         exit();
     } elseif (strpos($prevURL, "fileManager.php")) {
@@ -362,7 +362,7 @@ if (isset($_POST['actionDelShare'])) {
     } else {
         header("Location: 404.php");
         exit();
-    }*/
+    }
 }
 
 
