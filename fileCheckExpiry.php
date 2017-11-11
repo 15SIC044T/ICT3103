@@ -3,7 +3,7 @@ require_once('dbConnection.php');
 
 include "checkSession.php"; 
 
-$stmt = $conn->prepare("SELECT fileID, fileURL FROM file WHERE expiryDate <= date('Y-m-d H:i:s')");
+$stmt = $conn->prepare("SELECT fileID, fileURL FROM file WHERE expiryDate <= now()");
 $stmt->execute();
 $result = $stmt->get_result();
 
@@ -15,7 +15,7 @@ if ($result->num_rows > 0) {
         
         //Delete file from database   
         $stmt = $conn->prepare("DELETE FROM file WHERE fileID = ?");
-        $stmt>bind_param("i", $fileID);
+        $stmt->bind_param("i", $fileID);
         $stmt->execute();
 
         //Delete file from directory
